@@ -1,0 +1,257 @@
+{
+  "entities": {
+    "Admin": {
+      "title": "Admin User Roles",
+      "description": "List of whitelisted admin users who have access to the CMS panel.",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string", "description": "Email of the admin user" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["email", "createdAt"]
+    },
+    "Category": {
+      "title": "Property Category",
+      "description": "Category for filtering properties (e.g. Residential Apartments, Luxury Villas).",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "slug": { "type": "string" },
+        "icon": { "type": "string", "description": "Lucide/Tabler icon representation name" },
+        "description": { "type": "string" },
+        "imageUrl": { "type": "string" },
+        "sortOrder": { "type": "integer" },
+        "active": { "type": "boolean" }
+      },
+      "required": ["name", "slug", "icon", "description", "imageUrl", "sortOrder", "active"]
+    },
+    "Location": {
+      "title": "Property Location",
+      "description": "Locations/Areas where properties are situated.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "slug": { "type": "string" },
+        "city": { "type": "string" },
+        "description": { "type": "string" },
+        "imageUrl": { "type": "string" },
+        "latitude": { "type": "number" },
+        "longitude": { "type": "number" },
+        "active": { "type": "boolean" }
+      },
+      "required": ["name", "slug", "city", "description", "imageUrl", "latitude", "longitude", "active"]
+    },
+    "Property": {
+      "title": "Property Listing",
+      "description": "Representing a physical real estate listing for sale.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "slug": { "type": "string" },
+        "categoryId": { "type": "string" },
+        "locationId": { "type": "string" },
+        "status": { "type": "string", "enum": ["Ready to Move", "Under Construction", "New Launch", "Sold Out"] },
+        "price": { "type": "number" },
+        "area": { "type": "number" },
+        "bhk": { "type": "string" },
+        "floor": { "type": "string" },
+        "facing": { "type": "string" },
+        "possessionDate": { "type": "string" },
+        "reraNumber": { "type": "string" },
+        "developerId": { "type": "string" },
+        "description": { "type": "string" },
+        "imageUrls": { "type": "array" },
+        "floorPlanUrl": { "type": "string" },
+        "brochureUrl": { "type": "string" },
+        "videoUrl": { "type": "string" },
+        "amenities": { "type": "array" },
+        "landmarks": { "type": "array" },
+        "seoTitle": { "type": "string" },
+        "seoDescription": { "type": "string" },
+        "featured": { "type": "boolean" },
+        "newLaunch": { "type": "boolean" },
+        "exclusive": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": [
+        "title", "slug", "categoryId", "locationId", "status", "price", "area", "bhk",
+        "description", "imageUrls", "featured", "newLaunch", "exclusive", "createdAt", "updatedAt"
+      ]
+    },
+    "Lead": {
+      "title": "Lead Submission",
+      "description": "Form submissions from interest/contact forms.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "phone": { "type": "string" },
+        "email": { "type": "string" },
+        "locationInterest": { "type": "string" },
+        "propertyType": { "type": "string" },
+        "message": { "type": "string" },
+        "preferredCallback": { "type": "string" },
+        "sourceUrl": { "type": "string" },
+        "status": { "type": "string", "enum": ["New", "Contacted", "Site Visit Scheduled", "Booked", "Closed", "Not Interested"] },
+        "assignedTo": { "type": "string" },
+        "notes": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "phone", "email", "status", "createdAt"]
+    },
+    "Blog": {
+      "title": "Blog Post",
+      "description": "Informative posts/articles relating to real estate options in Mathura/Vrindavan.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "slug": { "type": "string" },
+        "content": { "type": "string" },
+        "author": { "type": "string" },
+        "coverUrl": { "type": "string" },
+        "category": { "type": "string" },
+        "tags": { "type": "string" },
+        "status": { "type": "string", "enum": ["Draft", "Published"] },
+        "seoTitle": { "type": "string" },
+        "seoDescription": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "slug", "content", "author", "coverUrl", "status", "createdAt", "updatedAt"]
+    },
+    "Testimonial": {
+      "title": "Client Testimonial",
+      "description": "Ratings and reviews submitted by clients.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "role": { "type": "string" },
+        "text": { "type": "string" },
+        "stars": { "type": "integer" },
+        "imageUrl": { "type": "string" },
+        "videoUrl": { "type": "string" },
+        "approved": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "text", "stars", "approved", "createdAt"]
+    },
+    "Developer": {
+      "title": "Builder Details",
+      "description": "Profiles of listed developers/builders.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "logoUrl": { "type": "string" },
+        "website": { "type": "string" },
+        "activeProjects": { "type": "integer" }
+      },
+      "required": ["name"]
+    },
+    "Event": {
+      "title": "Event Listing",
+      "description": "Upcoming property launch events or site visit expos.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "date": { "type": "string" },
+        "time": { "type": "string" },
+        "location": { "type": "string" },
+        "description": { "type": "string" },
+        "registrationUrl": { "type": "string" },
+        "coverUrl": { "type": "string" }
+      },
+      "required": ["name", "date"]
+    },
+    "Page": {
+      "title": "Dynamic Content Page",
+      "description": "Custom subpages generated dynamically by an admin.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "slug": { "type": "string" },
+        "content": { "type": "string" },
+        "heroUrl": { "type": "string" },
+        "seoTitle": { "type": "string" },
+        "seoDescription": { "type": "string" },
+        "showInFooter": { "type": "boolean" },
+        "status": { "type": "string", "enum": ["Draft", "Published"] },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "slug", "content", "status", "updatedAt"]
+    },
+    "SiteConfig": {
+      "title": "Global Site Configuration",
+      "description": "Contact info, banners, hero text, stats, and footer overlays.",
+      "type": "object",
+      "properties": {
+        "companyName": { "type": "string" },
+        "tagline": { "type": "string" },
+        "phone": { "type": "string" },
+        "whatsappNumber": { "type": "string" },
+        "email": { "type": "string" },
+        "address": { "type": "string" },
+        "facebookUrl": { "type": "string" },
+        "instagramUrl": { "type": "string" },
+        "youtubeUrl": { "type": "string" },
+        "twitterUrl": { "type": "string" },
+        "heroTitle": { "type": "string" },
+        "heroSubtitle": { "type": "string" },
+        "heroCoverUrl": { "type": "string" },
+        "reranumbers": { "type": "array" },
+        "footerDisclaimer": { "type": "string" },
+        "statSqFt": { "type": "string" },
+        "statDelivered": { "type": "string" },
+        "statExperience": { "type": "string" },
+        "statFamilies": { "type": "string" }
+      },
+      "required": ["companyName", "tagline", "phone", "whatsappNumber", "email", "address"]
+    }
+  },
+  "firestore": {
+    "/admins/{uid}": {
+      "schema": "Admin",
+      "description": "Privileged roles for the CMS administrative control panel."
+    },
+    "/categories/{categoryId}": {
+      "schema": "Category",
+      "description": "Dynamic categories grid shown on home and filtering views."
+    },
+    "/locations/{locationId}": {
+      "schema": "Location",
+      "description": "Dynamic landmark regions with geo coordinates."
+    },
+    "/properties/{propertyId}": {
+      "schema": "Property",
+      "description": "Premium real estate residential / commercial / plots listings."
+    },
+    "/leads/{leadId}": {
+      "schema": "Lead",
+      "description": "Auditable, pipelines status tracking leads."
+    },
+    "/blogs/{blogId}": {
+      "schema": "Blog",
+      "description": "Religious investment landscape insights and guides around Brajbhoomi."
+    },
+    "/testimonials/{testimonialId}": {
+      "schema": "Testimonial",
+      "description": "Authentic feedback scores and reviews published dynamically."
+    },
+    "/developers/{developerId}": {
+      "schema": "Developer",
+      "description": "Partner profiles of infrastructure and temple builders."
+    },
+    "/events/{eventId}": {
+      "schema": "Event",
+      "description": "Expos, site visits, and community announcements."
+    },
+    "/pages/{pageId}": {
+      "schema": "Page",
+      "description": "Dynamic extra informational subpages managed by administrators."
+    },
+    "/settings/siteConfig": {
+      "schema": "SiteConfig",
+      "description": "Global settings parameters single document store."
+    }
+  }
+}

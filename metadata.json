@@ -1,0 +1,6 @@
+{
+  "name": "Nikunj Heritage Infrabuild",
+  "description": "A premium, heritage-rich luxury real estate portal for Nikunj Heritage Infrabuild in Mathura and Vrindavan, where divinity meets luxury living.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

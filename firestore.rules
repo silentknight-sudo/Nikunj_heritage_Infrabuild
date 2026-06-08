@@ -1,0 +1,185 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Default-deny Catch-all Gate (Pillar 1)
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // --- REUSABLE GLOBAL HELPERS ---
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    
+    function isAdmin() {
+      return isSignedIn() && (
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid)) ||
+        request.auth.token.email == "vksp207@gmail.com"
+      );
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // --- ENTITY SCHEMA VALIDATIONS (PIillar 2) ---
+    
+    function isValidCategory(data) {
+      return data.name is string && data.name.size() <= 200 &&
+             data.slug is string && data.slug.size() <= 100 &&
+             data.icon is string && data.icon.size() <= 100 &&
+             data.description is string && data.description.size() <= 1000 &&
+             data.imageUrl is string && data.imageUrl.size() <= 500 &&
+             data.sortOrder is int &&
+             data.active is bool;
+    }
+
+    function isValidLocation(data) {
+      return data.name is string && data.name.size() <= 200 &&
+             data.slug is string && data.slug.size() <= 100 &&
+             data.city is string && data.city.size() <= 100 &&
+             data.description is string && data.description.size() <= 1000 &&
+             data.imageUrl is string && data.imageUrl.size() <= 500 &&
+             data.latitude is number &&
+             data.longitude is number &&
+             data.active is bool;
+    }
+
+    function isValidProperty(data) {
+      return data.title is string && data.title.size() <= 300 &&
+             data.slug is string && data.slug.size() <= 150 &&
+             data.categoryId is string && data.categoryId.size() <= 100 &&
+             data.locationId is string && data.locationId.size() <= 100 &&
+             data.status in ["Ready to Move", "Under Construction", "New Launch", "Sold Out"] &&
+             data.price is number && data.price >= 0 &&
+             data.area is number && data.area >= 0 &&
+             data.bhk is string &&
+             data.description is string && data.description.size() <= 5000 &&
+             data.imageUrls is list && data.imageUrls.size() <= 20 &&
+             data.featured is bool &&
+             data.newLaunch is bool &&
+             data.exclusive is bool;
+    }
+
+    function isValidLead(data) {
+      return data.name is string && data.name.size() <= 150 &&
+             data.phone is string && data.phone.size() <= 30 &&
+             data.email is string && data.email.size() <= 150 &&
+             data.status in ["New", "Contacted", "Site Visit Scheduled", "Booked", "Closed", "Not Interested"];
+    }
+
+    function isValidBlog(data) {
+      return data.title is string && data.title.size() <= 300 &&
+             data.slug is string && data.slug.size() <= 150 &&
+             data.content is string && data.content.size() <= 50000 &&
+             data.author is string && data.author.size() <= 100 &&
+             data.coverUrl is string && data.coverUrl.size() <= 500 &&
+             data.status in ["Draft", "Published"];
+    }
+
+    function isValidTestimonial(data) {
+      return data.name is string && data.name.size() <= 150 &&
+             data.text is string && data.text.size() <= 2000 &&
+             data.stars is int && data.stars >= 1 && data.stars <= 5 &&
+             data.approved is bool;
+    }
+
+    function isValidDeveloper(data) {
+      return data.name is string && data.name.size() <= 200;
+    }
+
+    function isValidEvent(data) {
+      return data.name is string && data.name.size() <= 250 &&
+             data.date is string && data.date.size() <= 50;
+    }
+
+    function isValidPage(data) {
+      return data.title is string && data.title.size() <= 250 &&
+             data.slug is string && data.slug.size() <= 100 &&
+             data.content is string && data.content.size() <= 50000 &&
+             data.status in ["Draft", "Published"];
+    }
+
+    function isValidSiteConfig(data) {
+      return data.companyName is string && data.companyName.size() <= 150 &&
+             data.tagline is string && data.tagline.size() <= 300 &&
+             data.phone is string && data.phone.size() <= 50 &&
+             data.whatsappNumber is string && data.whatsappNumber.size() <= 50 &&
+             data.email is string && data.email.size() <= 150 &&
+             data.address is string && data.address.size() <= 500;
+    }
+
+    // --- MATCH BLOCKS FOR COLLECTIONS ---
+
+    match /admins/{uid} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    match /categories/{categoryId} {
+      allow read: if true;
+      allow write: if isAdmin() && isValidId(categoryId) && isValidCategory(incoming());
+    }
+
+    match /locations/{locationId} {
+      allow read: if true;
+      allow write: if isAdmin() && isValidId(locationId) && isValidLocation(incoming());
+    }
+
+    match /properties/{propertyId} {
+      allow read: if true;
+      allow create: if isAdmin() && isValidId(propertyId) && isValidProperty(incoming()) && incoming().createdAt == request.time;
+      allow update: if isAdmin() && isValidId(propertyId) && isValidProperty(incoming()) && incoming().updatedAt == request.time && incoming().createdAt == existing().createdAt;
+      allow delete: if isAdmin() && isValidId(propertyId);
+    }
+
+    match /leads/{leadId} {
+      allow create: if isValidId(leadId) && isValidLead(incoming()) && incoming().status == "New" && incoming().createdAt == request.time;
+      allow read, update, delete: if isAdmin();
+    }
+
+    match /blogs/{blogId} {
+      allow read: if true;
+      allow create: if isAdmin() && isValidId(blogId) && isValidBlog(incoming()) && incoming().createdAt == request.time;
+      allow update: if isAdmin() && isValidId(blogId) && isValidBlog(incoming()) && incoming().updatedAt == request.time && incoming().createdAt == existing().createdAt;
+      allow delete: if isAdmin() && isValidId(blogId);
+    }
+
+    match /testimonials/{testimonialId} {
+      allow read: if true;
+      allow create: if isValidId(testimonialId) && isValidTestimonial(incoming()) && incoming().approved == false && incoming().createdAt == request.time;
+      allow update, delete: if isAdmin();
+    }
+
+    match /developers/{developerId} {
+      allow read: if true;
+      allow write: if isAdmin() && isValidId(developerId) && isValidDeveloper(incoming());
+    }
+
+    match /events/{eventId} {
+      allow read: if true;
+      allow write: if isAdmin() && isValidId(eventId) && isValidEvent(incoming());
+    }
+
+    match /pages/{pageId} {
+      allow read: if true;
+      allow create: if isAdmin() && isValidId(pageId) && isValidPage(incoming());
+      allow update: if isAdmin() && isValidId(pageId) && isValidPage(incoming()) && incoming().updatedAt == request.time;
+      allow delete: if isAdmin() && isValidId(pageId);
+    }
+
+    match /settings/{docId} {
+      allow read: if true;
+      allow write: if isAdmin() && docId == "siteConfig" && isValidSiteConfig(incoming());
+    }
+  }
+}
