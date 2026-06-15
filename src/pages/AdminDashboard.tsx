@@ -197,6 +197,8 @@ export const AdminDashboard: React.FC = () => {
       imageUrls: imagesArray.length > 0 ? imagesArray : ["https://images.unsplash.com/photo-1545229765-7018d6ff02bd?auto=format&fit=crop&q=80&w=600"],
       featured: propFeatured,
       newLaunch: true,
+      exclusive: false,
+      amenities: ["Modern Security", "24/7 Water Supply", "Paved Roads", "Direct Registry"],
       possessionDate: "Immediate",
       landmarks: [
         { name: "Prem Mandir", distance: "1.2 km" },
@@ -302,9 +304,10 @@ export const AdminDashboard: React.FC = () => {
         title: blogTitle,
         slug: bSlug,
         content: blogContent,
+        author: "Shri Nikunj Chaturvedi",
         category: blogCat,
-        readTime: blogTime,
-        coverUrl: blogCover || "https://images.unsplash.com/photo-1544085311-11a028465b03?auto=format&fit=crop&q=80&w=600"
+        coverUrl: blogCover || "https://images.unsplash.com/photo-1544085311-11a028465b03?auto=format&fit=crop&q=80&w=600",
+        status: BlogStatus.PUBLISHED
       });
       toast.success("Divine literature published successfully!");
       setBlogFormOpen(false);

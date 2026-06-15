@@ -35,6 +35,8 @@ import { formatPrice } from "../lib/utils";
 import { ROICalculator } from "../components/home/ROICalculator";
 import { PropertyCard } from "../components/property/PropertyCard";
 import { toast } from "react-hot-toast";
+import { HeroSlider } from "../components/home/HeroSlider";
+import { ThreeDCard, ScrollFade, ParticleGlow } from "../components/common/MotionWrapper";
 
 export const Home: React.FC = () => {
   const navigate = useNavigate();
@@ -50,6 +52,8 @@ export const Home: React.FC = () => {
   const [newsletterEmail, setNewsletterEmail] = useState("");
   const [consultationName, setConsultationName] = useState("");
   const [consultationPhone, setConsultationPhone] = useState("");
+  const [enquiryType, setEnquiryType] = useState("Property Enquiry");
+  const [consultationEmail, setConsultationEmail] = useState("");
   const [isConsulting, setIsConsulting] = useState(false);
 
   useEffect(() => {
@@ -102,16 +106,18 @@ export const Home: React.FC = () => {
       await createLead({
         name: consultationName,
         phone: consultationPhone,
-        email: "guest-callback@nikunj.com",
-        locationInterest: "Vrindavan (Rukmani Vihar)",
-        propertyType: "Immediate Callback Consultation",
-        message: "Free homepage site visit consultation request.",
+        email: consultationEmail || "guest-callback@nikunj.com",
+        locationInterest: "Vrindavan / Mathura Core Belt",
+        propertyType: enquiryType,
+        message: `Unified Enquiry Submission: ${enquiryType}. Safe routing active.`,
         preferredCallback: "As soon as possible",
         sourceUrl: window.location.href
       });
-      toast.success("Callback request submitted! Our Brijbhoomi advisor will call you shortly.");
+      toast.success(`Callback request submitted for ${enquiryType}! Our advisor will contact you shortly.`);
       setConsultationName("");
       setConsultationPhone("");
+      setConsultationEmail("");
+      setEnquiryType("Property Enquiry");
     } catch (err) {
       toast.error("Consultation submit failed. Please try WhatsApp.");
     } finally {
@@ -168,37 +174,13 @@ export const Home: React.FC = () => {
   return (
     <div className="bg-[#FAF6F0] min-h-screen text-[#1A1A2E]" id="homepage-container">
       
-      {/* 1. HERO SECTION */}
-      <header className="relative min-h-[90vh] bg-[#1A1A2E] flex items-center justify-center overflow-hidden border-b-2 border-[#C9A84C]/40" id="hero-banner">
-        {/* Divine Background Video or Image Overlay */}
-        <div className="absolute inset-0 z-0">
-          <img
-            src={config?.heroCoverUrl || "https://images.unsplash.com/photo-1545229765-7018d6ff02bd?auto=format&fit=crop&q=80&w=1600"}
-            alt="Divine Vrindavan Temple"
-            className="w-full h-full object-cover opacity-35 scale-105 transition-all duration-1000"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A2E] via-transparent to-black/40"></div>
-        </div>
-
-        {/* Hero Interactive Contents */}
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center flex flex-col items-center">
-          
-          {/* Saffron Sanskrit traditional welcome chip */}
-          <div className="inline-flex items-center space-x-2 bg-[#C45C1A] text-white px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold tracking-widest uppercase shadow-md mb-6 border border-[#C9A84C]/40 animate-bounce">
-            <Sparkles className="h-4 w-4 text-[#C9A84C]" />
-            <span>स्वागतम् • SWAGATAM</span>
-          </div>
-
-          <h1 className="font-serif text-3xl sm:text-5xl md:text-6xl text-white font-extrabold tracking-wide leading-tight max-w-4xl shadow-sm filter drop-shadow">
-            {config?.heroTitle || "Where Divinity Meets Luxury Living"}
-          </h1>
-
-          <p className="mt-4 text-xs sm:text-sm md:text-base text-[#FAF6F0]/80 font-sans tracking-wide max-w-2xl leading-relaxed">
-            {config?.heroSubtitle || "Explore premium apartments, traditional haveli villas and freehold registry plots nearby Prem Mandir, Krishna Janmabhoomi, ISKCON and Govardhan Parikrama."}
-          </p>
-
-          {/* Real-time Integrated Search Bar */}
-          <form onSubmit={handleSearchSubmit} className="mt-8 bg-white p-2.5 rounded-xl shadow-xl w-full max-w-2xl flex flex-col sm:flex-row gap-2.5 border border-[#C9A84C]/30">
+      {/* 1. HERO SLIDER IMMERSIVE EXPERIENCE */}
+      <div className="relative" id="immersive-hero-slider-container">
+        <HeroSlider />
+        
+        {/* Floating Overlapping Search Bar with 3D Depth */}
+        <div className="absolute -bottom-7 left-1/2 -translate-x-1/2 z-30 w-[95%] max-w-2xl px-4 pointer-events-auto">
+          <form onSubmit={handleSearchSubmit} className="bg-white p-2.5 rounded-xl shadow-2xl flex flex-col sm:flex-row gap-2.5 border border-[#C9A84C]/35 hover:shadow-[#C9A84C]/10 transition-all duration-300">
             <div className="flex-grow flex items-center px-3 gap-2 border-b sm:border-b-0 sm:border-r border-slate-200 pb-2 sm:pb-0">
               <Search className="h-5 w-5 text-[#C45C1A] shrink-0" />
               <input
@@ -207,7 +189,7 @@ export const Home: React.FC = () => {
                 value={searchQuery}
                 aria-label="Property Search Field"
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-transparent border-none outline-none text-slate-800 placeholder-slate-400 text-sm py-1 font-sans"
+                className="w-full bg-transparent border-none outline-none text-slate-800 placeholder-slate-400 text-sm py-1 font-sans focus:ring-0"
               />
             </div>
             <button
@@ -218,29 +200,8 @@ export const Home: React.FC = () => {
               <ChevronRight className="h-4 w-4" />
             </button>
           </form>
-
-          {/* Quick Stats banner */}
-          <div className="mt-14 grid grid-cols-2 lg:grid-cols-4 gap-6 bg-white/5 backdrop-blur-sm border border-[#FAF6F0]/15 p-5 sm:p-6 rounded-xl max-w-4xl w-full">
-            <div className="text-center border-r border-[#FAF6F0]/10 last:border-0">
-              <span className="block font-serif text-xl sm:text-3xl font-extrabold text-[#C9A84C]">{config?.statSqFt || "10L+"}</span>
-              <span className="block text-[9px] sm:text-xs uppercase text-[#FAF6F0]/70 tracking-widest font-semibold mt-1">Sq Ft Sold</span>
-            </div>
-            <div className="text-center sm:border-r border-[#FAF6F0]/10 last:border-0">
-              <span className="block font-serif text-xl sm:text-3xl font-extrabold text-[#C9A84C]">{config?.statDelivered || "1500+"}</span>
-              <span className="block text-[9px] sm:text-xs uppercase text-[#FAF6F0]/70 tracking-widest font-semibold mt-1">Delivered</span>
-            </div>
-            <div className="text-center border-r border-[#FAF6F0]/10 last:border-0">
-              <span className="block font-serif text-xl sm:text-3xl font-extrabold text-[#C9A84C]">{config?.statExperience || "15+"}</span>
-              <span className="block text-[9px] sm:text-xs uppercase text-[#FAF6F0]/70 tracking-widest font-semibold mt-1">Years Experience</span>
-            </div>
-            <div className="text-center last:border-0">
-              <span className="block font-serif text-xl sm:text-3xl font-extrabold text-[#C9A84C]">{config?.statFamilies || "1200+"}</span>
-              <span className="block text-[9px] sm:text-xs uppercase text-[#FAF6F0]/70 tracking-widest font-semibold mt-1">Happy Families</span>
-            </div>
-          </div>
-
         </div>
-      </header>
+      </div>
 
       {/* 2. DYNAMIC CATEGORIES GRID */}
       <section className="py-16 px-4 max-w-7xl mx-auto scroll-mt-20" id="categories-grid-section">
@@ -261,32 +222,35 @@ export const Home: React.FC = () => {
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5">
-            {categories.map((cat) => (
-              <Link
-                key={cat.id}
-                to={`/properties?category=${cat.slug}`}
-                className="group relative h-40 rounded-xl overflow-hidden shadow border border-[#C9A84C]/25 flex flex-col justify-end p-4 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 block"
-              >
-                <div className="absolute inset-0 bg-[#1A1A2E] z-0">
-                  <img
-                    src={cat.imageUrl}
-                    alt={cat.name}
-                    loading="lazy"
-                    referrerPolicy="no-referrer"
-                    className="w-full h-full object-cover opacity-65 group-hover:scale-105 transition-transform duration-500"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A2E] via-[#1A1A2E]/40 to-transparent"></div>
-                </div>
-                <div className="relative z-10">
-                  <span className="text-[10px] text-[#C9A84C] font-mono font-semibold uppercase">{cat.slug.replace("-", " ")}</span>
-                  <h3 className="font-serif text-white font-bold text-sm sm:text-base tracking-wide leading-tight">
-                    {cat.name}
-                  </h3>
-                </div>
-              </Link>
-            ))}
-          </div>
+          <ScrollFade direction="up">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5">
+              {categories.map((cat) => (
+                <ThreeDCard key={cat.id} className="h-40">
+                  <Link
+                    to={`/properties?category=${cat.slug}`}
+                    className="group relative h-full w-full rounded-xl overflow-hidden flex flex-col justify-end p-4 block"
+                  >
+                    <div className="absolute inset-0 bg-[#1A1A2E] z-0">
+                      <img
+                        src={cat.imageUrl}
+                        alt={cat.name}
+                        loading="lazy"
+                        referrerPolicy="no-referrer"
+                        className="w-full h-full object-cover opacity-65 group-hover:scale-110 transition-transform duration-500"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A2E] via-[#1A1A2E]/40 to-transparent"></div>
+                    </div>
+                    <div className="relative z-10 text-left">
+                      <span className="text-[10px] text-[#C9A84C] font-mono font-semibold uppercase">{cat.slug.replace("-", " ")}</span>
+                      <h3 className="font-serif text-white font-bold text-sm sm:text-base tracking-wide leading-tight">
+                        {cat.name}
+                      </h3>
+                    </div>
+                  </Link>
+                </ThreeDCard>
+              ))}
+            </div>
+          </ScrollFade>
         )}
       </section>
 
@@ -316,11 +280,13 @@ export const Home: React.FC = () => {
               ))}
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {featuredProperties.map((prop) => (
-                <PropertyCard key={prop.id} property={prop} />
-              ))}
-            </div>
+            <ScrollFade direction="up">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {featuredProperties.map((prop) => (
+                  <PropertyCard key={prop.id} property={prop} />
+                ))}
+              </div>
+            </ScrollFade>
           )}
         </div>
       </section>
@@ -344,37 +310,40 @@ export const Home: React.FC = () => {
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {locations.map((loc) => (
-              <Link
-                key={loc.id}
-                to={`/properties?location=${loc.slug}`}
-                className="group relative h-48 rounded-xl overflow-hidden shadow border border-[#C9A84C]/25 pb-4 px-4 flex flex-col justify-end transition-transform duration-300 hover:scale-[1.02] block"
-              >
-                <div className="absolute inset-0 bg-[#1A1A2E] z-0">
-                  <img
-                    src={loc.imageUrl}
-                    alt={loc.name}
-                    loading="lazy"
-                    referrerPolicy="no-referrer"
-                    className="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-500"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent"></div>
-                </div>
-                <div className="relative z-10 text-white">
-                  <span className="text-[9px] uppercase tracking-widest font-bold font-mono text-[#C9A84C]">
-                    Region: {loc.city}
-                  </span>
-                  <h3 className="font-serif font-bold text-base sm:text-lg tracking-wide shadow-sm mt-0.5 line-clamp-1">
-                    {loc.name}
-                  </h3>
-                  <p className="text-[11px] text-slate-200 line-clamp-2 mt-1 leading-snug">
-                    {loc.description}
-                  </p>
-                </div>
-              </Link>
-            ))}
-          </div>
+          <ScrollFade direction="up">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {locations.map((loc) => (
+                <ThreeDCard key={loc.id} className="h-48">
+                  <Link
+                    to={`/properties?location=${loc.slug}`}
+                    className="group relative h-full w-full rounded-xl overflow-hidden pb-4 px-4 flex flex-col justify-end block"
+                  >
+                    <div className="absolute inset-0 bg-[#1A1A2E] z-0">
+                      <img
+                        src={loc.imageUrl}
+                        alt={loc.name}
+                        loading="lazy"
+                        referrerPolicy="no-referrer"
+                        className="w-full h-full object-cover opacity-60 group-hover:scale-110 transition-transform duration-500"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/35 to-transparent"></div>
+                    </div>
+                    <div className="relative z-10 text-white text-left">
+                      <span className="text-[9px] uppercase tracking-widest font-bold font-mono text-[#C9A84C]">
+                        Region: {loc.city}
+                      </span>
+                      <h3 className="font-serif font-bold text-base sm:text-lg tracking-wide shadow-sm mt-0.5 line-clamp-1">
+                        {loc.name}
+                      </h3>
+                      <p className="text-[11px] text-slate-200 line-clamp-2 mt-1 leading-snug">
+                        {loc.description}
+                      </p>
+                    </div>
+                  </Link>
+                </ThreeDCard>
+              ))}
+            </div>
+          </ScrollFade>
         )}
       </section>
 
@@ -389,25 +358,29 @@ export const Home: React.FC = () => {
             <div className="h-0.5 w-16 bg-[#C45C1A] mx-auto mt-4"></div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {whyChooseUsCards.map((card, idx) => {
-              const Icon = card.icon;
-              return (
-                <div
-                  key={idx}
-                  className="bg-white/5 border border-[#FAF6F0]/10 p-6 rounded-xl hover:border-[#C9A84C]/40 transition-colors duration-300 flex items-start space-x-4"
-                >
-                  <div className="p-3 bg-[#C45C1A]/25 border border-[#C45C1A] rounded-lg text-[#C9A84C] shrink-0">
-                    <Icon className="h-6 w-6" />
-                  </div>
-                  <div>
-                    <h3 className="font-serif font-bold text-lg text-white mb-2">{card.title}</h3>
-                    <p className="text-xs sm:text-sm text-[#FAF6F0]/70 leading-relaxed font-sans">{card.text}</p>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+          <ScrollFade direction="up">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+              {whyChooseUsCards.map((card, idx) => {
+                const Icon = card.icon;
+                return (
+                  <ThreeDCard key={idx} className="relative overflow-hidden h-full rounded-2xl">
+                    <div className="relative bg-white/5 border border-[#FAF6F0]/10 p-6 rounded-2xl h-full flex items-start space-x-4">
+                      {/* Aura Ambient particle glow that looks like glowing spiritual aura */}
+                      <ParticleGlow color="#C9A84C" />
+                      
+                      <div className="p-3 bg-[#C45C1A]/20 border border-[#C9A84C]/45 rounded-xl text-[#C9A84C] shrink-0 relative z-10">
+                        <Icon className="h-6 w-6" />
+                      </div>
+                      <div className="relative z-10 text-left">
+                        <h3 className="font-serif font-bold text-lg text-white mb-2">{card.title}</h3>
+                        <p className="text-xs sm:text-sm text-[#FAF6F0]/75 leading-relaxed font-sans">{card.text}</p>
+                      </div>
+                    </div>
+                  </ThreeDCard>
+                );
+              })}
+            </div>
+          </ScrollFade>
         </div>
       </section>
 
@@ -424,25 +397,27 @@ export const Home: React.FC = () => {
             </p>
           </div>
 
-          {/* Timeline Node Chain */}
-          <div className="relative border-l border-[#C9A84C]/40 pl-6 sm:pl-8 ml-3 sm:ml-4 space-y-12">
-            {timelineSteps.map((step, idx) => (
-              <div key={idx} className="relative group">
-                {/* Timeline ball marker featuring miniature lotus icon */}
-                <div className="absolute -left-[35px] sm:-left-[43px] top-1 h-8 w-8 sm:h-9 sm:w-9 rounded-full bg-[#1A1A2E] border-2 border-[#C9A84C] flex items-center justify-center text-[10px] text-[#C9A84C] font-bold shadow-md">
-                  {idx + 1}
+          {/* Timeline Node Chain with scroll triggers */}
+          <ScrollFade direction="up">
+            <div className="relative border-l border-[#C9A84C]/40 pl-6 sm:pl-8 ml-3 sm:ml-4 space-y-12">
+              {timelineSteps.map((step, idx) => (
+                <div key={idx} className="relative group">
+                  {/* Timeline ball marker featuring miniature lotus icon */}
+                  <div className="absolute -left-[35px] sm:-left-[43px] top-1 h-8 w-8 sm:h-9 sm:w-9 rounded-full bg-[#1A1A2E] border-2 border-[#C9A84C] flex items-center justify-center text-[10px] text-[#C9A84C] font-bold shadow-md">
+                    {idx + 1}
+                  </div>
+                  <div>
+                    <h3 className="font-serif text-lg font-bold text-[#1A1A2E] group-hover:text-[#C45C1A] transition-colors mb-1 text-left">
+                      {step.title}
+                    </h3>
+                    <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-2xl font-sans text-left">
+                      {step.desc}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-serif text-lg font-bold text-[#1A1A2E] group-hover:text-[#C45C1A] transition-colors mb-1">
-                    {step.title}
-                  </h3>
-                  <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-2xl font-sans">
-                    {step.desc}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          </ScrollFade>
         </div>
       </section>
 
@@ -476,13 +451,26 @@ export const Home: React.FC = () => {
           {/* Quick Callback Submit Form */}
           <div className="md:col-span-5 bg-white text-[#1A1A2E] p-6 rounded-2xl border border-[#C9A84C]/35 shadow-2xl">
             <h3 className="font-serif font-bold text-lg text-[#6B1A2A] mb-4">
-              Request Callback Call
+              Request Advisory Callback
             </h3>
             <form onSubmit={handleConsultationSubmit} className="space-y-4">
+              <div>
+                <label className="block text-[10px] uppercase font-bold text-slate-500 mb-1">Enquiry Type</label>
+                <select
+                  value={enquiryType}
+                  onChange={(e) => setEnquiryType(e.target.value)}
+                  className="w-full text-sm px-3 py-2 rounded-lg border border-slate-200 outline-none focus:border-[#C45C1A] text-slate-800 bg-slate-50"
+                >
+                  <option value="Property Enquiry">Property Enquiry (Vrindavan, Mathura, Omaxe, Serviced Suites)</option>
+                  <option value="Job Enquiry">Job Enquiry (Careers inside Nikunj Heritage)</option>
+                  <option value="Channel Partner Enquiry">Channel Partner Enquiry (Real Estate Network integration)</option>
+                </select>
+              </div>
               <div>
                 <label className="block text-[10px] uppercase font-bold text-slate-500 mb-1">Your Full Name</label>
                 <input
                   type="text"
+                  required
                   placeholder="e.g., Rajesh Chaturvedi"
                   value={consultationName}
                   onChange={(e) => setConsultationName(e.target.value)}
@@ -490,21 +478,32 @@ export const Home: React.FC = () => {
                 />
               </div>
               <div>
-                <label className="block text-[10px] uppercase font-bold text-slate-500 mb-1">Whatsapp/Phone Number</label>
+                <label className="block text-[10px] uppercase font-bold text-slate-500 mb-1">WhatsApp/Phone Number</label>
                 <input
                   type="tel"
+                  required
                   placeholder="e.g., +91 9719920888"
                   value={consultationPhone}
                   onChange={(e) => setConsultationPhone(e.target.value)}
                   className="w-full text-sm px-3.5 py-2 rounded-lg border border-slate-200 outline-none focus:border-[#C45C1A] text-slate-800"
                 />
               </div>
+              <div>
+                <label className="block text-[10px] uppercase font-bold text-slate-500 mb-1">Email Address (Optional)</label>
+                <input
+                  type="email"
+                  placeholder="e.g., name@example.com"
+                  value={consultationEmail}
+                  onChange={(e) => setConsultationEmail(e.target.value)}
+                  className="w-full text-sm px-3.5 py-2 rounded-lg border border-slate-200 outline-none focus:border-[#C45C1A] text-slate-800"
+                />
+              </div>
               <button
                 type="submit"
                 disabled={isConsulting}
-                className="w-full py-3 bg-[#6B1A2A] text-white font-bold rounded-lg text-sm transition-colors hover:bg-[#6B1A2A]/90 shadow flex items-center justify-center"
+                className="w-full py-3 bg-[#6B1A2A] hover:bg-[#6B1A2A]/90 text-white font-bold rounded-lg text-sm transition-colors shadow flex items-center justify-center font-serif uppercase tracking-wider"
               >
-                {isConsulting ? "Submitting..." : "Schedule Callback Visit"}
+                {isConsulting ? "Submitting..." : "Submit Enquiry"}
               </button>
             </form>
           </div>
@@ -599,23 +598,6 @@ export const Home: React.FC = () => {
           </button>
         </form>
       </section>
-
-      {/* Floating Saffron WhatsApp CTA */}
-      <div className="fixed bottom-6 right-6 z-40 block" id="floating-whatsapp-cta">
-        <a
-          href="https://wa.me/919719920888?text=Pranam%21+I+would+like+to+inquire+about+residential+plots+and+villas+at+Nikunj+Heritage+Infrabuild."
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center justify-center h-14 w-14 rounded-full bg-[#0E7B6C] hover:bg-[#0E7B6C]/90 text-white shadow-2xl transition-transform hover:scale-110 active:scale-95 border border-[#C9A84C]/50"
-          title="Direct WhatsApp Helpline"
-          type="button"
-        >
-          <svg viewBox="0 0 24 24" fill="currentColor" className="h-7 w-7 text-white">
-            <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.003  5.37 5.378 0 12.01 0c3.21.002 6.23 1.251 8.5 3.518s3.511 5.291 3.51 8.5c-.003 6.642-5.378 12.01-12.01 12.01-2.002-.001-3.974-.5-5.789-1.455L0 24zm6.27-5.908c1.716 1.018 3.411 1.554 5.733 1.555 5.539 0 10.05-4.512 10.052-10.051-.001-2.684-1.047-5.205-2.946-7.104s-4.421-2.947-7.107-2.947c-5.541 0-10.053 4.512-10.055 10.052-.001 2.222.569 4.398 1.656 6.271L2.613 21.36l5.714-1.268z M15.753 13.916c-.23-.115-1.364-.672-1.576-.75s-.364-.115-.515.115c-.152.23-.584.75-.716.901-.132.15-.264.17-.494.053-.23-.115-.972-.358-1.851-1.144-.684-.61-1.146-1.363-1.28-1.595-.132-.23-.014-.354.1-.471.103-.105.23-.264.346-.396.115-.132.15-.23.23-.383.078-.15.038-.283-.02-.383-.058-.115-.515-1.242-.705-1.701-.186-.447-.373-.383-.51-.39-.133-.008-.285-.008-.438-.008s-.402.057-.611.282c-.21.225-.8.78-.8 1.901s.815 2.202.93 2.353c.115.15 1.6 2.443 3.878 3.424.542.233.965.373 1.294.478.544.173 1.039.148 1.43.09.436-.064 1.364-.557 1.556-1.096.191-.538.191-1.002.134-1.096-.06-.115-.213-.17-.442-.284z"/>
-          </svg>
-        </a>
-      </div>
-
     </div>
   );
 };

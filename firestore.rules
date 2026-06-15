@@ -31,6 +31,10 @@ service cloud.firestore {
       return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
     }
 
+    function isDatabaseUnseeded() {
+      return !exists(/databases/$(database)/documents/settings/seedingCompleted);
+    }
+
     // --- ENTITY SCHEMA VALIDATIONS (PIillar 2) ---
     
     function isValidCategory(data) {
@@ -127,17 +131,17 @@ service cloud.firestore {
 
     match /categories/{categoryId} {
       allow read: if true;
-      allow write: if isAdmin() && isValidId(categoryId) && isValidCategory(incoming());
+      allow write: if (isDatabaseUnseeded() || isAdmin()) && isValidId(categoryId) && isValidCategory(incoming());
     }
 
     match /locations/{locationId} {
       allow read: if true;
-      allow write: if isAdmin() && isValidId(locationId) && isValidLocation(incoming());
+      allow write: if (isDatabaseUnseeded() || isAdmin()) && isValidId(locationId) && isValidLocation(incoming());
     }
 
     match /properties/{propertyId} {
       allow read: if true;
-      allow create: if isAdmin() && isValidId(propertyId) && isValidProperty(incoming()) && incoming().createdAt == request.time;
+      allow create: if (isDatabaseUnseeded() || isAdmin()) && isValidId(propertyId) && isValidProperty(incoming()) && incoming().createdAt == request.time;
       allow update: if isAdmin() && isValidId(propertyId) && isValidProperty(incoming()) && incoming().updatedAt == request.time && incoming().createdAt == existing().createdAt;
       allow delete: if isAdmin() && isValidId(propertyId);
     }
@@ -149,14 +153,14 @@ service cloud.firestore {
 
     match /blogs/{blogId} {
       allow read: if true;
-      allow create: if isAdmin() && isValidId(blogId) && isValidBlog(incoming()) && incoming().createdAt == request.time;
+      allow create: if (isDatabaseUnseeded() || isAdmin()) && isValidId(blogId) && isValidBlog(incoming()) && incoming().createdAt == request.time;
       allow update: if isAdmin() && isValidId(blogId) && isValidBlog(incoming()) && incoming().updatedAt == request.time && incoming().createdAt == existing().createdAt;
       allow delete: if isAdmin() && isValidId(blogId);
     }
 
     match /testimonials/{testimonialId} {
       allow read: if true;
-      allow create: if isValidId(testimonialId) && isValidTestimonial(incoming()) && incoming().approved == false && incoming().createdAt == request.time;
+      allow create: if isDatabaseUnseeded() || (isValidId(testimonialId) && isValidTestimonial(incoming()) && incoming().approved == false && incoming().createdAt == request.time);
       allow update, delete: if isAdmin();
     }
 
@@ -179,6 +183,7 @@ service cloud.firestore {
 
     match /settings/{docId} {
       allow read: if true;
+      allow write: if (isDatabaseUnseeded() || isAdmin()) && docId == "seedingCompleted";
       allow write: if isAdmin() && docId == "siteConfig" && isValidSiteConfig(incoming());
     }
   }

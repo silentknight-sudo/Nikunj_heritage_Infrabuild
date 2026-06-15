@@ -138,11 +138,28 @@ export const Footer: React.FC = () => {
             </ul>
 
             {/* RERA Certificate Grid Badge */}
-            <div className="mt-2 bg-[#FAF6F0]/5 border border-[#C9A84C]/30 p-2.5 rounded-md flex items-center space-x-2">
-              <Award className="h-6 w-6 text-[#C9A84C]" />
-              <div className="text-[11px] font-mono text-[#FAF6F0]/70 leading-normal">
-                RERA APPROVED<br />
-                {config?.reranumbers?.join(", ") || "UPRERAPRJ12345"}
+            <div className="mt-3 bg-white/5 border border-[#C9A84C]/30 p-3 rounded-lg">
+              <div className="flex items-center space-x-1.5 mb-2 border-b border-[#FAF6F0]/10 pb-1.5">
+                <Award className="h-4.5 w-4.5 text-[#C9A84C]" />
+                <span className="text-xs font-serif font-semibold text-[#C9A84C] tracking-wider">REGIONAL RERA CODES</span>
+              </div>
+              <div className="text-[10px] font-mono text-[#FAF6F0]/70 space-y-1.5">
+                <div className="flex justify-between border-b border-[#FAF6F0]/5 pb-1">
+                  <span>UP RERA:</span>
+                  <span className="font-bold text-[#faf6f0]">UPRERAPRJ428135</span>
+                </div>
+                <div className="flex justify-between border-b border-[#FAF6F0]/5 pb-1">
+                  <span>DELHI RERA:</span>
+                  <span className="font-bold text-[#faf6f0]">DLRERA20240951</span>
+                </div>
+                <div className="flex justify-between border-b border-[#FAF6F0]/5 pb-1">
+                  <span>UK RERA:</span>
+                  <span className="font-bold text-[#faf6f0]">UKRERA1282001</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>HR RERA:</span>
+                  <span className="font-bold text-[#faf6f0]">HRERA20263301</span>
+                </div>
               </div>
             </div>
           </div>

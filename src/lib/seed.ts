@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { doc, writeBatch, collection, getDocs, deleteDoc, Timestamp } from "firebase/firestore";
+import { doc, writeBatch, collection, getDocs, deleteDoc, Timestamp, serverTimestamp } from "firebase/firestore";
 import { db } from "./firebase";
 import { PropertyStatus } from "../types";
 
@@ -516,8 +516,8 @@ export async function runDatabaseSeed(): Promise<{ success: boolean; count: numb
       const docRef = doc(db, "properties", prop.id);
       batch.set(docRef, {
         ...prop,
-        createdAt: Timestamp.now(),
-        updatedAt: Timestamp.now()
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
       });
       listCount.properties++;
     });
@@ -527,8 +527,8 @@ export async function runDatabaseSeed(): Promise<{ success: boolean; count: numb
       const docRef = doc(db, "blogs", blog.id);
       batch.set(docRef, {
         ...blog,
-        createdAt: Timestamp.now(),
-        updatedAt: Timestamp.now()
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
       });
       listCount.blogs++;
     });
@@ -538,12 +538,25 @@ export async function runDatabaseSeed(): Promise<{ success: boolean; count: numb
       const docRef = doc(db, "testimonials", test.id);
       batch.set(docRef, {
         ...test,
-        createdAt: Timestamp.now()
+        createdAt: serverTimestamp()
       });
       listCount.testimonials++;
     });
 
     await batch.commit();
+
+    // Seal the database as seeded to lock unauthorized modifications
+    try {
+      const sealBatch = writeBatch(db);
+      sealBatch.set(doc(db, "settings", "seedingCompleted"), {
+        completed: true,
+        createdAt: serverTimestamp()
+      });
+      await sealBatch.commit();
+    } catch (sealError) {
+      console.warn("Sealing database failed:", sealError);
+    }
+
     return { success: true, count: listCount.properties };
   } catch (error) {
     console.error("Database seeding exception:", error);

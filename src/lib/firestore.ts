@@ -16,7 +16,8 @@ import {
   where,
   orderBy,
   limit,
-  Timestamp
+  Timestamp,
+  serverTimestamp
 } from "firebase/firestore";
 import { db, auth } from "./firebase";
 import { Property, Category, Location, Lead, Blog, Testimonial, Developer, Event, Page, SiteConfig, LeadStatus, PropertyStatus, BlogStatus } from "../types";
@@ -136,7 +137,7 @@ export async function addAdmin(uid: string, email: string): Promise<void> {
   try {
     await setDoc(doc(db, "admins", uid), {
       email,
-      createdAt: Timestamp.now()
+      createdAt: serverTimestamp()
     });
   } catch (error) {
     handleFirestoreError(error, OperationType.WRITE, path);
@@ -242,8 +243,8 @@ export async function addProperty(prop: Omit<Property, "id" | "createdAt" | "upd
   try {
     const docRef = await addDoc(collection(db, "properties"), {
       ...prop,
-      createdAt: Timestamp.now(),
-      updatedAt: Timestamp.now()
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp()
     });
     return docRef.id;
   } catch (error) {
@@ -257,7 +258,7 @@ export async function updateProperty(id: string, prop: Partial<Property>): Promi
   try {
     await updateDoc(doc(db, "properties", id), {
       ...prop,
-      updatedAt: Timestamp.now()
+      updatedAt: serverTimestamp()
     });
   } catch (error) {
     handleFirestoreError(error, OperationType.UPDATE, path);
@@ -294,7 +295,7 @@ export async function createLead(lead: Omit<Lead, "id" | "status" | "createdAt">
     await setDoc(docRef, {
       ...lead,
       status: LeadStatus.NEW,
-      createdAt: Timestamp.now()
+      createdAt: serverTimestamp()
     });
     return randomId;
   } catch (error) {
@@ -338,8 +339,8 @@ export async function addBlog(blog: Omit<Blog, "id" | "createdAt" | "updatedAt">
   try {
     const docRef = await addDoc(collection(db, "blogs"), {
       ...blog,
-      createdAt: Timestamp.now(),
-      updatedAt: Timestamp.now()
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp()
     });
     return docRef.id;
   } catch (error) {
@@ -353,7 +354,7 @@ export async function updateBlog(id: string, blog: Partial<Blog>): Promise<void>
   try {
     await updateDoc(doc(db, "blogs", id), {
       ...blog,
-      updatedAt: Timestamp.now()
+      updatedAt: serverTimestamp()
     });
   } catch (error) {
     handleFirestoreError(error, OperationType.UPDATE, path);
@@ -389,7 +390,7 @@ export async function addTestimonial(test: Omit<Testimonial, "id" | "approved" |
     await setDoc(docRef, {
       ...test,
       approved: false, // Default moderation gate active
-      createdAt: Timestamp.now()
+      createdAt: serverTimestamp()
     });
     return randomId;
   } catch (error) {
@@ -403,7 +404,7 @@ export async function addTestimonialDirect(test: Omit<Testimonial, "id" | "creat
   try {
     const docRef = await addDoc(collection(db, "testimonials"), {
       ...test,
-      createdAt: Timestamp.now()
+      createdAt: serverTimestamp()
     });
     return docRef.id;
   } catch (error) {
@@ -447,7 +448,7 @@ export async function addPage(p: Omit<Page, "id" | "updatedAt">): Promise<string
   try {
     const docRef = await addDoc(collection(db, "pages"), {
       ...p,
-      updatedAt: Timestamp.now()
+      updatedAt: serverTimestamp()
     });
     return docRef.id;
   } catch (error) {
@@ -461,7 +462,7 @@ export async function updatePage(id: string, p: Partial<Page>): Promise<void> {
   try {
     await updateDoc(doc(db, "pages", id), {
       ...p,
-      updatedAt: Timestamp.now()
+      updatedAt: serverTimestamp()
     });
   } catch (error) {
     handleFirestoreError(error, OperationType.UPDATE, path);

@@ -46,10 +46,9 @@ export const Testimonials: React.FC = () => {
       await createTestimonial({
         name,
         role: role || "Satisfied Homeowner",
-        content,
-        rating,
-        avatarUrl: `https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=200`,
-        approved: false // Admin must approve first! Excellent.
+        text: content,
+        stars: rating,
+        imageUrl: `https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=200`
       });
 
       toast.success("Pranam! Thank you for sharing your heart. Feedback sent for directory approval.");
@@ -103,19 +102,19 @@ export const Testimonials: React.FC = () => {
                         <div>
                           {/* Star row */}
                           <div className="flex space-x-0.5 text-amber-500 mb-2">
-                            {Array.from({ length: t.rating }).map((_, i) => (
+                            {Array.from({ length: t.stars || 5 }).map((_, i) => (
                               <Star key={i} className="h-4.5 w-4.5 fill-current" />
                             ))}
                           </div>
                           <p className="text-xs sm:text-sm text-slate-600 italic font-sans leading-relaxed">
-                            "{t.content}"
+                            "{t.text}"
                           </p>
                         </div>
 
                         {/* Customer profile block */}
                         <div className="flex items-center space-x-3 pt-3 border-t border-slate-50">
                           <img
-                            src={t.avatarUrl || "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=200"}
+                            src={t.imageUrl || "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=200"}
                             alt={t.name}
                             className="h-10 w-10 rounded-full object-cover border border-[#C9A84C]"
                           />
