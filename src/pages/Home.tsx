@@ -19,7 +19,9 @@ import {
   Calendar,
   Layers,
   CheckCircle,
-  HelpCircle
+  HelpCircle,
+  FileText,
+  PlayCircle
 } from "lucide-react";
 import {
   getProperties,
@@ -37,6 +39,7 @@ import { PropertyCard } from "../components/property/PropertyCard";
 import { toast } from "react-hot-toast";
 import { HeroSlider } from "../components/home/HeroSlider";
 import { ThreeDCard, ScrollFade, ParticleGlow } from "../components/common/MotionWrapper";
+import { homeMediaShowcase } from "../content/projectMedia";
 
 export const Home: React.FC = () => {
   const navigate = useNavigate();
@@ -254,7 +257,85 @@ export const Home: React.FC = () => {
         )}
       </section>
 
-      {/* 3. DYNAMIC FEATURED ASSETS (CAROUSEL GRID) */}
+      {/* 3. BROCHURE + VIDEO STORYTELLING */}
+      <section className="py-10 px-4 max-w-7xl mx-auto" id="brochure-media-section">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <div className="lg:col-span-5 bg-[#6B1A2A] text-white rounded-[28px] overflow-hidden shadow-2xl">
+            <div className="aspect-[4/3] overflow-hidden">
+              <img
+                src={homeMediaShowcase.overview.gallery[0].image}
+                alt={homeMediaShowcase.overview.gallery[0].title}
+                className="h-full w-full object-cover"
+              />
+            </div>
+            <div className="p-6 sm:p-8 space-y-4">
+              <span className="text-[11px] uppercase tracking-[0.28em] text-[#F6D7A8] font-bold">{homeMediaShowcase.overview.eyebrow}</span>
+              <h2 className="font-serif text-2xl sm:text-4xl font-bold leading-tight">{homeMediaShowcase.overview.title}</h2>
+              <p className="text-sm text-white/80 leading-relaxed">{homeMediaShowcase.overview.summary}</p>
+              <div className="space-y-2 text-sm text-white/90">
+                {homeMediaShowcase.overview.highlights.map((item) => (
+                  <div key={item} className="flex items-start gap-2">
+                    <CheckCircle className="h-4 w-4 mt-0.5 text-[#F6D7A8] shrink-0" />
+                    <span>{item}</span>
+                  </div>
+                ))}
+              </div>
+              <div className="flex flex-wrap gap-3 pt-2">
+                <a href={homeMediaShowcase.overview.brochureUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-xs font-bold uppercase tracking-wider text-[#6B1A2A]">
+                  <FileText className="h-4 w-4" />
+                  <span>Open Docket</span>
+                </a>
+                <a href={homeMediaShowcase.commercial.floorPlanUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-full border border-white/25 px-4 py-2 text-xs font-bold uppercase tracking-wider text-white">
+                  <Layers className="h-4 w-4" />
+                  <span>Floor Plans</span>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div className="lg:col-span-7 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="md:col-span-2 bg-white rounded-[28px] border border-[#C9A84C]/25 shadow-sm overflow-hidden">
+              <div className="grid md:grid-cols-2">
+                <div className="p-6 sm:p-8 flex flex-col justify-center">
+                  <span className="text-[11px] uppercase tracking-[0.28em] text-[#C45C1A] font-bold">Walkthrough Visuals</span>
+                  <h3 className="font-serif text-2xl text-[#6B1A2A] font-bold mt-3">Videos placed where they strengthen buyer trust</h3>
+                  <p className="text-sm text-slate-600 mt-3 leading-relaxed">
+                    The supplied videos now work as contextual walkthroughs for township scale and commercial ambience, which makes the website feel more polished and convincing.
+                  </p>
+                  <a href={homeMediaShowcase.commercial.videoUrl} target="_blank" rel="noopener noreferrer" className="mt-5 inline-flex w-fit items-center gap-2 rounded-full bg-[#C45C1A] px-4 py-2 text-xs font-bold uppercase tracking-wider text-white">
+                    <PlayCircle className="h-4 w-4" />
+                    <span>Play Walkthrough</span>
+                  </a>
+                </div>
+                <div className="aspect-video md:aspect-auto bg-slate-200">
+                  <video
+                    className="h-full w-full object-cover"
+                    poster={homeMediaShowcase.commercial.videoPoster}
+                    controls
+                    preload="metadata"
+                  >
+                    <source src={homeMediaShowcase.commercial.videoUrl} type="video/mp4" />
+                  </video>
+                </div>
+              </div>
+            </div>
+
+            {homeMediaShowcase.commercial.floorPlans.slice(0, 4).map((plan) => (
+              <div key={plan.title} className="bg-white rounded-[24px] overflow-hidden border border-[#C9A84C]/20 shadow-sm">
+                <div className="aspect-[4/3] overflow-hidden bg-[#F6F0E7]">
+                  <img src={plan.image} alt={plan.title} className="h-full w-full object-cover" />
+                </div>
+                <div className="p-4">
+                  <h4 className="font-serif text-lg font-bold text-[#6B1A2A]">{plan.title}</h4>
+                  <p className="text-sm text-slate-500 mt-1">{plan.subtitle}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 4. DYNAMIC FEATURED ASSETS (CAROUSEL GRID) */}
       <section className="py-16 bg-[#FAF6F0]/60 border-y border-[#C9A84C]/10 scroll-mt-20" id="featured-assets-sliders">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-10">
@@ -291,7 +372,7 @@ export const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* 4. DYNAMIC LOCATIONS (AREAS GRID) */}
+      {/* 5. DYNAMIC LOCATIONS (AREAS GRID) */}
       <section className="py-16 px-4 max-w-7xl mx-auto scroll-mt-20" id="locations-grid">
         <div className="text-center max-w-3xl mx-auto mb-12">
           <span className="text-[11px] uppercase tracking-widest text-[#0E7B6C] font-bold font-mono">Pilgrim Corridors</span>

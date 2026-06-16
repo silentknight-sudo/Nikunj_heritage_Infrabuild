@@ -20,49 +20,49 @@ export interface SlideData {
 
 const SLIDES: SlideData[] = [
   {
-    image: "/src/assets/images/brij_haven_glorious_temple_1781557829970.jpg",
-    tag: "CELESTIAL SANCTUARIES",
-    title: "Where Sacred Heritage Meets Ultimate Splendor",
-    subtitle: "Invest in high-yield premium properties within literal walking distance of the glorious Prem Mandir, Chhatikara corridor, and ISKCON Vrindavan.",
-    ctaText: "Explore Temple Properties",
-    ctaLink: "/properties?category=spiritual-retreats",
-    badge: "Most Visited Shrines Hub"
+    image: "/projects/images/vrindavan-cover.png",
+    tag: "VRINDAVAN INVESTMENT",
+    title: "Premium residences and spiritual real estate in Vrindavan's fastest-rising corridors",
+    subtitle: "Discover thoughtfully positioned homes, township-led communities, and high-potential addresses near the temple belt, major access roads, and growth infrastructure.",
+    ctaText: "Explore Vrindavan Projects",
+    ctaLink: "/properties",
+    badge: "Temple-city growth corridor"
   },
   {
-    image: "/src/assets/images/heritage_haveli_courtyard_1781557848504.jpg",
-    tag: "VRINDAVAN HERITAGE RETREATS",
-    title: "Aristocratic Havelis & Royal Courtyards",
-    subtitle: "Exquisite carved stone corridors, central fountains with floating lotuses, and beautiful traditional Brij architecture tailored for timeless serenity.",
-    ctaText: "Browse Luxury Havelis",
-    ctaLink: "/properties?category=luxury-apartments",
-    badge: "100% Legal Registry Verified"
+    image: "/projects/images/commercial-exterior-evening.png",
+    tag: "COURTYARD VRINDAVAN",
+    title: "A landmark commercial address designed for retail, dining, and high footfall business",
+    subtitle: "Positioned to attract shoppers, pilgrims, and destination traffic, this mixed-use commercial project combines premium frontage, strong circulation, and an aspirational arrival experience.",
+    ctaText: "View Commercial Spaces",
+    ctaLink: "/properties?category=commercial-spaces",
+    badge: "Premium retail destination"
   },
   {
-    image: "/src/assets/images/vrindavan_premium_villa_layout_1781557864653.jpg",
-    tag: "ELEGANT RUKMANI VIHAR VILLAS",
-    title: "Bespoke Modern-Traditional Duplexes",
-    subtitle: "Custom architectural masterpieces framing pristine manicured lawns, majestic Rajasthani arches, and premium security gates in premium sectors.",
-    ctaText: "Discover Premium Havelis",
-    ctaLink: "/properties?category=villas-plots",
-    badge: "Pre-Approved Bank Loans"
+    image: "/projects/images/rukmini-vihar-overview.png",
+    tag: "RUKMINI VIHAR",
+    title: "Live close to Vrindavan's spiritual core in a well-connected residential neighborhood",
+    subtitle: "Rukmini Vihar offers a balance of devotional surroundings, daily convenience, and long-term appreciation potential for families, end users, and second-home buyers.",
+    ctaText: "Browse Vrindavan Homes",
+    ctaLink: "/properties?location=vrindavan-rukmani-vihar",
+    badge: "High-demand residential pocket"
   },
   {
-    image: "/src/assets/images/spiritual_ashram_serviced_suite_1781557880359.jpg",
-    tag: "SOUL-STIRRING SAFFRON SUITES",
-    title: "Premium Serviced Studio Suites",
-    subtitle: "Immersive interior sanctuaries pairing warm saffron highlights, sandalwood palettes, and modern high-speed utilities for complete premium Comfort.",
-    ctaText: "Explore Serviced Studios",
-    ctaLink: "/properties?category=apartments-suites",
-    badge: "High Saffron Rental Yield"
+    image: "/projects/images/floorplan-site-plan.png",
+    tag: "MASTER PLANNED LAYOUTS",
+    title: "Project planning that supports visibility, movement, and long-term value",
+    subtitle: "From site organization to floor-wise distribution, each project is presented with clear planning logic so buyers can evaluate scale, access, and commercial potential with confidence.",
+    ctaText: "See Properties",
+    ctaLink: "/properties",
+    badge: "Planned for clarity"
   },
   {
-    image: "/src/assets/images/nidhivan_peaceful_forest_grove_1781557896104.jpg",
-    tag: "SACRED NIDHIVAN FOREST GROVES",
-    title: "Verdant Orchards & Tranquil Pathways",
-    subtitle: "Breathe the pure spiritual air in peaceful enclaves neighboring historic parikrama groves, complete with ancient trees and soft lantern glow.",
-    ctaText: "View Forest plots",
-    ctaLink: "/properties?category=villas-plots",
-    badge: "Divine Braj Parikrama Zone"
+    image: "/projects/images/commercial-fountain-atrium.png",
+    tag: "EXPERIENCE THE PROJECT",
+    title: "See the ambience, scale, and movement before you schedule a site visit",
+    subtitle: "Walkthrough-led visuals help visitors understand the atmosphere of the development, from the grand atrium experience to the broader township environment.",
+    ctaText: "Open Featured Listings",
+    ctaLink: "/properties",
+    badge: "Immersive project walkthroughs"
   }
 ];
 
