@@ -19,12 +19,16 @@ import {
   Mail,
   HelpCircle,
   Clock,
-  Sparkles
+  Sparkles,
+  PlayCircle,
+  FileText,
+  Download
 } from "lucide-react";
 import { getPropertyBySlug, createLead } from "../lib/firestore";
 import { Property } from "../types";
 import { formatPrice } from "../lib/utils";
 import { toast } from "react-hot-toast";
+import { getPropertyMedia } from "../content/projectMedia";
 
 export const PropertyDetail: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -114,6 +118,8 @@ export const PropertyDetail: React.FC = () => {
       </div>
     );
   }
+
+  const mediaBundle = getPropertyMedia(property);
 
   return (
     <div className="bg-[#FAF6F0] min-h-screen text-[#1A1A2E] py-12" id={`property-details-view-${property.id}`}>
@@ -237,6 +243,98 @@ export const PropertyDetail: React.FC = () => {
               <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-sans whitespace-pre-line">
                 {property.description}
               </p>
+            </div>
+
+            <div className="bg-white rounded-2xl border border-[#C9A84C]/20 shadow-sm overflow-hidden">
+              <div className="grid lg:grid-cols-2">
+                <div className="p-6 sm:p-8">
+                  <span className="text-[11px] uppercase tracking-[0.28em] text-[#C45C1A] font-bold">{mediaBundle.eyebrow}</span>
+                  <h3 className="font-serif text-2xl text-[#6B1A2A] font-bold mt-3">{mediaBundle.title}</h3>
+                  <p className="text-sm text-slate-600 mt-3 leading-relaxed">{mediaBundle.summary}</p>
+                  <div className="space-y-2 mt-5">
+                    {mediaBundle.highlights.map((item) => (
+                      <div key={item} className="flex items-start gap-2 text-sm text-slate-700">
+                        <CheckCircle className="h-4 w-4 mt-0.5 text-[#0E7B6C] shrink-0" />
+                        <span>{item}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="flex flex-wrap gap-3 mt-6">
+                    {mediaBundle.brochureUrl && (
+                      <a href={mediaBundle.brochureUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-full bg-[#6B1A2A] px-4 py-2 text-xs font-bold uppercase tracking-wider text-white">
+                        <FileText className="h-4 w-4" />
+                        <span>Open Brochure</span>
+                      </a>
+                    )}
+                    {mediaBundle.floorPlanUrl && (
+                      <a href={mediaBundle.floorPlanUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-full border border-[#C9A84C]/40 px-4 py-2 text-xs font-bold uppercase tracking-wider text-[#6B1A2A]">
+                        <Download className="h-4 w-4" />
+                        <span>Floor Plan PDF</span>
+                      </a>
+                    )}
+                  </div>
+                </div>
+                <div className="bg-[#F6F0E7]">
+                  <video
+                    className="h-full w-full object-cover"
+                    poster={mediaBundle.videoPoster}
+                    controls
+                    preload="metadata"
+                  >
+                    {mediaBundle.videoUrl && <source src={mediaBundle.videoUrl} type="video/mp4" />}
+                  </video>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white p-6 rounded-2xl border border-[#C9A84C]/20 shadow-sm">
+              <div className="flex items-center justify-between gap-4 mb-5">
+                <div>
+                  <h3 className="font-serif font-bold text-xl text-[#6B1A2A]">Brochure Gallery</h3>
+                  <p className="text-sm text-slate-500 mt-1">Images sourced from the supplied PDFs and arranged by context.</p>
+                </div>
+                <PlayCircle className="h-6 w-6 text-[#C45C1A] shrink-0" />
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                {mediaBundle.gallery.map((item) => (
+                  <div key={item.title} className="rounded-2xl overflow-hidden border border-[#C9A84C]/15 bg-[#FCFAF6]">
+                    <div className="aspect-[4/3] overflow-hidden">
+                      <img src={item.image} alt={item.title} className="h-full w-full object-cover" />
+                    </div>
+                    <div className="p-4">
+                      <h4 className="font-serif text-lg font-bold text-[#6B1A2A]">{item.title}</h4>
+                      <p className="text-sm text-slate-500 mt-1">{item.subtitle}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="bg-white p-6 rounded-2xl border border-[#C9A84C]/20 shadow-sm">
+              <div className="flex items-center justify-between gap-4 mb-5">
+                <div>
+                  <h3 className="font-serif font-bold text-xl text-[#6B1A2A]">Floor Plans & Layout Sheets</h3>
+                  <p className="text-sm text-slate-500 mt-1">Useful for serious evaluation, not just visual browsing.</p>
+                </div>
+                {mediaBundle.sitePlanUrl && (
+                  <a href={mediaBundle.sitePlanUrl} target="_blank" rel="noopener noreferrer" className="text-xs font-bold uppercase tracking-wider text-[#C45C1A] underline underline-offset-4">
+                    Open Layout PDF
+                  </a>
+                )}
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+                {mediaBundle.floorPlans.map((plan) => (
+                  <div key={plan.title} className="rounded-2xl overflow-hidden border border-[#C9A84C]/15 bg-[#FCFAF6]">
+                    <div className="aspect-[4/3] overflow-hidden">
+                      <img src={plan.image} alt={plan.title} className="h-full w-full object-cover" />
+                    </div>
+                    <div className="p-4">
+                      <h4 className="font-serif text-base font-bold text-[#6B1A2A]">{plan.title}</h4>
+                      <p className="text-sm text-slate-500 mt-1">{plan.subtitle}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
 
             {/* Architectural Floor Details */}
