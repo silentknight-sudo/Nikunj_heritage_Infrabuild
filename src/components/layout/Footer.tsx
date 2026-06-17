@@ -46,7 +46,7 @@ export const Footer: React.FC = () => {
   }, []);
 
   return (
-    <footer className="bg-[#1A1A2E] text-[#FAF6F0] border-t-2 border-[#C9A84C]/40 pt-16 pb-8" id="footer-section">
+    <footer className="bg-[#0F172A] text-[#F8FAFC] border-t-2 border-[#FACC15]/25 pt-16 pb-8" id="footer-section">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Core Footer Grids */}
@@ -59,10 +59,10 @@ export const Footer: React.FC = () => {
                 <BrandLogoSVG className="h-14 w-14" />
               </div>
               <div>
-                <span className="block font-serif text-xl sm:text-2xl font-bold tracking-wider text-[#C9A84C] leading-tight">
+                <span className="block font-serif text-xl sm:text-2xl font-bold tracking-wider text-[#FACC15] leading-tight">
                   NIKUNJ HERITAGE
                 </span>
-                <span className="block text-[11px] uppercase tracking-widest text-[#C45C1A] font-semibold">
+                <span className="block text-[11px] uppercase tracking-widest text-[#FB923C] font-semibold">
                   Infrabuild Private Ltd.
                 </span>
               </div>
@@ -74,16 +74,16 @@ export const Footer: React.FC = () => {
 
             {/* Social Grid */}
             <div className="flex space-x-4 pt-2">
-              <a href={config?.facebookUrl || "https://facebook.com"} target="_blank" rel="noopener noreferrer" className="p-2 rounded-full border border-[#FAF6F0]/20 hover:border-[#C45C1A] hover:bg-[#C45C1A] transition-all">
+              <a href={config?.facebookUrl || "https://facebook.com"} target="_blank" rel="noopener noreferrer" className="p-2 rounded-full border border-[#F8FAFC]/20 hover:border-[#FB923C] hover:bg-[#FB923C] transition-all">
                 <Facebook className="h-4 w-4" />
               </a>
-              <a href={config?.instagramUrl || "https://instagram.com"} target="_blank" rel="noopener noreferrer" className="p-2 rounded-full border border-[#FAF6F0]/20 hover:border-[#C45C1A] hover:bg-[#C45C1A] transition-all">
+              <a href={config?.instagramUrl || "https://instagram.com"} target="_blank" rel="noopener noreferrer" className="p-2 rounded-full border border-[#F8FAFC]/20 hover:border-[#FB923C] hover:bg-[#FB923C] transition-all">
                 <Instagram className="h-4 w-4" />
               </a>
-              <a href={config?.youtubeUrl || "https://youtube.com"} target="_blank" rel="noopener noreferrer" className="p-2 rounded-full border border-[#FAF6F0]/20 hover:border-[#C45C1A] hover:bg-[#C45C1A] transition-all">
+              <a href={config?.youtubeUrl || "https://youtube.com"} target="_blank" rel="noopener noreferrer" className="p-2 rounded-full border border-[#F8FAFC]/20 hover:border-[#FB923C] hover:bg-[#FB923C] transition-all">
                 <Youtube className="h-4 w-4" />
               </a>
-              <a href={config?.twitterUrl || "https://twitter.com"} target="_blank" rel="noopener noreferrer" className="p-2 rounded-full border border-[#FAF6F0]/20 hover:border-[#C45C1A] hover:bg-[#C45C1A] transition-all">
+              <a href={config?.twitterUrl || "https://twitter.com"} target="_blank" rel="noopener noreferrer" className="p-2 rounded-full border border-[#F8FAFC]/20 hover:border-[#FB923C] hover:bg-[#FB923C] transition-all">
                 <Twitter className="h-4 w-4" />
               </a>
             </div>
@@ -91,34 +91,40 @@ export const Footer: React.FC = () => {
 
           {/* Quick Links Map */}
           <div>
-            <h4 className="font-serif text-[#C9A84C] text-lg font-semibold tracking-wider border-b border-[#C9A84C]/20 pb-2 mb-4">
+            <h4
+              className="font-serif text-lg font-semibold tracking-wider border-b border-[#C9A84C]/20 pb-2 mb-4"
+              style={{ color: "#FACC15" }}
+            >
               Explore Spaces
             </h4>
             <ul className="space-y-2 text-sm text-[#FAF6F0]/80">
               <li>
-                <Link to="/properties" className="hover:text-[#C45C1A] transition-colors">• All Properties</Link>
+                <Link to="/properties" className="hover:text-[#FB923C] transition-colors">• All Properties</Link>
               </li>
               <li>
-                <Link to="/properties?category=residential-apartments" className="hover:text-[#C45C1A] transition-colors">• Flats & Apartments</Link>
+                <Link to="/properties?category=residential-apartments" className="hover:text-[#FB923C] transition-colors">• Flats & Apartments</Link>
               </li>
               <li>
-                <Link to="/properties?category=luxury-villas" className="hover:text-[#C45C1A] transition-colors">• Luxury Haveli Villas</Link>
+                <Link to="/properties?category=luxury-villas" className="hover:text-[#FB923C] transition-colors">• Luxury Haveli Villas</Link>
               </li>
               <li>
-                <Link to="/properties?category=plots-and-land" className="hover:text-[#C45C1A] transition-colors">• Freehold Land Plots</Link>
+                <Link to="/properties?category=plots-and-land" className="hover:text-[#FB923C] transition-colors">• Freehold Land Plots</Link>
               </li>
               <li>
-                <Link to="/properties?category=spiritual-retreats" className="hover:text-[#C45C1A] transition-colors">• Ashram Retreats</Link>
+                <Link to="/properties?category=spiritual-retreats" className="hover:text-[#FB923C] transition-colors">• Ashram Retreats</Link>
               </li>
               <li>
-                <Link to="/testimonials" className="hover:text-[#C45C1A] transition-colors">• Happy Customers</Link>
+                <Link to="/testimonials" className="hover:text-[#FB923C] transition-colors">• Happy Customers</Link>
               </li>
             </ul>
           </div>
 
           {/* Dynamic Extra CMS Pages & legal */}
           <div>
-            <h4 className="font-serif text-[#C9A84C] text-lg font-semibold tracking-wider border-b border-[#C9A84C]/20 pb-2 mb-4">
+            <h4
+              className="font-serif text-lg font-semibold tracking-wider border-b border-[#C9A84C]/20 pb-2 mb-4"
+              style={{ color: "#FACC15" }}
+            >
               Legal & Support
             </h4>
             <ul className="space-y-2 text-sm text-[#FAF6F0]/80 pb-3">
@@ -166,7 +172,10 @@ export const Footer: React.FC = () => {
 
           {/* Contact Details Column */}
           <div>
-            <h4 className="font-serif text-[#C9A84C] text-lg font-semibold tracking-wider border-b border-[#C9A84C]/20 pb-2 mb-4">
+            <h4
+              className="font-serif text-lg font-semibold tracking-wider border-b border-[#C9A84C]/20 pb-2 mb-4"
+              style={{ color: "#FACC15" }}
+            >
               Brijvas Office
             </h4>
             <ul className="space-y-3 text-xs text-[#FAF6F0]/80">

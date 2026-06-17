@@ -147,14 +147,14 @@ export const Navbar: React.FC = () => {
           
           {/* Logo Brand Sector matching the screenshot */}
           <Link to="/" className="flex items-center space-x-3 group shrink-0" id="navbar-brand-link">
-            <div className="bg-[#1A1A2E] p-1.5 rounded-full border border-[#C9A84C]/45 flex items-center justify-center shadow-md transition-transform duration-300 group-hover:scale-105">
+            <div className="bg-[#0F172A] p-1.5 rounded-full border border-[#FACC15]/45 flex items-center justify-center shadow-md transition-transform duration-300 group-hover:scale-105">
               <BrandLogoSVG className="h-11 w-11" />
             </div>
             <div className="text-left font-serif">
-              <span className="block text-base sm:text-[19px] font-black tracking-wide text-[#1A1A2E] leading-none uppercase">
+                <span className="block text-base sm:text-[19px] font-black tracking-wide text-[#0F172A] leading-none uppercase">
                 Nikunj Heritage
               </span>
-              <span className="block text-[9px] uppercase tracking-[0.25em] text-[#C45C1A] font-extrabold mt-1">
+              <span className="block text-[9px] uppercase tracking-[0.25em] text-[#FB923C] font-extrabold mt-1">
                 INFRABUILD
               </span>
             </div>
@@ -170,10 +170,10 @@ export const Navbar: React.FC = () => {
                   to={link.path}
                   className={`px-2.5 py-1.5 rounded-md text-[13px] font-bold tracking-wide transition-all uppercase duration-200 font-sans ${
                     active
-                      ? "text-[#C45C1A] border-b-2 border-[#C45C1A] rounded-none"
+                      ? "text-[#0F172A] border-b-2 border-[#FB923C] rounded-none"
                       : link.activeColor 
-                        ? "text-[#C45C1A] hover:opacity-80" 
-                        : "text-slate-700 hover:text-[#C45C1A]"
+                        ? "text-[#0F172A] hover:opacity-80" 
+                        : "text-slate-700 hover:text-[#0F172A]"
                   }`}
                 >
                   {link.name}
@@ -214,7 +214,7 @@ export const Navbar: React.FC = () => {
                 {isAdmin && (
                   <Link
                     to="/admin"
-                    className="p-2 bg-[#C45C1A] text-white rounded-lg hover:bg-[#C45C1A]/90 transition-colors"
+                    className="p-2 bg-[#0F172A] text-white rounded-lg hover:bg-[#1E293B] transition-colors"
                     title="Developer Portal Admin Panel"
                   >
                     <LayoutDashboard className="h-4.5 w-4.5" />
@@ -244,7 +244,7 @@ export const Navbar: React.FC = () => {
               href={giftToWhatsApp("Pranam Nikunj Heritage! I saw your catalog and would like to Book a spiritual site visit to Vrindavan.")}
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-[#C45C1A] hover:bg-[#C45C1A]/95 text-white px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg text-xs sm:text-[13px] font-serif font-black uppercase tracking-wider flex items-center space-x-1.5 shadow transition-all duration-300 transform hover:-translate-y-0.5"
+              className="bg-[#FB923C] hover:bg-[#EA580C] text-white px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg text-xs sm:text-[13px] font-serif font-black uppercase tracking-wider flex items-center space-x-1.5 shadow transition-all duration-300 transform hover:-translate-y-0.5"
             >
               <Phone className="h-3.5 w-3.5 shrink-0 animate-bounce" />
               <span>Book Visit</span>
@@ -253,7 +253,7 @@ export const Navbar: React.FC = () => {
             {/* Main Full-Screen Mega Menu Toggle */}
             <button
               onClick={() => setIsMegaMenuOpen(!isMegaMenuOpen)}
-              className="p-2 sm:p-2.5 text-slate-800 hover:text-[#C45C1A] focus:outline-none transition-colors border border-slate-100 rounded-lg hover:bg-slate-50"
+              className="p-2 sm:p-2.5 text-slate-800 hover:text-[#0F172A] focus:outline-none transition-colors border border-slate-100 rounded-lg hover:bg-slate-50"
               aria-label="Mega menu portal toggle"
             >
               {isMegaMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}

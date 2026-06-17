@@ -21,7 +21,9 @@ import {
   CheckCircle,
   HelpCircle,
   FileText,
-  PlayCircle
+  PlayCircle,
+  X,
+  MessageSquare
 } from "lucide-react";
 import {
   getProperties,
@@ -58,6 +60,7 @@ export const Home: React.FC = () => {
   const [enquiryType, setEnquiryType] = useState("Property Enquiry");
   const [consultationEmail, setConsultationEmail] = useState("");
   const [isConsulting, setIsConsulting] = useState(false);
+  const [showEnquiryWidget, setShowEnquiryWidget] = useState(true);
 
   useEffect(() => {
     async function loadData() {
@@ -176,6 +179,93 @@ export const Home: React.FC = () => {
 
   return (
     <div className="bg-[#FAF6F0] min-h-screen text-[#1A1A2E]" id="homepage-container">
+      {showEnquiryWidget ? (
+        <div className="fixed right-4 top-20 z-50 w-[calc(100vw-2rem)] max-w-sm">
+          <div className="rounded-2xl border border-[#C9A84C]/35 bg-white/95 backdrop-blur-md shadow-2xl overflow-hidden">
+            <div className="flex items-start justify-between gap-3 bg-[#0F172A] px-5 py-4 text-white">
+              <div>
+                <span className="block text-[10px] uppercase tracking-[0.28em] text-[#F6D7A8] font-bold">Instant Enquiry</span>
+                <h2 className="font-serif text-lg font-bold mt-1 text-[#FB923C]" style={{ color: "#FB923C" }}>
+                  Book Callback On Opening
+                </h2>
+                <p className="text-xs text-white/80 mt-1">Website khulte hi enquiry visible rahegi aur page scroll bhi normal chalega.</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowEnquiryWidget(false)}
+                className="rounded-full bg-white/10 p-2 text-white hover:bg-white/20 transition-colors"
+                aria-label="Close enquiry widget"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+
+            <form onSubmit={handleConsultationSubmit} className="space-y-3 p-5">
+              <div>
+                <label className="block text-[10px] uppercase font-bold text-slate-400 mb-1 font-mono">Enquiry Type</label>
+                <select
+                  value={enquiryType}
+                  onChange={(e) => setEnquiryType(e.target.value)}
+                  className="w-full text-xs px-3 py-2.5 rounded-lg border border-slate-200 outline-none focus:border-[#C45C1A] text-slate-800 bg-white"
+                >
+                  <option>Property Enquiry</option>
+                  <option>Site Visit</option>
+                  <option>Commercial Space</option>
+                  <option>Plots & Land</option>
+                  <option>Investment Consultation</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-[10px] uppercase font-bold text-slate-400 mb-1 font-mono">Full Name</label>
+                <input
+                  type="text"
+                  value={consultationName}
+                  onChange={(e) => setConsultationName(e.target.value)}
+                  placeholder="Your name"
+                  className="w-full text-xs px-3 py-2.5 rounded-lg border border-slate-200 outline-none focus:border-[#C45C1A] text-slate-800"
+                />
+              </div>
+              <div>
+                <label className="block text-[10px] uppercase font-bold text-slate-400 mb-1 font-mono">Phone Number</label>
+                <input
+                  type="tel"
+                  value={consultationPhone}
+                  onChange={(e) => setConsultationPhone(e.target.value)}
+                  placeholder="+91..."
+                  className="w-full text-xs px-3 py-2.5 rounded-lg border border-slate-200 outline-none focus:border-[#C45C1A] text-slate-800"
+                />
+              </div>
+              <div>
+                <label className="block text-[10px] uppercase font-bold text-slate-400 mb-1 font-mono">Email</label>
+                <input
+                  type="email"
+                  value={consultationEmail}
+                  onChange={(e) => setConsultationEmail(e.target.value)}
+                  placeholder="Optional"
+                  className="w-full text-xs px-3 py-2.5 rounded-lg border border-slate-200 outline-none focus:border-[#C45C1A] text-slate-800"
+                />
+              </div>
+              <button
+                type="submit"
+                disabled={isConsulting}
+                className="w-full rounded-lg bg-[#FB923C] px-4 py-3 text-xs font-bold uppercase tracking-wider text-white hover:bg-[#EA580C] transition-colors"
+              >
+                {isConsulting ? "Submitting..." : "Request Callback"}
+              </button>
+            </form>
+          </div>
+        </div>
+      ) : (
+        <button
+          type="button"
+          onClick={() => setShowEnquiryWidget(true)}
+          className="fixed right-4 bottom-6 z-50 inline-flex items-center gap-2 rounded-full bg-[#FB923C] px-4 py-3 text-xs font-bold uppercase tracking-wider text-white shadow-xl hover:bg-[#EA580C] transition-colors"
+        >
+          <MessageSquare className="h-4 w-4" />
+          <span>Open Enquiry</span>
+        </button>
+      )}
+
       
       {/* 1. HERO SLIDER IMMERSIVE EXPERIENCE */}
       <div className="relative" id="immersive-hero-slider-container">
@@ -245,7 +335,7 @@ export const Home: React.FC = () => {
                     </div>
                     <div className="relative z-10 text-left">
                       <span className="text-[10px] text-[#C9A84C] font-mono font-semibold uppercase">{cat.slug.replace("-", " ")}</span>
-                      <h3 className="font-serif text-white font-bold text-sm sm:text-base tracking-wide leading-tight">
+                      <h3 className="font-serif text-white font-bold text-sm sm:text-base tracking-wide leading-tight" style={{ color: "#FFFFFF" }}>
                         {cat.name}
                       </h3>
                     </div>
@@ -269,8 +359,10 @@ export const Home: React.FC = () => {
               />
             </div>
             <div className="p-6 sm:p-8 space-y-4">
-              <span className="text-[11px] uppercase tracking-[0.28em] text-[#F6D7A8] font-bold">{homeMediaShowcase.overview.eyebrow}</span>
-              <h2 className="font-serif text-2xl sm:text-4xl font-bold leading-tight">{homeMediaShowcase.overview.title}</h2>
+              <span className="text-[11px] uppercase tracking-[0.28em] text-[#F6D7A8] font-bold">Why Vrindavan</span>
+              <h2 className="font-serif text-2xl sm:text-4xl font-bold leading-tight text-white" style={{ color: "#FFFFFF" }}>
+                {homeMediaShowcase.overview.title}
+              </h2>
               <p className="text-sm text-white/80 leading-relaxed">{homeMediaShowcase.overview.summary}</p>
               <div className="space-y-2 text-sm text-white/90">
                 {homeMediaShowcase.overview.highlights.map((item) => (
@@ -285,9 +377,9 @@ export const Home: React.FC = () => {
                   <FileText className="h-4 w-4" />
                   <span>Open Docket</span>
                 </a>
-                <a href={homeMediaShowcase.commercial.floorPlanUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-full border border-white/25 px-4 py-2 text-xs font-bold uppercase tracking-wider text-white">
+                <a href="/contact" className="inline-flex items-center gap-2 rounded-full border border-white/25 px-4 py-2 text-xs font-bold uppercase tracking-wider text-white">
                   <Layers className="h-4 w-4" />
-                  <span>Floor Plans</span>
+                  <span>Request Consultation</span>
                 </a>
               </div>
             </div>
@@ -297,30 +389,27 @@ export const Home: React.FC = () => {
             <div className="md:col-span-2 bg-white rounded-[28px] border border-[#C9A84C]/25 shadow-sm overflow-hidden">
               <div className="grid md:grid-cols-2">
                 <div className="p-6 sm:p-8 flex flex-col justify-center">
-                  <span className="text-[11px] uppercase tracking-[0.28em] text-[#C45C1A] font-bold">Walkthrough Visuals</span>
-                  <h3 className="font-serif text-2xl text-[#6B1A2A] font-bold mt-3">Videos placed where they strengthen buyer trust</h3>
+                  <span className="text-[11px] uppercase tracking-[0.28em] text-[#C45C1A] font-bold">Nikunj Promise</span>
+                  <h3 className="font-serif text-2xl text-[#6B1A2A] font-bold mt-3">The homepage should strengthen Nikunj Heritage first</h3>
                   <p className="text-sm text-slate-600 mt-3 leading-relaxed">
-                    The supplied videos now work as contextual walkthroughs for township scale and commercial ambience, which makes the website feel more polished and convincing.
+                    We now keep the main homepage focused on company identity, Vrindavan market understanding, buyer guidance, and your own positioning instead of highlighting another brand's project media.
                   </p>
-                  <a href={homeMediaShowcase.commercial.videoUrl} target="_blank" rel="noopener noreferrer" className="mt-5 inline-flex w-fit items-center gap-2 rounded-full bg-[#C45C1A] px-4 py-2 text-xs font-bold uppercase tracking-wider text-white">
+                  <a href="/about" className="mt-5 inline-flex w-fit items-center gap-2 rounded-full bg-[#C45C1A] px-4 py-2 text-xs font-bold uppercase tracking-wider text-white">
                     <PlayCircle className="h-4 w-4" />
-                    <span>Play Walkthrough</span>
+                    <span>About Nikunj Heritage</span>
                   </a>
                 </div>
                 <div className="aspect-video md:aspect-auto bg-slate-200">
-                  <video
+                  <img
+                    src={homeMediaShowcase.overview.gallery[1].image}
+                    alt={homeMediaShowcase.overview.gallery[1].title}
                     className="h-full w-full object-cover"
-                    poster={homeMediaShowcase.commercial.videoPoster}
-                    controls
-                    preload="metadata"
-                  >
-                    <source src={homeMediaShowcase.commercial.videoUrl} type="video/mp4" />
-                  </video>
+                  />
                 </div>
               </div>
             </div>
 
-            {homeMediaShowcase.commercial.floorPlans.slice(0, 4).map((plan) => (
+            {homeMediaShowcase.overview.gallery.map((plan) => (
               <div key={plan.title} className="bg-white rounded-[24px] overflow-hidden border border-[#C9A84C]/20 shadow-sm">
                 <div className="aspect-[4/3] overflow-hidden bg-[#F6F0E7]">
                   <img src={plan.image} alt={plan.title} className="h-full w-full object-cover" />
@@ -410,13 +499,16 @@ export const Home: React.FC = () => {
                       <div className="absolute inset-0 bg-gradient-to-t from-black via-black/35 to-transparent"></div>
                     </div>
                     <div className="relative z-10 text-white text-left">
-                      <span className="text-[9px] uppercase tracking-widest font-bold font-mono text-[#C9A84C]">
+                      <span className="text-[9px] uppercase tracking-widest font-bold font-mono text-[#FDE68A]">
                         Region: {loc.city}
                       </span>
-                      <h3 className="font-serif font-bold text-base sm:text-lg tracking-wide shadow-sm mt-0.5 line-clamp-1">
+                      <h3
+                        className="font-serif font-bold text-base sm:text-lg tracking-wide shadow-sm mt-0.5 line-clamp-1 text-white"
+                        style={{ color: "#FFFFFF" }}
+                      >
                         {loc.name}
                       </h3>
-                      <p className="text-[11px] text-slate-200 line-clamp-2 mt-1 leading-snug">
+                      <p className="text-[11px] text-[#FEF3C7] line-clamp-2 mt-1 leading-snug">
                         {loc.description}
                       </p>
                     </div>
@@ -433,7 +525,7 @@ export const Home: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center max-w-2xl mx-auto mb-16">
             <span className="text-[11px] uppercase tracking-widest text-[#C9A84C] font-bold font-mono">Brijvas Heritage Pledge</span>
-            <h2 className="font-serif text-2xl sm:text-4xl text-white font-bold mt-1">
+            <h2 className="font-serif text-2xl sm:text-4xl text-white font-bold mt-1" style={{ color: "#FFFFFF" }}>
               Why Nikunj Heritage Infrabuild?
             </h2>
             <div className="h-0.5 w-16 bg-[#C45C1A] mx-auto mt-4"></div>
@@ -521,7 +613,10 @@ export const Home: React.FC = () => {
         <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-10 items-center relative z-10">
           <div className="md:col-span-7 space-y-4">
             <span className="text-xs uppercase text-[#C9A84C] tracking-widest font-semibold font-mono block">Zero Cost Consultation</span>
-            <h2 className="font-serif text-2xl sm:text-4xl font-bold tracking-wide">
+            <h2
+              className="font-serif text-2xl sm:text-4xl font-bold tracking-wide text-white"
+              style={{ color: "#FFFFFF" }}
+            >
               Book a Free Personal Site Visit & Consultation
             </h2>
             <p className="text-xs sm:text-sm text-[#FAF6F0]/80 leading-relaxed max-w-xl font-sans">
