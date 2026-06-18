@@ -7,6 +7,11 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { ChevronLeft, ChevronRight, ArrowRight, ShieldCheck, Star, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
+import brijHavenImage from "../../assets/images/brij_haven_glorious_temple_1781557829970.jpg";
+import heritageHaveliImage from "../../assets/images/heritage_haveli_courtyard_1781557848504.jpg";
+import nidhivanImage from "../../assets/images/nidhivan_peaceful_forest_grove_1781557896104.jpg";
+import spiritualAshramImage from "../../assets/images/spiritual_ashram_serviced_suite_1781557880359.jpg";
+import vrindavanVillaImage from "../../assets/images/vrindavan_premium_villa_layout_1781557864653.jpg";
 
 export interface SlideData {
   image: string;
@@ -20,7 +25,7 @@ export interface SlideData {
 
 const SLIDES: SlideData[] = [
   {
-    image: "/src/assets/images/vrindavan_premium_villa_layout_1781557864653.jpg",
+    image: vrindavanVillaImage,
     tag: "NIKUNJ HERITAGE",
     title: "Trusted guidance for residential, commercial, and plotted opportunities in Vrindavan",
     subtitle: "Nikunj Heritage Infrabuild helps buyers explore high-potential locations, devotional neighborhoods, and growth-led property opportunities with clarity and confidence.",
@@ -29,7 +34,7 @@ const SLIDES: SlideData[] = [
     badge: "Local market understanding"
   },
   {
-    image: "/src/assets/images/brij_haven_glorious_temple_1781557829970.jpg",
+    image: brijHavenImage,
     tag: "PREMIUM RESIDENCES",
     title: "Homes and heritage-inspired living spaces near Vrindavan's most sought-after spiritual zones",
     subtitle: "From family apartments to premium villas, we present properties that balance location quality, comfort, connectivity, and long-term value.",
@@ -38,7 +43,7 @@ const SLIDES: SlideData[] = [
     badge: "End-user and investor ready"
   },
   {
-    image: "/src/assets/images/heritage_haveli_courtyard_1781557848504.jpg",
+    image: heritageHaveliImage,
     tag: "RUKMINI VIHAR",
     title: "Live close to Vrindavan's spiritual core in a well-connected residential neighborhood",
     subtitle: "Rukmini Vihar offers a balance of devotional surroundings, daily convenience, and long-term appreciation potential for families, end users, and second-home buyers.",
@@ -47,7 +52,7 @@ const SLIDES: SlideData[] = [
     badge: "High-demand residential pocket"
   },
   {
-    image: "/src/assets/images/spiritual_ashram_serviced_suite_1781557880359.jpg",
+    image: spiritualAshramImage,
     tag: "PLANNED COMMUNITIES",
     title: "Project selection backed by location study, planning logic, and practical buyer needs",
     subtitle: "We focus on projects that make sense on the ground, with attention to access, surrounding development, livability, and future appreciation potential.",
@@ -56,7 +61,7 @@ const SLIDES: SlideData[] = [
     badge: "Clarity before commitment"
   },
   {
-    image: "/src/assets/images/nidhivan_peaceful_forest_grove_1781557896104.jpg",
+    image: nidhivanImage,
     tag: "GROWTH & CONNECTIVITY",
     title: "Invest where infrastructure, access, and pilgrimage-driven demand strengthen property value",
     subtitle: "Better road links, improving regional access, and sustained visitor movement continue to support Vrindavan's real estate potential across multiple segments.",
