@@ -20,25 +20,25 @@ export interface SlideData {
 
 const SLIDES: SlideData[] = [
   {
-    image: "/projects/images/vrindavan-cover.png",
-    tag: "VRINDAVAN INVESTMENT",
-    title: "Premium residences and spiritual real estate in Vrindavan's fastest-rising corridors",
-    subtitle: "Discover thoughtfully positioned homes, township-led communities, and high-potential addresses near the temple belt, major access roads, and growth infrastructure.",
+    image: "/src/assets/images/vrindavan_premium_villa_layout_1781557864653.jpg",
+    tag: "NIKUNJ HERITAGE",
+    title: "Trusted guidance for residential, commercial, and plotted opportunities in Vrindavan",
+    subtitle: "Nikunj Heritage Infrabuild helps buyers explore high-potential locations, devotional neighborhoods, and growth-led property opportunities with clarity and confidence.",
     ctaText: "Explore Vrindavan Projects",
     ctaLink: "/properties",
-    badge: "Temple-city growth corridor"
+    badge: "Local market understanding"
   },
   {
-    image: "/projects/images/commercial-exterior-evening.png",
-    tag: "COURTYARD VRINDAVAN",
-    title: "A landmark commercial address designed for retail, dining, and high footfall business",
-    subtitle: "Positioned to attract shoppers, pilgrims, and destination traffic, this mixed-use commercial project combines premium frontage, strong circulation, and an aspirational arrival experience.",
-    ctaText: "View Commercial Spaces",
-    ctaLink: "/properties?category=commercial-spaces",
-    badge: "Premium retail destination"
+    image: "/src/assets/images/brij_haven_glorious_temple_1781557829970.jpg",
+    tag: "PREMIUM RESIDENCES",
+    title: "Homes and heritage-inspired living spaces near Vrindavan's most sought-after spiritual zones",
+    subtitle: "From family apartments to premium villas, we present properties that balance location quality, comfort, connectivity, and long-term value.",
+    ctaText: "View Residential Projects",
+    ctaLink: "/properties?category=residential-apartments",
+    badge: "End-user and investor ready"
   },
   {
-    image: "/projects/images/rukmini-vihar-overview.png",
+    image: "/src/assets/images/heritage_haveli_courtyard_1781557848504.jpg",
     tag: "RUKMINI VIHAR",
     title: "Live close to Vrindavan's spiritual core in a well-connected residential neighborhood",
     subtitle: "Rukmini Vihar offers a balance of devotional surroundings, daily convenience, and long-term appreciation potential for families, end users, and second-home buyers.",
@@ -47,22 +47,22 @@ const SLIDES: SlideData[] = [
     badge: "High-demand residential pocket"
   },
   {
-    image: "/projects/images/floorplan-site-plan.png",
-    tag: "MASTER PLANNED LAYOUTS",
-    title: "Project planning that supports visibility, movement, and long-term value",
-    subtitle: "From site organization to floor-wise distribution, each project is presented with clear planning logic so buyers can evaluate scale, access, and commercial potential with confidence.",
-    ctaText: "See Properties",
+    image: "/src/assets/images/spiritual_ashram_serviced_suite_1781557880359.jpg",
+    tag: "PLANNED COMMUNITIES",
+    title: "Project selection backed by location study, planning logic, and practical buyer needs",
+    subtitle: "We focus on projects that make sense on the ground, with attention to access, surrounding development, livability, and future appreciation potential.",
+    ctaText: "See All Listings",
     ctaLink: "/properties",
-    badge: "Planned for clarity"
+    badge: "Clarity before commitment"
   },
   {
-    image: "/projects/images/commercial-fountain-atrium.png",
-    tag: "EXPERIENCE THE PROJECT",
-    title: "See the ambience, scale, and movement before you schedule a site visit",
-    subtitle: "Walkthrough-led visuals help visitors understand the atmosphere of the development, from the grand atrium experience to the broader township environment.",
-    ctaText: "Open Featured Listings",
-    ctaLink: "/properties",
-    badge: "Immersive project walkthroughs"
+    image: "/src/assets/images/nidhivan_peaceful_forest_grove_1781557896104.jpg",
+    tag: "GROWTH & CONNECTIVITY",
+    title: "Invest where infrastructure, access, and pilgrimage-driven demand strengthen property value",
+    subtitle: "Better road links, improving regional access, and sustained visitor movement continue to support Vrindavan's real estate potential across multiple segments.",
+    ctaText: "Talk To An Advisor",
+    ctaLink: "/contact",
+    badge: "Research-led recommendations"
   }
 ];
 
@@ -153,7 +153,7 @@ export const HeroSlider: React.FC = () => {
               transition={{ duration: 7, ease: "linear" }}
             />
             {/* Saffron & Charcoal Soft Vignette mask */}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A2E] via-black/30 to-[#6B1A2A]/20"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A] via-[#0F172A]/45 to-[#0F6E56]/10"></div>
           </motion.div>
         </AnimatePresence>
       </div>
@@ -172,24 +172,27 @@ export const HeroSlider: React.FC = () => {
             >
               {/* Dynamic Badges with 3D glowing aura */}
               <div className="flex flex-wrap items-center gap-2.5">
-                <span className="bg-[#C45C1A] text-white text-[10px] sm:text-xs font-bold font-mono tracking-widest px-3 py-1 rounded-full border border-[#C9A84C]/50 shadow-lg shadow-[#C45C1A]/10 flex items-center gap-1.5 uppercase">
-                  <Star className="h-3 w-3 text-[#C9A84C] animate-spin" />
+                <span className="bg-[#0F172A] text-white text-[10px] sm:text-xs font-bold font-mono tracking-widest px-3 py-1 rounded-full border border-[#FACC15]/30 shadow-lg shadow-[#0F172A]/20 flex items-center gap-1.5 uppercase">
+                  <Star className="h-3 w-3 text-[#FACC15] animate-spin" />
                   {SLIDES[currentIndex].tag}
                 </span>
 
-                <span className="bg-[#0E7B6C]/85 backdrop-blur-md text-[#FAF6F0] text-[90%] sm:text-xs font-medium tracking-wide px-3 py-1 rounded-full border border-[#FAF6F0]/25 flex items-center gap-1">
-                  <ShieldCheck className="h-3.5 w-3.5 text-[#C9A84C]" />
+                <span className="bg-[#FACC15] backdrop-blur-md text-[#0F172A] text-[90%] sm:text-xs font-medium tracking-wide px-3 py-1 rounded-full border border-[#FDE68A] flex items-center gap-1">
+                  <ShieldCheck className="h-3.5 w-3.5 text-[#0F172A]" />
                   {SLIDES[currentIndex].badge}
                 </span>
               </div>
 
               {/* Title Transition with premium serif font and text-shadowing */}
-              <h1 className="font-serif text-3xl sm:text-5xl md:text-6xl text-white font-extrabold tracking-wide leading-tight drop-shadow-md">
+              <h1
+                className="font-serif text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-wide leading-tight drop-shadow-md"
+                style={{ color: "#FFFFFF" }}
+              >
                 {SLIDES[currentIndex].title}
               </h1>
 
               {/* Subtitle transition with relaxed spacing */}
-              <p className="text-xs sm:text-sm md:text-base text-[#FAF6F0]/85 font-sans leading-relaxed max-w-2xl font-light tracking-wide py-1 border-l-2 border-[#C9A84C] pl-4">
+              <p className="text-xs sm:text-sm md:text-base text-[#FAF6F0]/85 font-sans leading-relaxed max-w-2xl font-light tracking-wide py-1 border-l-2 border-[#FB923C] pl-4">
                 {SLIDES[currentIndex].subtitle}
               </p>
 
@@ -197,7 +200,7 @@ export const HeroSlider: React.FC = () => {
               <div className="flex flex-wrap items-center gap-3.5 pt-4">
                 <Link
                   to={SLIDES[currentIndex].ctaLink}
-                  className="group inline-flex items-center space-x-2 px-6 py-3.5 bg-gradient-to-r from-[#C45C1A] to-[#D46C2A] text-white hover:to-[#C45C1A] text-xs sm:text-sm font-bold font-serif uppercase tracking-widest rounded-lg shadow-xl shadow-black/30 transition-all duration-300 hover:-translate-y-0.5 border border-[#C9A84C]/40"
+                  className="group inline-flex items-center space-x-2 px-6 py-3.5 bg-gradient-to-r from-[#FB923C] to-[#EA580C] text-white hover:to-[#FB923C] text-xs sm:text-sm font-bold font-serif uppercase tracking-widest rounded-lg shadow-xl shadow-black/30 transition-all duration-300 hover:-translate-y-0.5 border border-[#FDBA74]/40"
                 >
                   <span>{SLIDES[currentIndex].ctaText}</span>
                   <ArrowRight className="h-4 w-4 transform group-hover:translate-x-1.5 transition-transform" />
@@ -209,7 +212,7 @@ export const HeroSlider: React.FC = () => {
                   rel="noopener noreferrer"
                   className="px-5 py-3.5 bg-white/10 hover:bg-white/15 backdrop-blur-md border border-[#FAF6F0]/25 text-white text-xs sm:text-sm font-bold font-mono rounded-lg transition-all flex items-center gap-1.5"
                 >
-                  <MapPin className="h-4 w-4 text-[#C9A84C]" />
+                  <MapPin className="h-4 w-4 text-[#0F6E56]" />
                   Verify Proximity
                 </a>
               </div>
@@ -221,7 +224,7 @@ export const HeroSlider: React.FC = () => {
       {/* Left/Right Arrow Navigation Controls with 3D magnetic feel */}
       <button
         onClick={handlePrev}
-        className="absolute left-4 top-1/2 -translate-y-1/2 z-20 h-10 w-10 sm:h-12 sm:w-12 rounded-full border border-[#FAF6F0]/20 bg-[#11111A]/60 text-white backdrop-blur-md items-center justify-center hidden group-hover:flex hover:bg-[#C45C1A] hover:border-transparent transition-all shadow-xl"
+        className="absolute left-4 top-1/2 -translate-y-1/2 z-20 h-10 w-10 sm:h-12 sm:w-12 rounded-full border border-[#FAF6F0]/20 bg-[#11111A]/60 text-white backdrop-blur-md items-center justify-center hidden group-hover:flex hover:bg-[#FB923C] hover:border-transparent transition-all shadow-xl"
         style={{ contentVisibility: "auto" }}
         aria-label="Previous Banner Slide"
       >
@@ -230,7 +233,7 @@ export const HeroSlider: React.FC = () => {
 
       <button
         onClick={handleNext}
-        className="absolute right-4 top-1/2 -translate-y-1/2 z-20 h-10 w-10 sm:h-12 sm:w-12 rounded-full border border-[#FAF6F0]/20 bg-[#11111A]/60 text-white backdrop-blur-md items-center justify-center hidden group-hover:flex hover:bg-[#C45C1A] hover:border-transparent transition-all shadow-xl"
+        className="absolute right-4 top-1/2 -translate-y-1/2 z-20 h-10 w-10 sm:h-12 sm:w-12 rounded-full border border-[#FAF6F0]/20 bg-[#11111A]/60 text-white backdrop-blur-md items-center justify-center hidden group-hover:flex hover:bg-[#FB923C] hover:border-transparent transition-all shadow-xl"
         style={{ contentVisibility: "auto" }}
         aria-label="Next Banner Slide"
       >
@@ -259,7 +262,7 @@ export const HeroSlider: React.FC = () => {
                 <div className="h-1.5 w-full bg-white/15 rounded-full overflow-hidden mt-1 relative">
                   {isActive && (
                     <motion.div
-                      className="absolute inset-y-0 left-0 bg-[#C45C1A] rounded-full"
+                      className="absolute inset-y-0 left-0 bg-[#FB923C] rounded-full"
                       initial={{ width: "0%" }}
                       animate={{ width: "100%" }}
                       transition={{ duration: 6, ease: "linear" }}
@@ -268,7 +271,7 @@ export const HeroSlider: React.FC = () => {
                   )}
                   {!isActive && (
                     <div className={`absolute inset-full rounded-full transition-all duration-300 ${
-                      idx < currentIndex ? "bg-[#C45C1A] inset-y-0 inset-x-0" : "bg-transparent"
+                      idx < currentIndex ? "bg-[#FB923C] inset-y-0 inset-x-0" : "bg-transparent"
                     }`} />
                   )}
                 </div>

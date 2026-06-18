@@ -251,6 +251,11 @@ export const PropertyDetail: React.FC = () => {
                   <span className="text-[11px] uppercase tracking-[0.28em] text-[#C45C1A] font-bold">{mediaBundle.eyebrow}</span>
                   <h3 className="font-serif text-2xl text-[#6B1A2A] font-bold mt-3">{mediaBundle.title}</h3>
                   <p className="text-sm text-slate-600 mt-3 leading-relaxed">{mediaBundle.summary}</p>
+                  {mediaBundle.contextNote && (
+                    <div className="mt-4 rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+                      {mediaBundle.contextNote}
+                    </div>
+                  )}
                   <div className="space-y-2 mt-5">
                     {mediaBundle.highlights.map((item) => (
                       <div key={item} className="flex items-start gap-2 text-sm text-slate-700">
@@ -290,8 +295,14 @@ export const PropertyDetail: React.FC = () => {
             <div className="bg-white p-6 rounded-2xl border border-[#C9A84C]/20 shadow-sm">
               <div className="flex items-center justify-between gap-4 mb-5">
                 <div>
-                  <h3 className="font-serif font-bold text-xl text-[#6B1A2A]">Brochure Gallery</h3>
-                  <p className="text-sm text-slate-500 mt-1">Images sourced from the supplied PDFs and arranged by context.</p>
+                  <h3 className="font-serif font-bold text-xl text-[#6B1A2A]">
+                    {mediaBundle.isThirdPartyReference ? "Reference Gallery" : "Project Gallery"}
+                  </h3>
+                  <p className="text-sm text-slate-500 mt-1">
+                    {mediaBundle.isThirdPartyReference
+                      ? "This gallery is shown only as contextual reference media and should be used with explicit association."
+                      : "Images sourced from the supplied PDFs and arranged by context."}
+                  </p>
                 </div>
                 <PlayCircle className="h-6 w-6 text-[#C45C1A] shrink-0" />
               </div>
@@ -313,8 +324,14 @@ export const PropertyDetail: React.FC = () => {
             <div className="bg-white p-6 rounded-2xl border border-[#C9A84C]/20 shadow-sm">
               <div className="flex items-center justify-between gap-4 mb-5">
                 <div>
-                  <h3 className="font-serif font-bold text-xl text-[#6B1A2A]">Floor Plans & Layout Sheets</h3>
-                  <p className="text-sm text-slate-500 mt-1">Useful for serious evaluation, not just visual browsing.</p>
+                  <h3 className="font-serif font-bold text-xl text-[#6B1A2A]">
+                    {mediaBundle.isThirdPartyReference ? "Reference Plans & Layout Sheets" : "Floor Plans & Layout Sheets"}
+                  </h3>
+                  <p className="text-sm text-slate-500 mt-1">
+                    {mediaBundle.isThirdPartyReference
+                      ? "Keep these sheets under associated-project or market-reference context."
+                      : "Useful for serious evaluation, not just visual browsing."}
+                  </p>
                 </div>
                 {mediaBundle.sitePlanUrl && (
                   <a href={mediaBundle.sitePlanUrl} target="_blank" rel="noopener noreferrer" className="text-xs font-bold uppercase tracking-wider text-[#C45C1A] underline underline-offset-4">

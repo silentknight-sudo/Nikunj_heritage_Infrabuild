@@ -64,7 +64,10 @@ export const Developers: React.FC = () => {
               {/* Profile Details (7 Columns) */}
               <div className="lg:col-span-7 space-y-6 text-left">
                 <span className="text-[#C9A84C] text-xs font-mono font-bold uppercase tracking-widest block">DEVELOPER MANIFESTO</span>
-                <h2 className="font-serif text-2xl sm:text-4xl font-black text-white leading-tight">
+                <h2
+                  className="font-serif text-2xl sm:text-4xl font-black text-white leading-tight"
+                  style={{ color: "#FFFFFF" }}
+                >
                   Crafting Sacred Spaces with Flawless Legal Certitude
                 </h2>
                 <p className="text-xs sm:text-sm text-[#FAF6F0]/80 leading-relaxed font-light">

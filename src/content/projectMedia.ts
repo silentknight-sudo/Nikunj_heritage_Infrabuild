@@ -10,6 +10,8 @@ export interface ProjectMediaBundle {
   eyebrow: string;
   title: string;
   summary: string;
+  contextNote?: string;
+  isThirdPartyReference?: boolean;
   brochureUrl?: string;
   floorPlanUrl?: string;
   sitePlanUrl?: string;
@@ -22,9 +24,9 @@ export interface ProjectMediaBundle {
 
 const vrindavanOverview: ProjectMediaBundle = {
   eyebrow: "Vrindavan Growth Story",
-  title: "A brochure-backed view of Vrindavan's spiritual and investment momentum",
+  title: "A destination-focused view of Vrindavan's spiritual and investment momentum",
   summary:
-    "We have woven in brochure visuals showing the city's cultural pull, infrastructure growth, Rukmini Vihar positioning, and township planning so visitors can understand both the emotional and practical side of the destination.",
+    "This section presents Vrindavan's cultural pull, infrastructure growth, Rukmini Vihar positioning, and township context so visitors can understand both the emotional and practical side of the destination.",
   brochureUrl: "/projects/documents/vrindavan-investment-docket.pdf",
   videoUrl: "/projects/videos/vrindavan-township-drive.mp4",
   videoPoster: "/projects/images/vrindavan-township-drive-poster.jpg",
@@ -57,18 +59,21 @@ const vrindavanOverview: ProjectMediaBundle = {
   ],
   floorPlans: [
     {
-      title: "Omaxe Eternity Layout",
-      subtitle: "Master layout plan reference",
+      title: "Master Layout Reference",
+      subtitle: "Illustrative township layout reference",
       image: "/projects/images/omaxe-eternity-layout-plan.png"
     }
   ]
 };
 
 const courtyardCommercial: ProjectMediaBundle = {
-  eyebrow: "Courtyard Vrindavan",
-  title: "Commercial visuals, floor plans, and walkthrough media for a sharper sales experience",
+  eyebrow: "Associated Market Reference",
+  title: "Commercial reference visuals and planning sheets",
   summary:
-    "This bundle combines the commercial renders, the two-page brochure, the floor plan booklet, and the walkthrough video so the property detail page feels like a polished digital presentation instead of a text listing.",
+    "This media is kept only as a contextual market reference for commercial scale, frontage, and planning language. It should not be presented as a Nikunj Heritage-owned flagship unless there is a formal association to state clearly.",
+  contextNote:
+    "Reference media only. Use this section only when the project is being shown as an associated project, market study, or authorized partner inventory.",
+  isThirdPartyReference: true,
   brochureUrl: "/projects/documents/courtyard-vrindavan-brochure.pdf",
   floorPlanUrl: "/projects/documents/courtyard-floor-plan-booklet.pdf",
   sitePlanUrl: "/projects/documents/omaxe-eternity-layout-plan.pdf",
@@ -81,8 +86,8 @@ const courtyardCommercial: ProjectMediaBundle = {
   ],
   gallery: [
     {
-      title: "Brochure Cover",
-      subtitle: "Project identity and launch framing",
+      title: "Reference Brochure Cover",
+      subtitle: "Associated commercial project identity",
       image: "/projects/images/courtyard-brochure-cover.png"
     },
     {
@@ -91,8 +96,8 @@ const courtyardCommercial: ProjectMediaBundle = {
       image: "/projects/images/courtyard-highlights-map.png"
     },
     {
-      title: "Exterior Elevation",
-      subtitle: "Primary commercial frontage",
+      title: "Commercial Frontage",
+      subtitle: "Reference for arrival and visibility",
       image: "/projects/images/commercial-exterior-evening.png"
     },
     {

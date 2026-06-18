@@ -96,7 +96,10 @@ export const News: React.FC = () => {
                   MEDIA EXCLUSIVE COVERAGE
                 </span>
 
-                <h2 className="font-serif text-2xl sm:text-4xl font-extrabold tracking-wide leading-tight">
+                <h2
+                  className="font-serif text-2xl sm:text-4xl font-extrabold tracking-wide leading-tight text-[#FB923C]"
+                  style={{ color: "#FB923C" }}
+                >
                   Nikunj Heritage named Premium Spiritual Developer of the Year 2026
                 </h2>
 
