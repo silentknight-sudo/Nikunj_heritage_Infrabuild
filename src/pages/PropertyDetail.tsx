@@ -29,6 +29,8 @@ import { Property } from "../types";
 import { formatPrice } from "../lib/utils";
 import { toast } from "react-hot-toast";
 import { getPropertyMedia } from "../content/projectMedia";
+import { SeoHead } from "../components/seo/SeoHead";
+import { SITE_URL } from "../lib/seo";
 
 export const PropertyDetail: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -123,6 +125,31 @@ export const PropertyDetail: React.FC = () => {
 
   return (
     <div className="bg-[#FAF6F0] min-h-screen text-[#1A1A2E] py-12" id={`property-details-view-${property.id}`}>
+      <SeoHead
+        title={property.seoTitle || `${property.title} | Property in Vrindavan & Mathura | Nikunj Heritage`}
+        description={
+          property.seoDescription ||
+          `${property.title} by Nikunj Heritage Infrabuild. Explore pricing, area, location highlights, amenities, floor plans, and buyer guidance for this Vrindavan-Mathura property opportunity.`
+        }
+        pathname={`/properties/${property.slug}`}
+        image={property.imageUrls?.[0] || `${SITE_URL}/og-cover.jpg`}
+        keywords={[
+          property.title,
+          property.bhk,
+          "Vrindavan property listing",
+          "Mathura property detail",
+          property.reraNumber || "RERA approved property",
+        ]}
+        type="article"
+        schema={{
+          "@context": "https://schema.org",
+          "@type": "RealEstateListing",
+          name: property.title,
+          description: property.seoDescription || property.description,
+          url: `${SITE_URL}/properties/${property.slug}`,
+          image: property.imageUrls,
+        }}
+      />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Navigation Breadcrumb trails */}

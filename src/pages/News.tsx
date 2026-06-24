@@ -6,6 +6,7 @@
 import React from "react";
 import { Newspaper, ArrowRight, Calendar, Bookmark, Share2 } from "lucide-react";
 import { ScrollFade, ThreeDCard, ParticleGlow } from "../components/common/MotionWrapper";
+import { SeoHead } from "../components/seo/SeoHead";
 
 interface PressRelease {
   id: string;
@@ -59,6 +60,17 @@ const NEWS_ARTICLES: PressRelease[] = [
 export const News: React.FC = () => {
   return (
     <div className="bg-[#FAF6F0] min-h-screen py-16 px-4 sm:px-6 lg:px-8 text-[#1A1A2E]" id="news-page-container">
+      <SeoHead
+        title="Vrindavan Real Estate News & Infrastructure Updates | Nikunj Heritage"
+        description="Stay updated on Vrindavan and Mathura real estate news, corridor growth, regulatory developments, and market signals relevant to buyers and investors."
+        pathname="/news"
+        keywords={[
+          "Vrindavan property news",
+          "Mathura real estate updates",
+          "Vrindavan infrastructure news",
+          "Braj investment news",
+        ]}
+      />
       <div className="max-w-7xl mx-auto">
         
         {/* Editorial Heading */}

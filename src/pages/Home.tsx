@@ -40,8 +40,10 @@ import { ROICalculator } from "../components/home/ROICalculator";
 import { PropertyCard } from "../components/property/PropertyCard";
 import { toast } from "react-hot-toast";
 import { HeroSlider } from "../components/home/HeroSlider";
-import { ThreeDCard, ScrollFade, ParticleGlow } from "../components/common/MotionWrapper";
+import { ThreeDCard, ScrollFade, ParticleGlow, SacredPropertyBackdrop } from "../components/common/MotionWrapper";
 import { homeMediaShowcase } from "../content/projectMedia";
+import { SeoHead } from "../components/seo/SeoHead";
+import { DEFAULT_OG_IMAGE, SITE_URL } from "../lib/seo";
 
 export const Home: React.FC = () => {
   const navigate = useNavigate();
@@ -178,7 +180,70 @@ export const Home: React.FC = () => {
   ];
 
   return (
-    <div className="bg-[#FAF6F0] min-h-screen text-[#1A1A2E]" id="homepage-container">
+    <div className="relative bg-[#FAF6F0] min-h-screen text-[#1A1A2E] overflow-hidden" id="homepage-container">
+      <SeoHead
+        title="Nikunj Heritage Infrabuild | Property in Vrindavan, Mathura & Braj Investment Opportunities"
+        description="Explore verified residential apartments, luxury villas, commercial spaces, and plotted developments in Vrindavan and Mathura with Nikunj Heritage Infrabuild."
+        pathname="/"
+        image={DEFAULT_OG_IMAGE}
+        keywords={[
+          "property in Vrindavan",
+          "Vrindavan real estate investment",
+          "Mathura property dealer",
+          "Rukmini Vihar property",
+          "commercial property Mathura",
+        ]}
+        schema={[
+          {
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            "@id": `${SITE_URL}/#organization`,
+            name: "Nikunj Heritage Infrabuild",
+            url: SITE_URL,
+            logo: `${SITE_URL}/logo-512.png`,
+            image: `${SITE_URL}/logo-512.png`,
+            telephone: "+91-9719920888",
+            email: "info@nikunjheritageinfrabuild.com",
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "@id": `${SITE_URL}/#website`,
+            url: SITE_URL,
+            name: "Nikunj Heritage Infrabuild",
+            publisher: {
+              "@id": `${SITE_URL}/#organization`,
+            },
+            potentialAction: {
+              "@type": "SearchAction",
+              target: `${SITE_URL}/properties?search={search_term_string}`,
+              "query-input": "required name=search_term_string",
+            },
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "RealEstateAgent",
+            "@id": `${SITE_URL}/#real-estate`,
+            name: "Nikunj Heritage Infrabuild",
+            url: SITE_URL,
+            logo: `${SITE_URL}/logo-512.png`,
+            image: DEFAULT_OG_IMAGE,
+            telephone: "+91-9719920888",
+            email: "info@nikunjheritageinfrabuild.com",
+            address: {
+              "@type": "PostalAddress",
+              streetAddress: "21/s3, Sec-3 Rukmani Vihar",
+              addressLocality: "Vrindavan",
+              addressRegion: "Uttar Pradesh",
+              postalCode: "281121",
+              addressCountry: "IN",
+            },
+            areaServed: ["Vrindavan", "Mathura", "Govardhan", "Barsana"],
+          },
+        ]}
+      />
+      <SacredPropertyBackdrop />
+      <div className="relative z-10">
       {showEnquiryWidget ? (
         <div className="fixed right-4 top-20 z-50 w-[calc(100vw-2rem)] max-w-sm">
           <div className="rounded-2xl border border-[#C9A84C]/35 bg-white/95 backdrop-blur-md shadow-2xl overflow-hidden">
@@ -774,6 +839,7 @@ export const Home: React.FC = () => {
           </button>
         </form>
       </section>
+      </div>
     </div>
   );
 };

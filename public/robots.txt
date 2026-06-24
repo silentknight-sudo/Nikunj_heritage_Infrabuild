@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://www.nikunjheritageinfrabuilds.com/sitemap.xml
+

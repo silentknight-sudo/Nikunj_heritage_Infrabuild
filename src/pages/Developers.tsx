@@ -6,6 +6,7 @@
 import React from "react";
 import { Building2, ShieldCheck, Award, ThumbsUp, HeartHandshake, Eye, Briefcase, FileCheck } from "lucide-react";
 import { ScrollFade, ThreeDCard, ParticleGlow } from "../components/common/MotionWrapper";
+import { SeoHead } from "../components/seo/SeoHead";
 
 interface DevMilestone {
   year: string;
@@ -39,6 +40,17 @@ const MILESTONES: DevMilestone[] = [
 export const Developers: React.FC = () => {
   return (
     <div className="bg-[#FAF6F0] min-h-screen py-16 px-4 sm:px-6 lg:px-8 text-[#1A1A2E]" id="developers-page">
+      <SeoHead
+        title="Developers, Legal Standards & Delivery Quality | Nikunj Heritage Infrabuild"
+        description="Understand Nikunj Heritage Infrabuild’s delivery standards, legal checks, build philosophy, and development credibility across Vrindavan and Mathura projects."
+        pathname="/developers"
+        keywords={[
+          "Vrindavan developer",
+          "RERA approved developer Vrindavan",
+          "Mathura real estate developer",
+          "legal property developer Vrindavan",
+        ]}
+      />
       <div className="max-w-7xl mx-auto">
         
         {/* Title Block */}

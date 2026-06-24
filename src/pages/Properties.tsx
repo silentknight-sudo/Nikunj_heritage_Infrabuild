@@ -12,6 +12,7 @@ import { PropertyCard } from "../components/property/PropertyCard";
 import { PropertyCompare } from "../components/property/PropertyCompare";
 import { formatPrice } from "../lib/utils";
 import { toast } from "react-hot-toast";
+import { SeoHead } from "../components/seo/SeoHead";
 
 export const Properties: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -160,6 +161,18 @@ export const Properties: React.FC = () => {
 
   return (
     <div className="bg-[#FAF6F0] min-h-screen text-[#1A1A2E] py-10" id="properties-directory-container">
+      <SeoHead
+        title="Properties in Vrindavan & Mathura | Flats, Villas, Plots & Commercial Spaces"
+        description="Browse residential apartments, luxury villas, commercial spaces, and plotted developments in Vrindavan, Mathura, Govardhan, and Barsana."
+        pathname="/properties"
+        keywords={[
+          "flats in Vrindavan",
+          "villa in Vrindavan",
+          "plots in Mathura",
+          "commercial property in Vrindavan",
+          "Govardhan land investment",
+        ]}
+      />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header Titles */}

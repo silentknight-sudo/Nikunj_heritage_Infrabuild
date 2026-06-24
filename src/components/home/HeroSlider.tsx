@@ -66,7 +66,7 @@ const SLIDES: SlideData[] = [
     title: "Invest where infrastructure, access, and pilgrimage-driven demand strengthen property value",
     subtitle: "Better road links, improving regional access, and sustained visitor movement continue to support Vrindavan's real estate potential across multiple segments.",
     ctaText: "Talk To An Advisor",
-    ctaLink: "/contact",
+    ctaLink: "/contact-us",
     badge: "Research-led recommendations"
   }
 ];

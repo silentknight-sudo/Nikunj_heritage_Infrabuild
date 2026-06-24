@@ -170,3 +170,42 @@ export const ParticleGlow: React.FC<{ color?: string }> = ({ color = "#C9A84C" }
     </div>
   );
 };
+
+export const SacredPropertyBackdrop: React.FC = () => {
+  return (
+    <div
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-0 overflow-hidden"
+    >
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(15,110,86,0.08),transparent_28%),linear-gradient(180deg,rgba(250,246,240,0.96),rgba(248,250,252,0.92))]" />
+      <motion.div
+        className="absolute -left-24 top-24 h-72 w-72 rounded-full blur-3xl"
+        style={{ background: "rgba(251, 146, 60, 0.14)" }}
+        animate={{ x: [0, 30, -10, 0], y: [0, 20, 35, 0], scale: [1, 1.06, 0.98, 1] }}
+        transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <motion.div
+        className="absolute right-0 top-1/3 h-80 w-80 rounded-full blur-3xl"
+        style={{ background: "rgba(15, 110, 86, 0.12)" }}
+        animate={{ x: [0, -35, 15, 0], y: [0, 25, -20, 0], scale: [1, 0.95, 1.04, 1] }}
+        transition={{ duration: 22, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <motion.div
+        className="absolute inset-x-0 top-16 h-[520px] opacity-[0.09]"
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(201,168,76,0.7) 1px, transparent 1px), linear-gradient(90deg, rgba(201,168,76,0.7) 1px, transparent 1px)",
+          backgroundSize: "72px 72px",
+          maskImage: "linear-gradient(180deg, black, transparent)",
+        }}
+        animate={{ backgroundPositionX: ["0px", "72px"], backgroundPositionY: ["0px", "36px"] }}
+        transition={{ duration: 16, repeat: Infinity, ease: "linear" }}
+      />
+      <motion.div
+        className="absolute bottom-20 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#C9A84C]/40 to-transparent"
+        animate={{ opacity: [0.35, 0.8, 0.35], scaleX: [0.94, 1, 0.94] }}
+        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+      />
+    </div>
+  );
+};
