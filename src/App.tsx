@@ -32,6 +32,7 @@ import { CompareProperties } from "./pages/CompareProperties";
 import { News } from "./pages/News";
 import { Developers } from "./pages/Developers";
 import { LifeAtNHI } from "./pages/LifeAtNHI";
+import { SeoLandingPage } from "./pages/SeoLandingPage";
 
 // Automatic Boot seed initializer
 import { runDatabaseSeed } from "./lib/seed";
@@ -77,6 +78,9 @@ export default function App() {
               <Route path="/news" element={<News />} />
               <Route path="/developers" element={<Developers />} />
               <Route path="/life-at-nhi" element={<LifeAtNHI />} />
+              <Route path="/mathura-real-estate" element={<SeoLandingPage page="/mathura-real-estate" />} />
+              <Route path="/vrindavan-real-estate" element={<SeoLandingPage page="/vrindavan-real-estate" />} />
+              <Route path="/properties-in-vrindavan-mathura" element={<SeoLandingPage page="/properties-in-vrindavan-mathura" />} />
               <Route path="/pages/:slug" element={<DynamicPage />} />
               <Route path="/admin" element={<AdminDashboard />} />
             </Routes>

@@ -82,6 +82,24 @@ const routeMeta: Record<string, { title: string; description: string; keywords: 
       "Explore the community experience, spiritual setting, and lifestyle perspectives behind the Nikunj Heritage Infrabuild brand.",
     keywords: ["life at nikunj heritage", "Vrindavan buyer lifestyle"],
   },
+  "/mathura-real-estate": {
+    title: "Mathura Real Estate | Property in Mathura, Plots, Villas & Commercial Spaces",
+    description:
+      "Explore Mathura real estate opportunities including residential properties, commercial spaces, plots, and investment-ready locations near Vrindavan corridors.",
+    keywords: ["Mathura real estate", "Mathura realestate", "property in Mathura", "Mathura property", "plots in Mathura"],
+  },
+  "/vrindavan-real-estate": {
+    title: "Vrindavan Real Estate | Properties, Villas, Flats & Plots in Vrindavan",
+    description:
+      "Find Vrindavan real estate opportunities including flats, villas, plots, spiritual retreats, and commercial property near Banke Bihari, Prem Mandir, ISKCON, and Rukmini Vihar.",
+    keywords: ["Vrindavan real estate", "Vrindavan realestate", "property in Vrindavan", "properties in Vrindavan", "plots in Vrindavan"],
+  },
+  "/properties-in-vrindavan-mathura": {
+    title: "Properties in Vrindavan and Mathura | Flats, Villas, Plots & Commercial Property",
+    description:
+      "Compare properties in Vrindavan and Mathura including flats, villas, plots, commercial spaces, and investment-ready locations.",
+    keywords: ["properties in Vrindavan and Mathura", "property in Vrindavan and Mathura", "Mathura Vrindavan properties"],
+  },
   "/admin": {
     title: "Admin Panel | Nikunj Heritage Infrabuild",
     description: "Administrative access for Nikunj Heritage Infrabuild content, leads, and publishing workflows.",

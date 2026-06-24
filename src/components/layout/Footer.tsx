@@ -116,6 +116,15 @@ export const Footer: React.FC = () => {
               <li>
                 <Link to="/testimonials" className="hover:text-[#FB923C] transition-colors">• Happy Customers</Link>
               </li>
+              <li>
+                <Link to="/vrindavan-real-estate" className="hover:text-[#FB923C] transition-colors">• Vrindavan Real Estate</Link>
+              </li>
+              <li>
+                <Link to="/mathura-real-estate" className="hover:text-[#FB923C] transition-colors">• Mathura Real Estate</Link>
+              </li>
+              <li>
+                <Link to="/properties-in-vrindavan-mathura" className="hover:text-[#FB923C] transition-colors">• Properties in Vrindavan & Mathura</Link>
+              </li>
             </ul>
           </div>
 
