@@ -5,10 +5,22 @@
 
 import React from "react";
 import { Award, ShieldCheck, Compass, Heart, Users, MapPin, Sparkles } from "lucide-react";
+import { SeoHead } from "../components/seo/SeoHead";
 
 export const AboutUs: React.FC = () => {
   return (
     <div className="bg-[#FAF6F0] min-h-screen text-[#1A1A2E]" id="about-us-page-box">
+      <SeoHead
+        title="About Nikunj Heritage Infrabuild | Trusted Vrindavan Real Estate Guidance"
+        description="Learn about Nikunj Heritage Infrabuild, our legal diligence, spiritual destination understanding, and buyer-first property guidance across Vrindavan and Mathura."
+        pathname="/about-us"
+        keywords={[
+          "Nikunj Heritage Infrabuild",
+          "Vrindavan real estate company",
+          "Mathura property consultant",
+          "RERA property guidance Vrindavan",
+        ]}
+      />
       
       {/* Editorial Saffron header banner */}
       <div className="relative py-20 bg-[#1A1A2E] text-white border-b-2 border-[#C9A84C]/45 overflow-hidden">

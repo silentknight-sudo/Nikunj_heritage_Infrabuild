@@ -10,6 +10,8 @@ import { getBlogBySlug } from "../lib/firestore";
 import { Blog } from "../types";
 import { formatDate } from "../lib/utils";
 import { toast } from "react-hot-toast";
+import { SeoHead } from "../components/seo/SeoHead";
+import { SITE_URL } from "../lib/seo";
 
 export const BlogDetail: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -63,6 +65,44 @@ export const BlogDetail: React.FC = () => {
 
   return (
     <div className="bg-[#FAF6F0] min-h-screen text-[#1A1A2E] py-12" id={`blog-pane-${blog.id}`}>
+      <SeoHead
+        title={blog.seoTitle || `${blog.title} | Nikunj Heritage Infrabuild Blog`}
+        description={
+          blog.seoDescription ||
+          `${blog.title}. Read property insights, legal guidance, and Vrindavan-Mathura real estate perspectives from Nikunj Heritage Infrabuild.`
+        }
+        pathname={`/blogs/${blog.slug}`}
+        image={blog.coverUrl || `${SITE_URL}/og-cover.jpg`}
+        keywords={[
+          blog.title,
+          blog.category,
+          "Vrindavan real estate blog",
+          "Mathura property insights",
+        ]}
+        type="article"
+        schema={{
+          "@context": "https://schema.org",
+          "@type": "BlogPosting",
+          headline: blog.title,
+          image: blog.coverUrl,
+          datePublished: formatDate(blog.createdAt),
+          dateModified: formatDate(blog.updatedAt || blog.createdAt),
+          author: {
+            "@type": "Organization",
+            name: "Nikunj Heritage Infrabuild",
+          },
+          publisher: {
+            "@type": "Organization",
+            name: "Nikunj Heritage Infrabuild",
+            logo: {
+              "@type": "ImageObject",
+              url: `${SITE_URL}/logo-512.png`,
+            },
+          },
+          description: blog.seoDescription || blog.content.slice(0, 160),
+          mainEntityOfPage: `${SITE_URL}/blogs/${blog.slug}`,
+        }}
+      />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Back navigation link */}

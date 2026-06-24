@@ -7,6 +7,7 @@ import React, { useState } from "react";
 import { MapPin, Phone, Mail, Clock, HelpCircle, Send } from "lucide-react";
 import { createLead } from "../lib/firestore";
 import { toast } from "react-hot-toast";
+import { SeoHead } from "../components/seo/SeoHead";
 
 export const ContactUs: React.FC = () => {
   const [name, setName] = useState("");
@@ -50,6 +51,17 @@ export const ContactUs: React.FC = () => {
 
   return (
     <div className="bg-[#FAF6F0] min-h-screen text-[#1A1A2E] py-12" id="contact-us-page-box">
+      <SeoHead
+        title="Contact Nikunj Heritage Infrabuild | Vrindavan Office, Site Visit & Enquiry"
+        description="Get in touch with Nikunj Heritage Infrabuild for property enquiries, site visits, legal guidance, and real estate support in Vrindavan and Mathura."
+        pathname="/contact-us"
+        keywords={[
+          "contact Vrindavan property consultant",
+          "Vrindavan property enquiry",
+          "Mathura site visit",
+          "Nikunj Heritage contact",
+        ]}
+      />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header Section */}

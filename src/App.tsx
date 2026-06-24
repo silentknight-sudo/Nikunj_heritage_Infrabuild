@@ -14,6 +14,7 @@ import { AuthProvider } from "./lib/auth";
 // Components & Page Views
 import { Navbar } from "./components/layout/Navbar";
 import { Footer } from "./components/layout/Footer";
+import { AppSeo } from "./components/seo/AppSeo";
 import { Home } from "./pages/Home";
 import { Properties } from "./pages/Properties";
 import { PropertyDetail } from "./pages/PropertyDetail";
@@ -54,6 +55,7 @@ export default function App() {
     <AuthProvider>
       <Router>
         <div className="flex flex-col min-h-screen bg-[#F8FAFC] font-sans text-[#0F172A]">
+          <AppSeo />
           {/* Main sticky header */}
           <Navbar />
 
