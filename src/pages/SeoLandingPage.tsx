@@ -163,22 +163,22 @@ export const SeoLandingPage: React.FC<{ page: keyof typeof landingPages }> = ({ 
           className="absolute inset-0 h-full w-full object-cover opacity-30"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-[#0F172A] via-[#0F172A]/80 to-[#0F172A]/30" />
-        <div className="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+        <div className="relative mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
           <span className="text-xs font-bold uppercase tracking-[0.28em] text-[#FACC15]">{data.eyebrow}</span>
-          <h1 className="mt-4 max-w-4xl font-serif text-4xl font-black leading-tight text-white sm:text-5xl md:text-6xl">
+          <h1 className="mt-4 max-w-4xl font-serif text-3xl font-black leading-tight text-white sm:text-5xl md:text-6xl">
             {data.h1}
           </h1>
-          <p className="mt-5 max-w-2xl text-base leading-8 text-white/85">{data.intro}</p>
-          <div className="mt-8 flex flex-wrap gap-3">
+          <p className="mt-5 max-w-2xl text-sm leading-7 text-white/85 sm:text-base sm:leading-8">{data.intro}</p>
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
             <Link
               to="/properties"
-              className="inline-flex items-center gap-2 rounded-lg bg-[#FB923C] px-5 py-3 text-sm font-bold uppercase tracking-wider text-white transition-colors hover:bg-[#EA580C]"
+              className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#FB923C] px-5 py-3 text-sm font-bold uppercase tracking-wider text-white transition-colors hover:bg-[#EA580C]"
             >
               Explore Properties <ArrowRight className="h-4 w-4" />
             </Link>
             <Link
               to="/contact-us"
-              className="inline-flex items-center gap-2 rounded-lg border border-white/25 bg-white/10 px-5 py-3 text-sm font-bold uppercase tracking-wider text-white backdrop-blur transition-colors hover:bg-white/15"
+              className="inline-flex items-center justify-center gap-2 rounded-lg border border-white/25 bg-white/10 px-5 py-3 text-sm font-bold uppercase tracking-wider text-white backdrop-blur transition-colors hover:bg-white/15"
             >
               Book Consultation
             </Link>

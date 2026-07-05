@@ -140,21 +140,21 @@ export const Navbar: React.FC = () => {
     <>
       {/* 1. Main Premium Fixed Header bar matching the mockup */}
       <nav 
-        className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-100 shadow-sm transition-all duration-300 h-20 flex items-center select-none" 
+        className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-100 shadow-sm transition-all duration-300 h-16 sm:h-20 flex items-center select-none" 
         id="nh-sticky-header"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex justify-between items-center">
           
           {/* Logo Brand Sector matching the screenshot */}
-          <Link to="/" className="flex items-center space-x-3 group shrink-0" id="navbar-brand-link">
-            <div className="bg-[#0F172A] p-1.5 rounded-full border border-[#FACC15]/45 flex items-center justify-center shadow-md transition-transform duration-300 group-hover:scale-105">
-              <BrandLogoSVG className="h-11 w-11" />
+          <Link to="/" className="flex min-w-0 items-center space-x-2 sm:space-x-3 group shrink-0" id="navbar-brand-link">
+            <div className="bg-[#0F172A] p-1 rounded-full border border-[#FACC15]/45 flex items-center justify-center shadow-md transition-transform duration-300 group-hover:scale-105 sm:p-1.5">
+              <BrandLogoSVG className="h-9 w-9 sm:h-11 sm:w-11" />
             </div>
-            <div className="text-left font-serif">
-                <span className="block text-base sm:text-[19px] font-black tracking-wide text-[#0F172A] leading-none uppercase">
+            <div className="min-w-0 text-left font-serif">
+                <span className="block max-w-[9.5rem] truncate text-sm sm:max-w-none sm:text-[19px] font-black tracking-wide text-[#0F172A] leading-none uppercase">
                 Nikunj Heritage
               </span>
-              <span className="block text-[9px] uppercase tracking-[0.25em] text-[#FB923C] font-extrabold mt-1">
+              <span className="block text-[8px] sm:text-[9px] uppercase tracking-[0.22em] sm:tracking-[0.25em] text-[#FB923C] font-extrabold mt-1">
                 INFRABUILD
               </span>
             </div>
@@ -192,12 +192,12 @@ export const Navbar: React.FC = () => {
           </div>
 
           {/* Quick Actions & Icons matching the mockup */}
-          <div className="flex items-center space-x-2.5 sm:space-x-4">
+          <div className="flex items-center space-x-1.5 sm:space-x-4">
             
             {/* Heart Wishlist Trigger */}
             <button
               onClick={() => setIsFavoritesOpen(true)}
-              className="p-2.5 text-slate-700 hover:text-rose-600 transition-colors duration-200 relative focus:outline-none"
+              className="p-2 sm:p-2.5 text-slate-700 hover:text-rose-600 transition-colors duration-200 relative focus:outline-none"
               aria-label="Wishlist drawer trigger"
             >
               <Heart className={`h-5 w-5 ${wishlistIds.length > 0 ? "fill-rose-500 text-rose-500 animate-pulse" : ""}`} />
@@ -244,7 +244,7 @@ export const Navbar: React.FC = () => {
               href={giftToWhatsApp("Pranam Nikunj Heritage! I saw your catalog and would like to Book a spiritual site visit to Vrindavan.")}
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-[#FB923C] hover:bg-[#EA580C] text-white px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg text-xs sm:text-[13px] font-serif font-black uppercase tracking-wider flex items-center space-x-1.5 shadow transition-all duration-300 transform hover:-translate-y-0.5"
+              className="hidden bg-[#FB923C] hover:bg-[#EA580C] text-white px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg text-xs sm:text-[13px] font-serif font-black uppercase tracking-wider sm:flex items-center space-x-1.5 shadow transition-all duration-300 transform hover:-translate-y-0.5"
             >
               <Phone className="h-3.5 w-3.5 shrink-0 animate-bounce" />
               <span>Book Visit</span>
@@ -272,11 +272,11 @@ export const Navbar: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -15 }}
             transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed inset-0 z-40 bg-white flex flex-col justify-between pt-20 h-screen overflow-y-auto select-none"
+            className="fixed inset-0 z-40 bg-white flex flex-col justify-between pt-16 sm:pt-20 h-[100svh] overflow-y-auto select-none"
             id="fullscreen-mega-portal"
           >
             {/* Core central elements */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-12 flex-grow flex flex-col justify-center">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-8 sm:py-12 flex-grow flex flex-col justify-center">
               <div className="grid grid-cols-1 md:grid-cols-12 gap-12 items-start">
                 
                 {/* Brand Showcase Block (4-columns) */}
@@ -510,7 +510,7 @@ export const Navbar: React.FC = () => {
               className="absolute inset-0 bg-black/50 backdrop-blur-sm"
             />
 
-            <div className="absolute inset-y-0 right-0 max-w-full pl-10 flex">
+            <div className="absolute inset-y-0 right-0 flex max-w-full pl-0 sm:pl-10">
               <motion.div
                 initial={{ x: "100%" }}
                 animate={{ x: "0%" }}
@@ -519,7 +519,7 @@ export const Navbar: React.FC = () => {
                 className="w-screen max-w-md bg-white shadow-2xl flex flex-col justify-between"
               >
                 {/* Header */}
-                <div className="px-6 py-5 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+                <div className="px-4 py-4 sm:px-6 sm:py-5 border-b border-slate-100 flex items-center justify-between bg-slate-50">
                   <div className="flex items-center gap-2">
                     <Heart className="h-5 w-5 text-rose-500 fill-rose-500" />
                     <h3 className="font-serif text-lg font-black text-[#1A1A2E] uppercase tracking-wide">
@@ -535,7 +535,7 @@ export const Navbar: React.FC = () => {
                 </div>
 
                 {/* Body Bookmarks */}
-                <div className="flex-grow overflow-y-auto px-6 py-4 space-y-4">
+                <div className="flex-grow overflow-y-auto px-4 py-4 sm:px-6 space-y-4">
                   {likedProperties.length === 0 ? (
                     <div className="h-64 flex flex-col items-center justify-center text-center text-slate-400 space-y-3">
                       <Heart className="h-10 w-10 text-slate-300 stroke-1" />
