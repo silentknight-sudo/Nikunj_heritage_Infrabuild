@@ -68,14 +68,14 @@ export const AboutUs: React.FC = () => {
         {/* Brand visual showcase */}
         <div className="relative rounded-2xl overflow-hidden shadow-xl aspect-video md:aspect-square">
           <img
-            src="https://images.unsplash.com/photo-1514222134-b57cbb8ce073?auto=format&fit=crop&q=80&w=1000"
-            alt="Mathura Ghats"
+            src="/projects/images/vrindavan-cover.png"
+            alt="Vrindavan temple skyline and Braj heritage visual"
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#6B1A2A]/80 via-transparent to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-[#6B1A2A]/85 via-[#6B1A2A]/10 to-transparent"></div>
           <div className="absolute bottom-6 left-6 text-white max-w-sm">
-            <span className="font-serif text-xl sm:text-2xl font-bold block mb-1">Tradition of Trust</span>
-            <span className="text-xs text-[#C9A84C] font-mono uppercase tracking-widest font-semibold">1200+ Pilgrim Registrations Cleared</span>
+            <span className="font-serif text-xl sm:text-2xl font-bold block mb-1">Mathura-Vrindavan Roots</span>
+            <span className="text-xs text-[#C9A84C] font-mono uppercase tracking-widest font-semibold">Braj heritage, temple proximity, verified property guidance</span>
           </div>
         </div>
       </section>
