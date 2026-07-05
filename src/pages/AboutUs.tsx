@@ -128,33 +128,37 @@ export const AboutUs: React.FC = () => {
           <h3 className="font-serif text-2xl sm:text-3xl text-[#6B1A2A] font-bold">The Guardians of Nikunj</h3>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 max-w-3xl mx-auto">
-          <div className="bg-white p-6 rounded-xl border border-[#C9A84C]/25 text-center space-y-4 shadow-sm hover:shadow-md transition-all">
-            <img
-              src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=400"
-              alt="Shri Nikunj Chaturvedi"
-              className="w-24 h-24 rounded-full object-cover mx-auto border-2 border-[#C9A84C]"
-            />
-            <div>
-              <h4 className="font-serif text-lg font-bold text-[#1A1A2E]">Shri Nikunj Chaturvedi</h4>
-              <span className="block text-xs text-[#C45C1A] font-mono uppercase tracking-widest font-semibold">Managing Director</span>
-              <p className="text-xs text-slate-500 mt-2 font-sans max-w-xs mx-auto leading-relaxed">
-                Over 18 years driving residential developments inside Mathura district. Deep believer of standard Braj preservation.
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 max-w-5xl mx-auto">
+          <div className="bg-white rounded-xl border border-[#C9A84C]/25 overflow-hidden shadow-sm hover:shadow-lg transition-all">
+            <div className="aspect-[4/5] bg-[#0F172A] overflow-hidden">
+              <img
+                src="/team/shailendra-tiwari-founder.jpg"
+                alt="Shailendra Tiwari, Managing Director of Nikunj Heritage Infrabuild"
+                className="w-full h-full object-cover object-top"
+              />
+            </div>
+            <div className="p-6 text-center">
+              <span className="block text-[10px] text-[#C45C1A] font-mono uppercase tracking-[0.22em] font-bold">Managing Director</span>
+              <h4 className="font-serif text-2xl font-bold text-[#1A1A2E] mt-2">Shailendra Tiwari</h4>
+              <p className="text-sm text-slate-500 mt-3 font-sans max-w-sm mx-auto leading-relaxed">
+                Leads Nikunj Heritage Infrabuild with a buyer-first focus on verified Mathura-Vrindavan real estate, transparent advisory, and long-term relationship building.
               </p>
             </div>
           </div>
 
-          <div className="bg-white p-6 rounded-xl border border-[#C9A84C]/25 text-center space-y-4 shadow-sm hover:shadow-md transition-all">
-            <img
-              src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=400"
-              alt="Shri V. S. Pal"
-              className="w-24 h-24 rounded-full object-cover mx-auto border-2 border-[#C9A84C]"
-            />
-            <div>
-              <h4 className="font-serif text-lg font-bold text-[#1A1A2E]">Shri V. S. Pal</h4>
-              <span className="block text-xs text-[#C45C1A] font-mono uppercase tracking-widest font-semibold">Director of Operations</span>
-              <p className="text-xs text-slate-500 mt-2 font-sans max-w-xs mx-auto leading-relaxed">
-                Architectural and legal expert ensuring all commercial conversions and master deeds meet direct RERA audits.
+          <div className="bg-white rounded-xl border border-[#C9A84C]/25 overflow-hidden shadow-sm hover:shadow-lg transition-all">
+            <div className="aspect-[4/5] bg-[#0F172A] overflow-hidden">
+              <img
+                src="/team/jitendra-tiwari-founder-realestate.jpg"
+                alt="Jitendra Tiwari, Co-founder of Nikunj Heritage Infrabuild"
+                className="w-full h-full object-cover object-top"
+              />
+            </div>
+            <div className="p-6 text-center">
+              <span className="block text-[10px] text-[#C45C1A] font-mono uppercase tracking-[0.22em] font-bold">Co-founder</span>
+              <h4 className="font-serif text-2xl font-bold text-[#1A1A2E] mt-2">Jitendra Tiwari</h4>
+              <p className="text-sm text-slate-500 mt-3 font-sans max-w-sm mx-auto leading-relaxed">
+                Supports client guidance, ground coordination, and practical project evaluation across residential, commercial, and plotted opportunities in Brajbhoomi.
               </p>
             </div>
           </div>
