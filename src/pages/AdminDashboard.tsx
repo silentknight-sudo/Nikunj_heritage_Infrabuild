@@ -21,8 +21,20 @@ import {
   Clock,
   LogOut,
   Save,
-  AlertCircle
+  AlertCircle,
+  BarChart3,
+  Bell,
+  BriefcaseBusiness,
+  CalendarCheck,
+  CircleDollarSign,
+  ClipboardList,
+  Gauge,
+  Globe2,
+  PhoneCall,
+  ShieldCheck,
+  TrendingUp
 } from "lucide-react";
+import { motion } from "motion/react";
 import { useAuth } from "../lib/auth";
 import {
   getProperties,
@@ -396,25 +408,72 @@ export const AdminDashboard: React.FC = () => {
     );
   }
 
+  const newLeadsCount = leads.filter((lead) => lead.status === LeadStatus.NEW).length;
+  const contactedLeadsCount = leads.filter((lead) => lead.status === LeadStatus.CONTACTED).length;
+  const siteVisitCount = leads.filter((lead) => lead.status === LeadStatus.SITE_VISIT).length;
+  const activeListingsCount = properties.filter((property) => property.status !== PropertyStatus.SOLD_OUT).length;
+  const totalInventoryValue = properties.reduce((sum, property) => sum + (Number(property.price) || 0), 0);
+  const featuredCount = properties.filter((property) => property.featured || property.newLaunch).length;
+
+  const adminStats = [
+    {
+      label: "Active Inventory",
+      value: activeListingsCount.toString(),
+      helper: `${featuredCount} featured/new launch`,
+      icon: Building,
+      tone: "from-[#0F6E56] to-[#0F172A]"
+    },
+    {
+      label: "Total Pipeline",
+      value: leads.length.toString(),
+      helper: `${newLeadsCount} fresh enquiries`,
+      icon: Users,
+      tone: "from-[#FB923C] to-[#C45C1A]"
+    },
+    {
+      label: "Portfolio Value",
+      value: formatPrice(totalInventoryValue || 0),
+      helper: "Approx listed asset value",
+      icon: CircleDollarSign,
+      tone: "from-[#6B1A2A] to-[#1A1A2E]"
+    },
+    {
+      label: "Published Content",
+      value: (blogs.length + pages.length).toString(),
+      helper: `${blogs.length} blogs, ${pages.length} pages`,
+      icon: Globe2,
+      tone: "from-[#C9A84C] to-[#C45C1A]"
+    }
+  ];
+
+  const pipelineStats = [
+    { label: "New", value: newLeadsCount, color: "bg-orange-500" },
+    { label: "Contacted", value: contactedLeadsCount, color: "bg-teal-600" },
+    { label: "Site Visit", value: siteVisitCount, color: "bg-indigo-600" },
+    { label: "Closed", value: leads.filter((lead) => lead.status === LeadStatus.CLOSED).length, color: "bg-slate-700" }
+  ];
+
   return (
-    <div className="bg-slate-50 min-h-screen text-slate-800 flex flex-col md:flex-row" id="admin-panel-canvas">
+    <div className="min-h-screen bg-[#F8FAFC] text-slate-800 flex flex-col md:flex-row" id="admin-panel-canvas">
       
       {/* Sidebar Controller */}
-      <aside className="bg-[#1A1A2E] text-[#FAF6F0] w-full md:w-64 shrink-0 p-5 border-r border-[#C9A84C]/40 md:min-h-screen flex flex-col justify-between" id="admin-navigation-rail">
+      <aside className="bg-[#0F172A] text-[#FAF6F0] w-full md:w-72 shrink-0 p-4 sm:p-5 border-r border-[#C9A84C]/30 md:min-h-screen flex flex-col justify-between" id="admin-navigation-rail">
         <div>
-          <div className="flex items-center space-x-3 mb-8 border-b border-[#FAF6F0]/10 pb-4">
-            <LayoutDashboard className="h-6 w-6 text-[#C9A84C]" />
+          <div className="flex items-center space-x-3 mb-6 border-b border-[#FAF6F0]/10 pb-4">
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#FB923C]/15 text-[#FB923C]">
+              <LayoutDashboard className="h-6 w-6" />
+            </div>
             <div>
-              <span className="block font-serif text-base font-bold text-[#faf6f0]">Nikunj Ledger</span>
-              <span className="block text-[9px] uppercase tracking-widest text-[#C45C1A] font-bold">Systems CMS Panel</span>
+              <span className="block font-serif text-base font-black text-[#faf6f0]">Nikunj Command</span>
+              <span className="block text-[9px] uppercase tracking-widest text-[#FACC15] font-bold">Advanced CMS & CRM</span>
             </div>
           </div>
 
-          <nav className="space-y-1">
+          <nav className="grid grid-cols-2 gap-2 md:block md:space-y-1">
             <button
               onClick={() => setActiveTab("properties")}
-              className={`w-full text-left px-3.5 py-3 rounded text-xs font-semibold uppercase tracking-wider flex items-center space-x-2 transition ${
-                activeTab === "properties" ? "bg-[#C45C1A] text-white shadow" : "hover:bg-[#FAF6F0]/5 text-slate-300"
+              className={`w-full text-left px-3.5 py-3 rounded-xl text-[11px] font-semibold uppercase tracking-wider flex items-center space-x-2 transition ${
+                activeTab === "properties" ? "bg-[#FB923C] text-white shadow" : "hover:bg-[#FAF6F0]/5 text-slate-300"
               }`}
             >
               <Building className="h-4.5 w-4.5" />
@@ -422,17 +481,35 @@ export const AdminDashboard: React.FC = () => {
             </button>
             <button
               onClick={() => setActiveTab("leads")}
-              className={`w-full text-left px-3.5 py-3 rounded text-xs font-semibold uppercase tracking-wider flex items-center space-x-2 transition ${
-                activeTab === "leads" ? "bg-[#C45C1A] text-white shadow" : "hover:bg-[#FAF6F0]/5 text-slate-300"
+              className={`w-full text-left px-3.5 py-3 rounded-xl text-[11px] font-semibold uppercase tracking-wider flex items-center space-x-2 transition ${
+                activeTab === "leads" ? "bg-[#FB923C] text-white shadow" : "hover:bg-[#FAF6F0]/5 text-slate-300"
               }`}
             >
               <Users className="h-4.5 w-4.5" />
               <span>Leads ({leads.filter(l => l.status === LeadStatus.NEW).length})</span>
             </button>
             <button
+              onClick={() => setActiveTab("categories")}
+              className={`w-full text-left px-3.5 py-3 rounded-xl text-[11px] font-semibold uppercase tracking-wider flex items-center space-x-2 transition ${
+                activeTab === "categories" ? "bg-[#FB923C] text-white shadow" : "hover:bg-[#FAF6F0]/5 text-slate-300"
+              }`}
+            >
+              <Layers className="h-4.5 w-4.5" />
+              <span>Categories</span>
+            </button>
+            <button
+              onClick={() => setActiveTab("locations")}
+              className={`w-full text-left px-3.5 py-3 rounded-xl text-[11px] font-semibold uppercase tracking-wider flex items-center space-x-2 transition ${
+                activeTab === "locations" ? "bg-[#FB923C] text-white shadow" : "hover:bg-[#FAF6F0]/5 text-slate-300"
+              }`}
+            >
+              <MapPin className="h-4.5 w-4.5" />
+              <span>Locations</span>
+            </button>
+            <button
               onClick={() => setActiveTab("blogs")}
-              className={`w-full text-left px-3.5 py-3 rounded text-xs font-semibold uppercase tracking-wider flex items-center space-x-2 transition ${
-                activeTab === "blogs" ? "bg-[#C45C1A] text-white shadow" : "hover:bg-[#FAF6F0]/5 text-slate-300"
+              className={`w-full text-left px-3.5 py-3 rounded-xl text-[11px] font-semibold uppercase tracking-wider flex items-center space-x-2 transition ${
+                activeTab === "blogs" ? "bg-[#FB923C] text-white shadow" : "hover:bg-[#FAF6F0]/5 text-slate-300"
               }`}
             >
               <BookOpen className="h-4.5 w-4.5" />
@@ -440,8 +517,8 @@ export const AdminDashboard: React.FC = () => {
             </button>
             <button
               onClick={() => setActiveTab("pages")}
-              className={`w-full text-left px-3.5 py-3 rounded text-xs font-semibold uppercase tracking-wider flex items-center space-x-2 transition ${
-                activeTab === "pages" ? "bg-[#C45C1A] text-white shadow" : "hover:bg-[#FAF6F0]/5 text-slate-300"
+              className={`w-full text-left px-3.5 py-3 rounded-xl text-[11px] font-semibold uppercase tracking-wider flex items-center space-x-2 transition ${
+                activeTab === "pages" ? "bg-[#FB923C] text-white shadow" : "hover:bg-[#FAF6F0]/5 text-slate-300"
               }`}
             >
               <FileText className="h-4.5 w-4.5" />
@@ -449,8 +526,8 @@ export const AdminDashboard: React.FC = () => {
             </button>
             <button
               onClick={() => setActiveTab("settings")}
-              className={`w-full text-left px-3.5 py-3 rounded text-xs font-semibold uppercase tracking-wider flex items-center space-x-2 transition ${
-                activeTab === "settings" ? "bg-[#C45C1A] text-white shadow" : "hover:bg-[#FAF6F0]/5 text-slate-300"
+              className={`w-full text-left px-3.5 py-3 rounded-xl text-[11px] font-semibold uppercase tracking-wider flex items-center space-x-2 transition ${
+                activeTab === "settings" ? "bg-[#FB923C] text-white shadow" : "hover:bg-[#FAF6F0]/5 text-slate-300"
               }`}
             >
               <Settings className="h-4.5 w-4.5" />
@@ -461,6 +538,13 @@ export const AdminDashboard: React.FC = () => {
 
         {/* Exit Action */}
         <div className="pt-6 border-t border-[#FAF6F0]/10 mt-6">
+          <div className="mb-4 rounded-2xl border border-[#FACC15]/20 bg-white/5 p-4">
+            <div className="flex items-center gap-2 text-[#FACC15]">
+              <ShieldCheck className="h-4 w-4" />
+              <span className="text-[10px] font-black uppercase tracking-widest">Secure Admin</span>
+            </div>
+            <p className="mt-2 text-xs leading-5 text-white/60">{user?.email || "Authenticated session"}</p>
+          </div>
           <button
             onClick={logout}
             className="w-full py-2.5 border border-red-500/40 text-red-500 rounded text-xs font-bold uppercase hover:bg-red-500/10 transition flex items-center justify-center space-x-1.5"
@@ -472,7 +556,82 @@ export const AdminDashboard: React.FC = () => {
       </aside>
 
       {/* Main Panel Content Box */}
-      <main className="flex-grow p-6 sm:p-10 max-h-screen overflow-y-auto" id="admin-main-subpanel">
+      <main className="flex-grow p-4 sm:p-6 lg:p-8 md:max-h-screen overflow-y-auto" id="admin-main-subpanel">
+        <div className="mb-6 overflow-hidden rounded-[28px] bg-[#0F172A] text-white shadow-2xl shadow-[#0F172A]/15">
+          <div className="relative p-5 sm:p-7">
+            <div className="absolute -right-16 -top-16 h-48 w-48 rounded-full bg-[#FB923C]/20 blur-3xl" />
+            <div className="absolute bottom-0 left-1/2 h-24 w-72 rounded-full bg-[#0F6E56]/20 blur-3xl" />
+            <div className="relative flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+              <div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="inline-flex items-center gap-2 rounded-full border border-[#FACC15]/25 bg-white/10 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-[#FACC15]">
+                    <Gauge className="h-3.5 w-3.5" />
+                    Live Control Room
+                  </span>
+                  <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-white/70">
+                    <Bell className="h-3.5 w-3.5" />
+                    {newLeadsCount} New Alerts
+                  </span>
+                </div>
+                <h1 className="mt-4 font-serif text-3xl font-black leading-tight sm:text-4xl">
+                  Advanced Nikunj Heritage Admin Panel
+                </h1>
+                <p className="mt-2 max-w-3xl text-sm leading-7 text-white/70">
+                  Manage properties, leads, SEO content, locations, pages, RERA information and advisory operations from one premium real-estate command dashboard.
+                </p>
+              </div>
+              <div className="grid grid-cols-2 gap-3 sm:flex">
+                <button
+                  onClick={() => {
+                    setActiveTab("properties");
+                    setEditingPropId(null);
+                    resetPropertyForm();
+                    setPropFormOpen(true);
+                  }}
+                  className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#FB923C] px-4 py-3 text-xs font-black uppercase tracking-wider text-white transition-all hover:-translate-y-0.5 hover:bg-[#EA580C]"
+                >
+                  <Plus className="h-4 w-4" />
+                  New Asset
+                </button>
+                <button
+                  onClick={() => setActiveTab("leads")}
+                  className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-xs font-black uppercase tracking-wider text-white transition-all hover:bg-white/15"
+                >
+                  <PhoneCall className="h-4 w-4" />
+                  Leads Desk
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {!loading && (
+          <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            {adminStats.map((stat, index) => {
+              const Icon = stat.icon;
+              return (
+                <motion.div
+                  key={stat.label}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.45, delay: index * 0.06 }}
+                  className="overflow-hidden rounded-3xl border border-slate-100 bg-white p-5 shadow-sm"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <p className="text-[10px] font-black uppercase tracking-[0.22em] text-slate-400">{stat.label}</p>
+                      <p className="mt-2 font-serif text-2xl font-black text-[#0F172A]">{stat.value}</p>
+                      <p className="mt-1 text-xs text-slate-500">{stat.helper}</p>
+                    </div>
+                    <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br ${stat.tone} text-white shadow-lg`}>
+                      <Icon className="h-5 w-5" />
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+        )}
         
         {/* Loading overlay panel */}
         {loading ? (
@@ -660,7 +819,7 @@ export const AdminDashboard: React.FC = () => {
                 )}
 
                 {/* Properties table display list */}
-                <div className="bg-white border rounded-xl overflow-hidden shadow-sm">
+                <div className="overflow-x-auto bg-white border rounded-xl shadow-sm">
                   <table className="w-full text-left border-collapse text-xs">
                     <thead>
                       <tr className="bg-slate-100 border-b text-slate-500 font-mono">
@@ -716,7 +875,61 @@ export const AdminDashboard: React.FC = () => {
                   <p className="text-xs text-slate-500">Respond directly to customer registrations, callback request logs, and VIP visitation calendars.</p>
                 </div>
 
-                <div className="bg-white border rounded-xl overflow-hidden shadow-sm">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+                  {pipelineStats.map((stage) => (
+                    <div key={stage.label} className="rounded-3xl border border-slate-100 bg-white p-5 shadow-sm">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">{stage.label}</span>
+                        <span className={`h-2.5 w-2.5 rounded-full ${stage.color}`} />
+                      </div>
+                      <div className="mt-3 font-serif text-3xl font-black text-[#0F172A]">{stage.value}</div>
+                      <div className="mt-3 h-2 overflow-hidden rounded-full bg-slate-100">
+                        <div
+                          className={`h-full rounded-full ${stage.color}`}
+                          style={{ width: `${Math.min(100, leads.length ? (stage.value / leads.length) * 100 : 0)}%` }}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+                  <div className="rounded-3xl border border-[#EAD9C0] bg-white p-5 shadow-sm lg:col-span-2">
+                    <div className="flex items-center gap-3">
+                      <ClipboardList className="h-5 w-5 text-[#FB923C]" />
+                      <h3 className="font-serif text-xl font-black text-[#0F172A]">Priority Follow-ups</h3>
+                    </div>
+                    <div className="mt-4 space-y-3">
+                      {leads.slice(0, 4).map((lead) => (
+                        <div key={lead.id} className="flex flex-col gap-3 rounded-2xl border border-slate-100 bg-slate-50 p-4 sm:flex-row sm:items-center sm:justify-between">
+                          <div>
+                            <p className="font-bold text-slate-900">{lead.name}</p>
+                            <p className="text-xs text-slate-500">{lead.phone} • {lead.propertyType || "Property Enquiry"}</p>
+                          </div>
+                          <a
+                            href={`tel:${lead.phone}`}
+                            className="inline-flex items-center justify-center gap-2 rounded-full bg-[#0F172A] px-4 py-2 text-[11px] font-black uppercase tracking-wider text-white"
+                          >
+                            <PhoneCall className="h-3.5 w-3.5" />
+                            Call
+                          </a>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="rounded-3xl bg-[#0F172A] p-5 text-white shadow-sm">
+                    <BriefcaseBusiness className="h-8 w-8 text-[#FACC15]" />
+                    <h3 className="mt-4 font-serif text-xl font-black">Sales Operations</h3>
+                    <p className="mt-2 text-sm leading-6 text-white/70">Use this desk to move enquiries from new lead to contacted, scheduled visit and closure.</p>
+                    <div className="mt-5 space-y-3 text-xs text-white/75">
+                      <div className="flex items-center gap-2"><CalendarCheck className="h-4 w-4 text-[#FB923C]" /> Schedule site visits faster</div>
+                      <div className="flex items-center gap-2"><TrendingUp className="h-4 w-4 text-[#FB923C]" /> Track buyer intent stages</div>
+                      <div className="flex items-center gap-2"><BarChart3 className="h-4 w-4 text-[#FB923C]" /> Monitor campaign response</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="overflow-x-auto bg-white border rounded-xl shadow-sm">
                   <table className="w-full text-left border-collapse text-xs">
                     <thead>
                       <tr className="bg-slate-100 border-b text-slate-500 font-mono">
@@ -763,6 +976,90 @@ export const AdminDashboard: React.FC = () => {
                       ))}
                     </tbody>
                   </table>
+                </div>
+              </div>
+            )}
+
+            {/* TAB 3: CATEGORIES */}
+            {activeTab === "categories" && (
+              <div className="space-y-6">
+                <div className="flex flex-col gap-2 border-b border-slate-200 pb-4 sm:flex-row sm:items-end sm:justify-between">
+                  <div>
+                    <h2 className="font-serif text-2xl font-bold text-[#6B1A2A]">Property Category Studio</h2>
+                    <p className="text-xs text-slate-500">Review active sectors used across homepage filters, property cards and SEO navigation.</p>
+                  </div>
+                  <span className="inline-flex w-fit items-center gap-2 rounded-full bg-[#0F6E56]/10 px-4 py-2 text-xs font-black uppercase tracking-wider text-[#0F6E56]">
+                    <Layers className="h-4 w-4" />
+                    {categories.length} Categories
+                  </span>
+                </div>
+                <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+                  {categories.map((cat) => (
+                    <div key={cat.id} className="overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-sm">
+                      <div className="h-36 bg-slate-100">
+                        <img src={cat.imageUrl} alt={cat.name} className="h-full w-full object-cover" />
+                      </div>
+                      <div className="p-5">
+                        <div className="flex items-start justify-between gap-3">
+                          <div>
+                            <p className="text-[10px] font-black uppercase tracking-widest text-[#FB923C]">{cat.slug}</p>
+                            <h3 className="mt-1 font-serif text-xl font-black text-[#0F172A]">{cat.name}</h3>
+                          </div>
+                          <span className={`rounded-full px-3 py-1 text-[10px] font-black uppercase ${cat.active ? "bg-green-100 text-green-700" : "bg-slate-100 text-slate-500"}`}>
+                            {cat.active ? "Active" : "Hidden"}
+                          </span>
+                        </div>
+                        <p className="mt-3 line-clamp-3 text-sm leading-6 text-slate-500">{cat.description}</p>
+                        <button
+                          onClick={() => deleteCategory(cat.id).then(loadPanelData)}
+                          className="mt-4 inline-flex items-center gap-2 rounded-full border border-red-200 bg-red-50 px-4 py-2 text-[11px] font-black uppercase tracking-wider text-red-700"
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                          Remove
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* TAB 4: LOCATIONS */}
+            {activeTab === "locations" && (
+              <div className="space-y-6">
+                <div className="flex flex-col gap-2 border-b border-slate-200 pb-4 sm:flex-row sm:items-end sm:justify-between">
+                  <div>
+                    <h2 className="font-serif text-2xl font-bold text-[#6B1A2A]">Divine Location Manager</h2>
+                    <p className="text-xs text-slate-500">Manage Mathura, Vrindavan, Barsana and Govardhan market zones shown on the website.</p>
+                  </div>
+                  <span className="inline-flex w-fit items-center gap-2 rounded-full bg-[#FB923C]/10 px-4 py-2 text-xs font-black uppercase tracking-wider text-[#C45C1A]">
+                    <MapPin className="h-4 w-4" />
+                    {locations.length} Zones
+                  </span>
+                </div>
+                <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+                  {locations.map((loc) => (
+                    <div key={loc.id} className="grid overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-sm sm:grid-cols-5">
+                      <div className="h-44 bg-slate-100 sm:col-span-2 sm:h-auto">
+                        <img src={loc.imageUrl} alt={loc.name} className="h-full w-full object-cover" />
+                      </div>
+                      <div className="p-5 sm:col-span-3">
+                        <p className="text-[10px] font-black uppercase tracking-widest text-[#0F6E56]">Region: {loc.city}</p>
+                        <h3 className="mt-1 font-serif text-xl font-black text-[#0F172A]">{loc.name}</h3>
+                        <p className="mt-3 line-clamp-3 text-sm leading-6 text-slate-500">{loc.description}</p>
+                        <div className="mt-4 flex flex-wrap items-center gap-2">
+                          <span className="rounded-full bg-slate-100 px-3 py-1 text-[10px] font-black text-slate-500">{loc.latitude}, {loc.longitude}</span>
+                          <button
+                            onClick={() => deleteLocation(loc.id).then(loadPanelData)}
+                            className="inline-flex items-center gap-2 rounded-full border border-red-200 bg-red-50 px-4 py-2 text-[11px] font-black uppercase tracking-wider text-red-700"
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                            Remove
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             )}
@@ -867,7 +1164,7 @@ export const AdminDashboard: React.FC = () => {
                 )}
 
                 {/* Blogs list */}
-                <div className="bg-white border rounded-xl overflow-hidden shadow-sm">
+                <div className="overflow-x-auto bg-white border rounded-xl shadow-sm">
                   <table className="w-full text-left border-collapse text-xs">
                     <thead>
                       <tr className="bg-slate-100 border-b text-slate-500 font-mono">
@@ -973,7 +1270,7 @@ export const AdminDashboard: React.FC = () => {
                   </form>
                 )}
 
-                <div className="bg-white border rounded-xl overflow-hidden shadow-sm">
+                <div className="overflow-x-auto bg-white border rounded-xl shadow-sm">
                   <table className="w-full text-left border-collapse text-xs">
                     <thead>
                       <tr className="bg-slate-100 border-b text-slate-500 font-mono">

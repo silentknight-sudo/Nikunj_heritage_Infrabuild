@@ -44,6 +44,7 @@ import { ThreeDCard, ScrollFade, ParticleGlow, SacredPropertyBackdrop } from "..
 import { homeMediaShowcase } from "../content/projectMedia";
 import { SeoHead } from "../components/seo/SeoHead";
 import { DEFAULT_OG_IMAGE, SITE_URL } from "../lib/seo";
+import { motion } from "motion/react";
 
 export const Home: React.FC = () => {
   const navigate = useNavigate();
@@ -134,6 +135,20 @@ export const Home: React.FC = () => {
   };
 
   const featuredProperties = properties.filter(p => p.featured || p.newLaunch).slice(0, 3);
+
+  const marketHighlights = [
+    { label: "Verified Braj Listings", value: `${properties.length || 24}+`, icon: Layers, tone: "from-[#0F6E56] to-[#0F172A]" },
+    { label: "Active Buyer Enquiries", value: "1,200+", icon: Users, tone: "from-[#FB923C] to-[#C45C1A]" },
+    { label: "Temple Proximity Audits", value: "100%", icon: ShieldCheck, tone: "from-[#6B1A2A] to-[#1A1A2E]" },
+    { label: "Site Visit Support", value: "24/7", icon: Calendar, tone: "from-[#C9A84C] to-[#C45C1A]" }
+  ];
+
+  const advisoryJourney = [
+    "Search by temple, budget, location and property type",
+    "Compare verified listings, floor plans, documents and RERA details",
+    "Book guided Mathura-Vrindavan site visit with advisor support",
+    "Complete registry, possession and post-sale support"
+  ];
 
   // Hardcoded Static Why Choose Us values as fallback/compliment to match guidelines
   const whyChooseUsCards = [
@@ -360,6 +375,88 @@ export const Home: React.FC = () => {
           </form>
         </div>
       </div>
+
+      {/* Wealth-style trust cockpit: search, proof and advisory journey */}
+      <section className="relative z-10 px-4 pb-6 pt-2 sm:pt-8" id="wealth-style-trust-cockpit">
+        <div className="mx-auto grid max-w-7xl grid-cols-1 gap-5 lg:grid-cols-12">
+          <motion.div
+            initial={{ opacity: 0, y: 28 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.55, ease: [0.21, 0.85, 0.45, 1.01] }}
+            className="lg:col-span-8 rounded-[28px] border border-[#EAD9C0] bg-white/90 p-5 shadow-2xl shadow-[#6B1A2A]/5 backdrop-blur-xl sm:p-7"
+          >
+            <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
+              <div>
+                <span className="text-[11px] font-black uppercase tracking-[0.28em] text-[#C45C1A]">Braj Property Command Center</span>
+                <h2 className="mt-2 font-serif text-2xl font-black leading-tight text-[#0F172A] sm:text-3xl">
+                  Find, compare and visit verified Mathura-Vrindavan properties faster.
+                </h2>
+                <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-600">
+                  Inspired by modern property portals, rebuilt for Nikunj Heritage with temple-proximity filters, local advisory, registry clarity and investor-focused guidance.
+                </p>
+              </div>
+              <Link
+                to="/compare-properties"
+                className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-[#0F172A] px-5 py-3 text-xs font-black uppercase tracking-wider text-white transition-all hover:-translate-y-0.5 hover:bg-[#1E293B]"
+              >
+                Compare Now
+                <ChevronRight className="h-4 w-4" />
+              </Link>
+            </div>
+
+            <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              {marketHighlights.map((item, index) => {
+                const Icon = item.icon;
+                return (
+                  <motion.div
+                    key={item.label}
+                    initial={{ opacity: 0, y: 22 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.45, delay: index * 0.08 }}
+                    className="group overflow-hidden rounded-2xl border border-slate-100 bg-[#FAF8F4] p-4 shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl"
+                  >
+                    <div className={`mb-4 flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br ${item.tone} text-white shadow-lg`}>
+                      <Icon className="h-5 w-5" />
+                    </div>
+                    <div className="font-serif text-2xl font-black text-[#0F172A]">{item.value}</div>
+                    <div className="mt-1 text-[11px] font-bold uppercase tracking-wider text-slate-500">{item.label}</div>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, x: 32 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.6, ease: [0.21, 0.85, 0.45, 1.01] }}
+            className="lg:col-span-4 rounded-[28px] bg-[#0F172A] p-5 text-white shadow-2xl shadow-[#0F172A]/20 sm:p-7"
+          >
+            <span className="text-[11px] font-black uppercase tracking-[0.28em] text-[#FACC15]">Buyer Flow</span>
+            <h3 className="mt-2 font-serif text-2xl font-black">From online search to site visit</h3>
+            <div className="mt-6 space-y-4">
+              {advisoryJourney.map((step, index) => (
+                <div key={step} className="flex gap-3">
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#FACC15]/40 bg-white/10 text-xs font-black text-[#FACC15]">
+                    {index + 1}
+                  </div>
+                  <p className="text-sm leading-6 text-white/80">{step}</p>
+                </div>
+              ))}
+            </div>
+            <Link
+              to="/contact-us"
+              className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#FB923C] px-5 py-3 text-xs font-black uppercase tracking-wider text-white transition-all hover:bg-[#EA580C]"
+            >
+              Book Free Advisory
+              <ChevronRight className="h-4 w-4" />
+            </Link>
+          </motion.div>
+        </div>
+      </section>
 
       {/* 2. DYNAMIC CATEGORIES GRID */}
       <section className="py-10 sm:py-16 px-4 max-w-7xl mx-auto scroll-mt-20" id="categories-grid-section">
