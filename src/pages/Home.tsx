@@ -179,25 +179,25 @@ export const Home: React.FC = () => {
       title: "Residential",
       subtitle: "Flats, villas and family homes near devotional neighbourhoods.",
       href: "/properties?category=residential-apartments",
-      image: "/projects/images/vrindavan-cover.png"
+      image: "/projects/images/ai-buyer-residential.jpg"
     },
     {
       title: "Commercial",
       subtitle: "Shops, office frontage and investor-grade business pockets.",
       href: "/properties?category=commercial-spaces",
-      image: "/projects/images/infrastructure-push.png"
+      image: "/projects/images/ai-buyer-commercial.jpg"
     },
     {
       title: "Plots & Land",
       subtitle: "Registry-ready plotted opportunities around growth corridors.",
       href: "/properties?category=plots-and-land",
-      image: "/projects/images/regional-connectivity.png"
+      image: "/projects/images/ai-buyer-plots-land.jpg"
     },
     {
       title: "Spiritual Retreats",
       subtitle: "Second-home and ashram-style living near temples and ghats.",
       href: "/properties?category=spiritual-retreats",
-      image: "/projects/images/rukmini-vihar.png"
+      image: "/projects/images/ai-buyer-spiritual-retreat.jpg"
     }
   ];
 
