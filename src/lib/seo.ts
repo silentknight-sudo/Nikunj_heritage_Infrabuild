@@ -3,7 +3,7 @@ export const SITE_NAME = "Nikunj Heritage Infrabuild";
 export const DEFAULT_TITLE = "Nikunj Heritage Infrabuild | Vrindavan Property, Mathura Real Estate & Investment";
 export const DEFAULT_DESCRIPTION =
   "Nikunj Heritage Infrabuild helps buyers explore verified residential, commercial, villa, and plotted investment opportunities in Vrindavan, Mathura, Govardhan, and nearby spiritual corridors.";
-export const DEFAULT_OG_IMAGE = `${SITE_URL}/og-cover.jpg`;
+export const DEFAULT_OG_IMAGE = `${SITE_URL}/projects/images/vrindavan-cover.png`;
 export const DEFAULT_LOCALE = "en_IN";
 
 export const PRIMARY_KEYWORDS = [

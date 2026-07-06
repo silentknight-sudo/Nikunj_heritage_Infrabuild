@@ -200,8 +200,8 @@ export const Home: React.FC = () => {
             "@id": `${SITE_URL}/#organization`,
             name: "Nikunj Heritage Infrabuild",
             url: SITE_URL,
-            logo: `${SITE_URL}/logo-512.png`,
-            image: `${SITE_URL}/logo-512.png`,
+            logo: `${SITE_URL}/logo.svg`,
+            image: `${SITE_URL}/logo.svg`,
             telephone: "+91-9719920888",
             email: "info@nikunjheritageinfrabuild.com",
           },
@@ -226,7 +226,7 @@ export const Home: React.FC = () => {
             "@id": `${SITE_URL}/#real-estate`,
             name: "Nikunj Heritage Infrabuild",
             url: SITE_URL,
-            logo: `${SITE_URL}/logo-512.png`,
+            logo: `${SITE_URL}/logo.svg`,
             image: DEFAULT_OG_IMAGE,
             telephone: "+91-9719920888",
             email: "info@nikunjheritageinfrabuild.com",
@@ -245,9 +245,9 @@ export const Home: React.FC = () => {
       <SacredPropertyBackdrop />
       <div className="relative z-10">
       {showEnquiryWidget ? (
-        <div className="fixed right-4 top-20 z-50 w-[calc(100vw-2rem)] max-w-sm">
+        <div className="fixed left-3 right-3 top-[4.75rem] z-50 sm:left-auto sm:right-4 sm:top-20 sm:w-[calc(100vw-2rem)] sm:max-w-sm">
           <div className="rounded-2xl border border-[#C9A84C]/35 bg-white/95 backdrop-blur-md shadow-2xl overflow-hidden">
-            <div className="flex items-start justify-between gap-3 bg-[#0F172A] px-5 py-4 text-white">
+            <div className="flex items-start justify-between gap-3 bg-[#0F172A] px-4 py-3 text-white sm:px-5 sm:py-4">
               <div>
                 <span className="block text-[10px] uppercase tracking-[0.28em] text-[#F6D7A8] font-bold">Instant Enquiry</span>
                 <h2 className="font-serif text-lg font-bold mt-1 text-[#FB923C]" style={{ color: "#FB923C" }}>
@@ -265,7 +265,7 @@ export const Home: React.FC = () => {
               </button>
             </div>
 
-            <form onSubmit={handleConsultationSubmit} className="space-y-3 p-5">
+            <form onSubmit={handleConsultationSubmit} className="max-h-[calc(100svh-14rem)] space-y-3 overflow-y-auto p-4 sm:max-h-none sm:p-5">
               <div>
                 <label className="block text-[10px] uppercase font-bold text-slate-400 mb-1 font-mono">Enquiry Type</label>
                 <select
@@ -324,7 +324,7 @@ export const Home: React.FC = () => {
         <button
           type="button"
           onClick={() => setShowEnquiryWidget(true)}
-          className="fixed right-4 bottom-6 z-50 inline-flex items-center gap-2 rounded-full bg-[#FB923C] px-4 py-3 text-xs font-bold uppercase tracking-wider text-white shadow-xl hover:bg-[#EA580C] transition-colors"
+          className="fixed right-4 bottom-24 z-50 inline-flex items-center gap-2 rounded-full bg-[#FB923C] px-4 py-3 text-xs font-bold uppercase tracking-wider text-white shadow-xl hover:bg-[#EA580C] transition-colors sm:bottom-6"
         >
           <MessageSquare className="h-4 w-4" />
           <span>Open Enquiry</span>
@@ -333,11 +333,11 @@ export const Home: React.FC = () => {
 
       
       {/* 1. HERO SLIDER IMMERSIVE EXPERIENCE */}
-      <div className="relative" id="immersive-hero-slider-container">
+      <div className="relative pb-24 sm:pb-0" id="immersive-hero-slider-container">
         <HeroSlider />
         
         {/* Floating Overlapping Search Bar with 3D Depth */}
-        <div className="absolute -bottom-7 left-1/2 -translate-x-1/2 z-30 w-[95%] max-w-2xl px-4 pointer-events-auto">
+        <div className="absolute -bottom-20 left-1/2 -translate-x-1/2 z-30 w-full max-w-2xl px-4 pointer-events-auto sm:-bottom-7 sm:w-[95%]">
           <form onSubmit={handleSearchSubmit} className="bg-white p-2.5 rounded-xl shadow-2xl flex flex-col sm:flex-row gap-2.5 border border-[#C9A84C]/35 hover:shadow-[#C9A84C]/10 transition-all duration-300">
             <div className="flex-grow flex items-center px-3 gap-2 border-b sm:border-b-0 sm:border-r border-slate-200 pb-2 sm:pb-0">
               <Search className="h-5 w-5 text-[#C45C1A] shrink-0" />
@@ -362,7 +362,7 @@ export const Home: React.FC = () => {
       </div>
 
       {/* 2. DYNAMIC CATEGORIES GRID */}
-      <section className="py-16 px-4 max-w-7xl mx-auto scroll-mt-20" id="categories-grid-section">
+      <section className="py-10 sm:py-16 px-4 max-w-7xl mx-auto scroll-mt-20" id="categories-grid-section">
         <div className="text-center max-w-3xl mx-auto mb-12">
           <span className="text-[11px] uppercase tracking-widest text-[#C45C1A] font-bold font-mono">Select Your Vibe</span>
           <h2 className="font-serif text-2xl sm:text-4xl text-[#6B1A2A] font-bold mt-1 shadow-sm">
@@ -374,14 +374,14 @@ export const Home: React.FC = () => {
         </div>
 
         {categories.length === 0 ? (
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
             {Array.from({ length: 5 }).map((_, i) => (
               <div key={i} className="h-32 bg-slate-300 animate-pulse rounded-lg" />
             ))}
           </div>
         ) : (
           <ScrollFade direction="up">
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5">
               {categories.map((cat) => (
                 <ThreeDCard key={cat.id} className="h-40">
                   <Link
@@ -490,7 +490,7 @@ export const Home: React.FC = () => {
       </section>
 
       {/* 4. DYNAMIC FEATURED ASSETS (CAROUSEL GRID) */}
-      <section className="py-16 bg-[#FAF6F0]/60 border-y border-[#C9A84C]/10 scroll-mt-20" id="featured-assets-sliders">
+      <section className="py-10 sm:py-16 bg-[#FAF6F0]/60 border-y border-[#C9A84C]/10 scroll-mt-20" id="featured-assets-sliders">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-10">
             <div>
@@ -527,7 +527,7 @@ export const Home: React.FC = () => {
       </section>
 
       {/* 5. DYNAMIC LOCATIONS (AREAS GRID) */}
-      <section className="py-16 px-4 max-w-7xl mx-auto scroll-mt-20" id="locations-grid">
+      <section className="py-10 sm:py-16 px-4 max-w-7xl mx-auto scroll-mt-20" id="locations-grid">
         <div className="text-center max-w-3xl mx-auto mb-12">
           <span className="text-[11px] uppercase tracking-widest text-[#0E7B6C] font-bold font-mono">Pilgrim Corridors</span>
           <h2 className="font-serif text-2xl sm:text-4xl text-[#6B1A2A] font-bold mt-1">
@@ -586,9 +586,9 @@ export const Home: React.FC = () => {
       </section>
 
       {/* 5. WHY CHOOSE US - CARDS SECTION */}
-      <section className="py-20 bg-[#1A1A2E] text-[#FAF6F0] border-t-2 border-[#C9A84C]/40 scroll-mt-20" id="why-choose-us-section">
+      <section className="py-12 sm:py-20 bg-[#1A1A2E] text-[#FAF6F0] border-t-2 border-[#C9A84C]/40 scroll-mt-20" id="why-choose-us-section">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center max-w-2xl mx-auto mb-16">
+          <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-16">
             <span className="text-[11px] uppercase tracking-widest text-[#C9A84C] font-bold font-mono">Brijvas Heritage Pledge</span>
             <h2 className="font-serif text-2xl sm:text-4xl text-white font-bold mt-1" style={{ color: "#FFFFFF" }}>
               Why Nikunj Heritage Infrabuild?
@@ -623,9 +623,9 @@ export const Home: React.FC = () => {
       </section>
 
       {/* 6. HOW WE WORK (TIMELINE) */}
-      <section className="py-20 bg-[#FAF6F0] scroll-mt-20" id="how-we-work-timeline">
+      <section className="py-12 sm:py-20 bg-[#FAF6F0] scroll-mt-20" id="how-we-work-timeline">
         <div className="max-w-4xl mx-auto px-4">
-          <div className="text-center mb-16">
+          <div className="text-center mb-10 sm:mb-16">
             <span className="text-[11px] uppercase tracking-widest text-[#C45C1A] font-bold font-mono">The Sacred Journey</span>
             <h2 className="font-serif text-2xl sm:text-3xl text-[#6B1A2A] font-bold mt-1">
               How We Guide You Home
@@ -660,7 +660,7 @@ export const Home: React.FC = () => {
       </section>
 
       {/* 7. ROI CALCULATOR INTEGRATOR */}
-      <section className="py-16 bg-slate-50 border-t border-b border-[#C9A84C]/15 px-4" id="roi-calculator-section">
+      <section className="py-10 sm:py-16 bg-slate-50 border-t border-b border-[#C9A84C]/15 px-4" id="roi-calculator-section">
         <div className="text-center max-w-2xl mx-auto mb-4">
           <span className="text-[11px] uppercase tracking-widest text-[#6B1A2A] font-bold font-mono">Return Projections</span>
           <h2 className="font-serif text-2xl sm:text-3xl text-[#1A1A2E] font-bold mt-1">
@@ -671,7 +671,7 @@ export const Home: React.FC = () => {
       </section>
 
       {/* 8. BOOKING CALL DIRECT DIALOGS / QUICK CALLBACK */}
-      <section className="py-16 px-4 bg-gradient-to-br from-[#6B1A2A] to-[#1A1A2E] text-white border-y border-[#C9A84C]/40 relative overflow-hidden" id="homepage-callback">
+      <section className="py-12 sm:py-16 px-4 bg-gradient-to-br from-[#6B1A2A] to-[#1A1A2E] text-white border-y border-[#C9A84C]/40 relative overflow-hidden" id="homepage-callback">
         {/* Subtle decorative mandalas */}
         <div className="absolute -right-16 -bottom-16 h-48 w-48 opacity-10 border-4 border-[#C9A84C] rounded-full"></div>
         

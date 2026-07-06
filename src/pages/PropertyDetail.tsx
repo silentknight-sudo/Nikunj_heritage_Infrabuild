@@ -132,7 +132,7 @@ export const PropertyDetail: React.FC = () => {
           `${property.title} by Nikunj Heritage Infrabuild. Explore pricing, area, location highlights, amenities, floor plans, and buyer guidance for this Vrindavan-Mathura property opportunity.`
         }
         pathname={`/properties/${property.slug}`}
-        image={property.imageUrls?.[0] || `${SITE_URL}/og-cover.jpg`}
+        image={property.imageUrls?.[0] || `${SITE_URL}/projects/images/vrindavan-cover.png`}
         keywords={[
           property.title,
           property.bhk,

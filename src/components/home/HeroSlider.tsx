@@ -130,7 +130,7 @@ export const HeroSlider: React.FC = () => {
 
   return (
     <div 
-      className="relative w-full h-[85vh] sm:h-[90vh] bg-[#11111A] overflow-hidden group select-none"
+      className="relative w-full min-h-[690px] h-[calc(100svh-4rem)] max-h-[860px] sm:h-[calc(100vh-5rem)] bg-[#11111A] overflow-hidden group select-none"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       id="hero-3d-immersion-viewport"
@@ -164,7 +164,7 @@ export const HeroSlider: React.FC = () => {
       </div>
 
       {/* Slide Interactive Contents */}
-      <div className="absolute inset-0 z-10 flex flex-col justify-center px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto pointer-events-none">
+      <div className="absolute inset-0 z-10 flex flex-col justify-start px-4 pt-20 pb-40 sm:justify-center sm:px-6 sm:pt-0 sm:pb-28 lg:px-8 max-w-7xl mx-auto pointer-events-none">
         <div className="max-w-3xl pointer-events-auto">
           <AnimatePresence mode="wait">
             <motion.div
@@ -182,7 +182,7 @@ export const HeroSlider: React.FC = () => {
                   {SLIDES[currentIndex].tag}
                 </span>
 
-                <span className="bg-[#FACC15] backdrop-blur-md text-[#0F172A] text-[90%] sm:text-xs font-medium tracking-wide px-3 py-1 rounded-full border border-[#FDE68A] flex items-center gap-1">
+                <span className="bg-[#FACC15] backdrop-blur-md text-[#0F172A] text-[10px] sm:text-xs font-medium tracking-wide px-3 py-1 rounded-full border border-[#FDE68A] flex items-center gap-1">
                   <ShieldCheck className="h-3.5 w-3.5 text-[#0F172A]" />
                   {SLIDES[currentIndex].badge}
                 </span>
@@ -190,7 +190,7 @@ export const HeroSlider: React.FC = () => {
 
               {/* Title Transition with premium serif font and text-shadowing */}
               <h1
-                className="font-serif text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-wide leading-tight drop-shadow-md"
+                className="font-serif text-[clamp(2rem,10vw,3.35rem)] sm:text-5xl md:text-6xl font-extrabold tracking-wide leading-[1.05] drop-shadow-md"
                 style={{ color: "#FFFFFF" }}
               >
                 {SLIDES[currentIndex].title}
@@ -202,10 +202,10 @@ export const HeroSlider: React.FC = () => {
               </p>
 
               {/* Action and Helpline links */}
-              <div className="flex flex-wrap items-center gap-3.5 pt-4">
+              <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-3.5 pt-4">
                 <Link
                   to={SLIDES[currentIndex].ctaLink}
-                  className="group inline-flex items-center space-x-2 px-6 py-3.5 bg-gradient-to-r from-[#FB923C] to-[#EA580C] text-white hover:to-[#FB923C] text-xs sm:text-sm font-bold font-serif uppercase tracking-widest rounded-lg shadow-xl shadow-black/30 transition-all duration-300 hover:-translate-y-0.5 border border-[#FDBA74]/40"
+                  className="group inline-flex items-center justify-center space-x-2 px-4 sm:px-6 py-3.5 bg-gradient-to-r from-[#FB923C] to-[#EA580C] text-white hover:to-[#FB923C] text-xs sm:text-sm font-bold font-serif uppercase tracking-widest rounded-lg shadow-xl shadow-black/30 transition-all duration-300 hover:-translate-y-0.5 border border-[#FDBA74]/40"
                 >
                   <span>{SLIDES[currentIndex].ctaText}</span>
                   <ArrowRight className="h-4 w-4 transform group-hover:translate-x-1.5 transition-transform" />
@@ -215,7 +215,7 @@ export const HeroSlider: React.FC = () => {
                   href="https://wa.me/919719920888?text=Pranam!%20I%20saw%20your%20featured%20slideshow.%20Please%20send%20brochures."
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-5 py-3.5 bg-white/10 hover:bg-white/15 backdrop-blur-md border border-[#FAF6F0]/25 text-white text-xs sm:text-sm font-bold font-mono rounded-lg transition-all flex items-center gap-1.5"
+                  className="px-4 sm:px-5 py-3.5 bg-white/10 hover:bg-white/15 backdrop-blur-md border border-[#FAF6F0]/25 text-white text-xs sm:text-sm font-bold font-mono rounded-lg transition-all flex items-center justify-center gap-1.5"
                 >
                   <MapPin className="h-4 w-4 text-[#0F6E56]" />
                   Verify Proximity
@@ -246,7 +246,7 @@ export const HeroSlider: React.FC = () => {
       </button>
 
       {/* Premium Multi-track Interactive Progress Pagination */}
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 w-[90%] max-w-5xl flex items-center justify-between gap-2.5 bg-black/45 backdrop-blur-lg p-2 rounded-xl border border-white/10">
+      <div className="absolute bottom-24 sm:bottom-6 left-1/2 -translate-x-1/2 z-20 w-[90%] max-w-5xl flex items-center justify-between gap-2.5 bg-black/45 backdrop-blur-lg p-2 rounded-xl border border-white/10">
         {SLIDES.map((slide, idx) => {
           const isActive = idx === currentIndex;
           return (

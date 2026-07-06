@@ -32,6 +32,7 @@ import { CompareProperties } from "./pages/CompareProperties";
 import { News } from "./pages/News";
 import { Developers } from "./pages/Developers";
 import { LifeAtNHI } from "./pages/LifeAtNHI";
+import { SeoLandingPage } from "./pages/SeoLandingPage";
 
 // Automatic Boot seed initializer
 import { runDatabaseSeed } from "./lib/seed";
@@ -77,6 +78,9 @@ export default function App() {
               <Route path="/news" element={<News />} />
               <Route path="/developers" element={<Developers />} />
               <Route path="/life-at-nhi" element={<LifeAtNHI />} />
+              <Route path="/mathura-real-estate" element={<SeoLandingPage page="/mathura-real-estate" />} />
+              <Route path="/vrindavan-real-estate" element={<SeoLandingPage page="/vrindavan-real-estate" />} />
+              <Route path="/properties-in-vrindavan-mathura" element={<SeoLandingPage page="/properties-in-vrindavan-mathura" />} />
               <Route path="/pages/:slug" element={<DynamicPage />} />
               <Route path="/admin" element={<AdminDashboard />} />
             </Routes>
@@ -85,11 +89,11 @@ export default function App() {
           {/* Editorial Footer */}
           <Footer />
 
-          <div className="fixed bottom-4 right-4 left-4 sm:left-auto sm:right-6 z-40" id="global-contact-cta">
-            <div className="ml-auto flex max-w-md items-center gap-2 rounded-full border border-[#E2E8F0] bg-white/95 p-2 shadow-2xl backdrop-blur-md">
+          <div className="fixed bottom-3 left-3 right-3 z-40 pb-[env(safe-area-inset-bottom)] sm:bottom-4 sm:left-auto sm:right-6 sm:pb-0" id="global-contact-cta">
+            <div className="ml-auto flex w-full items-center gap-2 rounded-full border border-[#E2E8F0] bg-white/95 p-1.5 shadow-2xl backdrop-blur-md sm:max-w-md sm:p-2">
               <a
                 href="tel:+919719920888"
-                className="flex flex-1 items-center justify-center gap-2 rounded-full bg-[#FB923C] px-4 py-3 text-xs font-bold uppercase tracking-wider text-white transition-colors hover:bg-[#EA580C]"
+                className="flex flex-1 items-center justify-center gap-1.5 rounded-full bg-[#FB923C] px-3 py-2.5 text-[11px] font-bold uppercase tracking-wider text-white transition-colors hover:bg-[#EA580C] sm:gap-2 sm:px-4 sm:py-3 sm:text-xs"
               >
                 <PhoneCall className="h-4 w-4" />
                 <span>Call Now</span>
@@ -98,7 +102,7 @@ export default function App() {
                 href="https://wa.me/919719920888?text=Pranam%21+I+would+like+to+inquire+about+residential+plots+and+villas+at+Nikunj+Heritage+Infrabuild."
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex flex-1 items-center justify-center gap-2 rounded-full bg-[#FB923C] px-4 py-3 text-xs font-bold uppercase tracking-wider text-white transition-colors hover:bg-[#EA580C]"
+                className="flex flex-1 items-center justify-center gap-1.5 rounded-full bg-[#FB923C] px-3 py-2.5 text-[11px] font-bold uppercase tracking-wider text-white transition-colors hover:bg-[#EA580C] sm:gap-2 sm:px-4 sm:py-3 sm:text-xs"
               >
                 <MessageSquare className="h-4 w-4" />
                 <span>WhatsApp</span>

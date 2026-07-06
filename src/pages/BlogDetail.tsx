@@ -72,7 +72,7 @@ export const BlogDetail: React.FC = () => {
           `${blog.title}. Read property insights, legal guidance, and Vrindavan-Mathura real estate perspectives from Nikunj Heritage Infrabuild.`
         }
         pathname={`/blogs/${blog.slug}`}
-        image={blog.coverUrl || `${SITE_URL}/og-cover.jpg`}
+        image={blog.coverUrl || `${SITE_URL}/projects/images/vrindavan-cover.png`}
         keywords={[
           blog.title,
           blog.category,
@@ -96,7 +96,7 @@ export const BlogDetail: React.FC = () => {
             name: "Nikunj Heritage Infrabuild",
             logo: {
               "@type": "ImageObject",
-              url: `${SITE_URL}/logo-512.png`,
+              url: `${SITE_URL}/logo.svg`,
             },
           },
           description: blog.seoDescription || blog.content.slice(0, 160),
