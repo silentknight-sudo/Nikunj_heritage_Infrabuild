@@ -94,6 +94,18 @@ export interface Lead {
   createdAt: any; // Firestore Timestamp
 }
 
+export interface AppUser {
+  id: string;
+  uid: string;
+  email: string;
+  displayName?: string;
+  photoURL?: string;
+  providerId?: string;
+  lastLoginAt?: any;
+  createdAt?: any;
+  updatedAt?: any;
+}
+
 export enum BlogStatus {
   DRAFT = "Draft",
   PUBLISHED = "Published"
@@ -107,6 +119,7 @@ export interface Blog {
   author: string;
   coverUrl: string;
   category: string;
+  readTime?: string;
   tags?: string; // Comma separated
   status: BlogStatus;
   seoTitle?: string;

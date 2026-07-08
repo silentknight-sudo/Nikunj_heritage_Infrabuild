@@ -15,7 +15,7 @@ import {
   updateProfile
 } from "firebase/auth";
 import { auth } from "./firebase";
-import { checkIsAdmin } from "./firestore";
+import { checkIsAdmin, upsertUserProfile } from "./firestore";
 
 interface AuthContextType {
   user: User | null;
@@ -39,6 +39,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUser(currentUser);
       if (currentUser) {
         try {
+          await upsertUserProfile({
+            uid: currentUser.uid,
+            email: currentUser.email || "",
+            displayName: currentUser.displayName || "",
+            photoURL: currentUser.photoURL || "",
+            providerId: currentUser.providerData?.[0]?.providerId || "password"
+          });
           const privileged = await checkIsAdmin(currentUser.uid);
           setIsAdmin(privileged);
         } catch (err) {
@@ -87,6 +94,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       const cred = await createUserWithEmailAndPassword(auth, email, pass);
       await updateProfile(cred.user, { displayName: name });
+      await upsertUserProfile({
+        uid: cred.user.uid,
+        email: cred.user.email || email,
+        displayName: name,
+        photoURL: cred.user.photoURL || "",
+        providerId: cred.user.providerData?.[0]?.providerId || "password"
+      });
       setUser({ ...cred.user, displayName: name });
     } catch (e) {
       console.error("Email signup failed:", e);

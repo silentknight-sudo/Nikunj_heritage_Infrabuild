@@ -55,13 +55,18 @@ export default function App() {
   return (
     <AuthProvider>
       <Router>
-        <div className="flex flex-col min-h-screen bg-[#F8FAFC] font-sans text-[#0F172A]">
+        <div className="relative flex flex-col min-h-screen overflow-hidden bg-[#F8FAFC] font-sans text-[#0F172A]">
+          <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-0 bg-[#F8FAFC]" />
+          <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-0 bg-[url('/projects/images/ai-buyer-plots-land.jpg')] bg-cover bg-center opacity-[0.045]" />
+          <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-0 bg-gradient-to-b from-white/95 via-[#F8FAFC]/96 to-white/98" />
           <AppSeo />
           {/* Main sticky header */}
-          <Navbar />
+          <div className="relative z-10">
+            <Navbar />
+          </div>
 
           {/* Core scroll space */}
-          <main className="flex-grow">
+          <main className="relative z-10 flex-grow">
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/properties" element={<Properties />} />
@@ -87,7 +92,9 @@ export default function App() {
           </main>
 
           {/* Editorial Footer */}
-          <Footer />
+          <div className="relative z-10">
+            <Footer />
+          </div>
 
           <div className="fixed bottom-3 left-3 right-3 z-40 pb-[env(safe-area-inset-bottom)] sm:bottom-4 sm:left-auto sm:right-6 sm:pb-0" id="global-contact-cta">
             <div className="ml-auto flex w-full items-center gap-2 rounded-full border border-[#E2E8F0] bg-white/95 p-1.5 shadow-2xl backdrop-blur-md sm:max-w-md sm:p-2">

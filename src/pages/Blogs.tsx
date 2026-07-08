@@ -126,6 +126,7 @@ export const Blogs: React.FC = () => {
                         loading="lazy"
                         referrerPolicy="no-referrer"
                         className="w-full h-48 object-cover"
+                        onError={(event) => { event.currentTarget.src = "/projects/images/ai-buyer-spiritual-retreat.jpg"; }}
                       />
                       <div className="p-5 space-y-2">
                         <div className="flex justify-between items-center text-[10px] text-slate-400 font-mono font-semibold uppercase">

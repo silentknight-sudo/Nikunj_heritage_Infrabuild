@@ -117,6 +117,7 @@ export const BlogDetail: React.FC = () => {
             src={blog.coverUrl}
             alt={blog.title}
             className="w-full h-full object-cover"
+            onError={(event) => { event.currentTarget.src = "/projects/images/ai-buyer-spiritual-retreat.jpg"; }}
           />
         </div>
 

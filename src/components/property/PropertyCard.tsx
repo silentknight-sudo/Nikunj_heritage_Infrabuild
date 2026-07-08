@@ -80,6 +80,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
               loading="lazy"
               referrerPolicy="no-referrer"
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              onError={(event) => { event.currentTarget.src = "/projects/images/ai-buyer-residential.jpg"; }}
             />
           ) : (
             <div className="w-full h-full bg-[#FAF6F0] flex items-center justify-center">

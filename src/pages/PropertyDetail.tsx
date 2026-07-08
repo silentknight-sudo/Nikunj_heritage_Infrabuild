@@ -22,7 +22,8 @@ import {
   Sparkles,
   PlayCircle,
   FileText,
-  Download
+  Download,
+  CheckCircle
 } from "lucide-react";
 import { getPropertyBySlug, createLead } from "../lib/firestore";
 import { Property } from "../types";
@@ -122,6 +123,10 @@ export const PropertyDetail: React.FC = () => {
   }
 
   const mediaBundle = getPropertyMedia(property);
+  const publishedBrochureUrl = property.brochureUrl || mediaBundle.brochureUrl;
+  const publishedFloorPlanUrl = property.floorPlanUrl || mediaBundle.floorPlanUrl;
+  const publishedVideoUrl = property.videoUrl || mediaBundle.videoUrl;
+  const fallbackPropertyImage = "/projects/images/ai-buyer-residential.jpg";
 
   return (
     <div className="bg-[#FAF6F0] min-h-screen text-[#1A1A2E] py-12" id={`property-details-view-${property.id}`}>
@@ -193,10 +198,11 @@ export const PropertyDetail: React.FC = () => {
               {property.imageUrls && property.imageUrls.length > 0 ? (
                 <>
                   <img
-                    src={property.imageUrls[activeImgIdx]}
+                    src={property.imageUrls[activeImgIdx] || fallbackPropertyImage}
                     alt={`${property.title} - View ${activeImgIdx + 1}`}
                     referrerPolicy="no-referrer"
                     className="w-full h-full object-cover"
+                    onError={(event) => { event.currentTarget.src = fallbackPropertyImage; }}
                   />
                   
                   {/* Slider controls arrow */}
@@ -292,14 +298,14 @@ export const PropertyDetail: React.FC = () => {
                     ))}
                   </div>
                   <div className="flex flex-wrap gap-3 mt-6">
-                    {mediaBundle.brochureUrl && (
-                      <a href={mediaBundle.brochureUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-full bg-[#6B1A2A] px-4 py-2 text-xs font-bold uppercase tracking-wider text-white">
+                    {publishedBrochureUrl && (
+                      <a href={publishedBrochureUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-full bg-[#6B1A2A] px-4 py-2 text-xs font-bold uppercase tracking-wider text-white">
                         <FileText className="h-4 w-4" />
                         <span>Open Brochure</span>
                       </a>
                     )}
-                    {mediaBundle.floorPlanUrl && (
-                      <a href={mediaBundle.floorPlanUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-full border border-[#C9A84C]/40 px-4 py-2 text-xs font-bold uppercase tracking-wider text-[#6B1A2A]">
+                    {publishedFloorPlanUrl && (
+                      <a href={publishedFloorPlanUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-full border border-[#C9A84C]/40 px-4 py-2 text-xs font-bold uppercase tracking-wider text-[#6B1A2A]">
                         <Download className="h-4 w-4" />
                         <span>Floor Plan PDF</span>
                       </a>
@@ -313,7 +319,7 @@ export const PropertyDetail: React.FC = () => {
                     controls
                     preload="metadata"
                   >
-                    {mediaBundle.videoUrl && <source src={mediaBundle.videoUrl} type="video/mp4" />}
+                    {publishedVideoUrl && <source src={publishedVideoUrl} type="video/mp4" />}
                   </video>
                 </div>
               </div>
@@ -337,7 +343,7 @@ export const PropertyDetail: React.FC = () => {
                 {mediaBundle.gallery.map((item) => (
                   <div key={item.title} className="rounded-2xl overflow-hidden border border-[#C9A84C]/15 bg-[#FCFAF6]">
                     <div className="aspect-[4/3] overflow-hidden">
-                      <img src={item.image} alt={item.title} className="h-full w-full object-cover" />
+                      <img src={item.image} alt={item.title} className="h-full w-full object-cover" onError={(event) => { event.currentTarget.src = fallbackPropertyImage; }} />
                     </div>
                     <div className="p-4">
                       <h4 className="font-serif text-lg font-bold text-[#6B1A2A]">{item.title}</h4>
@@ -370,7 +376,7 @@ export const PropertyDetail: React.FC = () => {
                 {mediaBundle.floorPlans.map((plan) => (
                   <div key={plan.title} className="rounded-2xl overflow-hidden border border-[#C9A84C]/15 bg-[#FCFAF6]">
                     <div className="aspect-[4/3] overflow-hidden">
-                      <img src={plan.image} alt={plan.title} className="h-full w-full object-cover" />
+                      <img src={plan.image} alt={plan.title} className="h-full w-full object-cover" onError={(event) => { event.currentTarget.src = "/projects/images/ai-buyer-plots-land.jpg"; }} />
                     </div>
                     <div className="p-4">
                       <h4 className="font-serif text-base font-bold text-[#6B1A2A]">{plan.title}</h4>
@@ -428,6 +434,23 @@ export const PropertyDetail: React.FC = () => {
             </div>
 
             {/* Shrines and Proximity Distances */}
+            {property.amenities && property.amenities.length > 0 && (
+              <div className="bg-white p-6 rounded-2xl border border-[#C9A84C]/20 shadow-sm">
+                <h3 className="font-serif font-bold text-lg text-[#6B1A2A] mb-4 pb-2 border-b border-[#C9A84C]/10 flex items-center space-x-2">
+                  <CheckCircle className="h-5 w-5 text-[#0E7B6C]" />
+                  <span>Published Amenities & Buyer Benefits</span>
+                </h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {property.amenities.map((amenity) => (
+                    <div key={amenity} className="flex items-center gap-2 rounded-xl bg-[#FAF6F0] px-4 py-3 text-sm font-semibold text-slate-700">
+                      <CheckCircle className="h-4 w-4 shrink-0 text-[#0E7B6C]" />
+                      <span>{amenity}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {property.landmarks && property.landmarks.length > 0 && (
               <div className="bg-white p-6 rounded-2xl border border-[#C9A84C]/20 shadow-sm">
                 <h3 className="font-serif font-bold text-lg text-[#6B1A2A] mb-4 pb-2 border-b border-[#C9A84C]/10 flex items-center space-x-2">
