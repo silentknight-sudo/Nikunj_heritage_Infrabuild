@@ -44,6 +44,7 @@ import { ThreeDCard, ScrollFade, ParticleGlow, SacredPropertyBackdrop } from "..
 import { homeMediaShowcase } from "../content/projectMedia";
 import { SeoHead } from "../components/seo/SeoHead";
 import { DEFAULT_OG_IMAGE, SITE_URL } from "../lib/seo";
+import { motion } from "motion/react";
 
 export const Home: React.FC = () => {
   const navigate = useNavigate();
@@ -134,6 +135,97 @@ export const Home: React.FC = () => {
   };
 
   const featuredProperties = properties.filter(p => p.featured || p.newLaunch).slice(0, 3);
+
+  const marketHighlights = [
+    { label: "Verified Braj Listings", value: `${properties.length || 24}+`, icon: Layers, tone: "from-[#0F6E56] to-[#0F172A]" },
+    { label: "Active Buyer Enquiries", value: "1,200+", icon: Users, tone: "from-[#FB923C] to-[#C45C1A]" },
+    { label: "Temple Proximity Audits", value: "100%", icon: ShieldCheck, tone: "from-[#6B1A2A] to-[#1A1A2E]" },
+    { label: "Site Visit Support", value: "24/7", icon: Calendar, tone: "from-[#C9A84C] to-[#C45C1A]" }
+  ];
+
+  const advisoryJourney = [
+    "Search by temple, budget, location and property type",
+    "Compare verified listings, floor plans, documents and RERA details",
+    "Book guided Mathura-Vrindavan site visit with advisor support",
+    "Complete registry, possession and post-sale support"
+  ];
+
+  const quickActionPanels = [
+    {
+      title: "Continue Property Search",
+      text: "Resume browsing flats, plots, villas and commercial spaces across Mathura-Vrindavan.",
+      cta: "Explore Listings",
+      href: "/properties",
+      icon: Search
+    },
+    {
+      title: "Saved Shortlist",
+      text: "Keep your favourite opportunities ready before speaking to our advisory team.",
+      cta: "View Wishlist",
+      href: "/properties",
+      icon: CheckCircle
+    },
+    {
+      title: "Compare Options",
+      text: "Compare budget, area, temple proximity, RERA status and possession readiness.",
+      cta: "Compare Now",
+      href: "/compare-properties",
+      icon: Layers
+    }
+  ];
+
+  const propertyIntentCards = [
+    {
+      title: "Residential",
+      subtitle: "Flats, villas and family homes near devotional neighbourhoods.",
+      href: "/properties?category=residential-apartments",
+      image: "/projects/images/ai-buyer-residential.jpg"
+    },
+    {
+      title: "Commercial",
+      subtitle: "Shops, office frontage and investor-grade business pockets.",
+      href: "/properties?category=commercial-spaces",
+      image: "/projects/images/ai-buyer-commercial.jpg"
+    },
+    {
+      title: "Plots & Land",
+      subtitle: "Registry-ready plotted opportunities around growth corridors.",
+      href: "/properties?category=plots-and-land",
+      image: "/projects/images/ai-buyer-plots-land.jpg"
+    },
+    {
+      title: "Spiritual Retreats",
+      subtitle: "Second-home and ashram-style living near temples and ghats.",
+      href: "/properties?category=spiritual-retreats",
+      image: "/projects/images/ai-buyer-spiritual-retreat.jpg"
+    }
+  ];
+
+  const marketRows = [
+    "Rukmini Vihar residential demand near Prem Mandir and ISKCON",
+    "Mathura-Vrindavan Road commercial visibility and highway access",
+    "Govardhan and Barsana spiritual second-home demand",
+    "Verified registry, RERA and possession support for outstation buyers"
+  ];
+
+  const faqItems = [
+    {
+      question: "Is Nikunj Heritage a property portal or advisory company?",
+      answer: "Nikunj Heritage Infrabuild is positioned as a local Mathura-Vrindavan real estate advisory and infrabuild brand, helping buyers shortlist verified residential, commercial and plotted opportunities."
+    },
+    {
+      question: "Can I compare Vrindavan properties before visiting?",
+      answer: "Yes. You can use the property listing and compare flow to evaluate budget, area, location, temple proximity, amenities and documentation before booking a guided site visit."
+    },
+    {
+      question: "Which locations are important for investment?",
+      answer: "Important buyer zones include Rukmini Vihar, Prem Mandir belt, Banke Bihari access zones, Mathura-Vrindavan Road, Govardhan corridor and selected commercial pockets in Mathura."
+    },
+    {
+      question: "How do I book a site visit?",
+      answer: "Use the enquiry form, call button or WhatsApp CTA. The team can coordinate a personal consultation and guided local visit across shortlisted properties."
+    }
+  ];
 
   // Hardcoded Static Why Choose Us values as fallback/compliment to match guidelines
   const whyChooseUsCards = [
@@ -361,6 +453,155 @@ export const Home: React.FC = () => {
         </div>
       </div>
 
+      {/* Wealth-style trust cockpit: search, proof and advisory journey */}
+      <section className="relative z-10 px-4 pb-6 pt-2 sm:pt-8" id="wealth-style-trust-cockpit">
+        <div className="mx-auto grid max-w-7xl grid-cols-1 gap-5 lg:grid-cols-12">
+          <motion.div
+            initial={{ opacity: 0, y: 28 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.55, ease: [0.21, 0.85, 0.45, 1.01] }}
+            className="lg:col-span-8 rounded-[28px] border border-[#EAD9C0] bg-white/90 p-5 shadow-2xl shadow-[#6B1A2A]/5 backdrop-blur-xl sm:p-7"
+          >
+            <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
+              <div>
+                <span className="text-[11px] font-black uppercase tracking-[0.28em] text-[#C45C1A]">Braj Property Command Center</span>
+                <h2 className="mt-2 font-serif text-2xl font-black leading-tight text-[#0F172A] sm:text-3xl">
+                  Find, compare and visit verified Mathura-Vrindavan properties faster.
+                </h2>
+                <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-600">
+                  Inspired by modern property portals, rebuilt for Nikunj Heritage with temple-proximity filters, local advisory, registry clarity and investor-focused guidance.
+                </p>
+              </div>
+              <Link
+                to="/compare-properties"
+                className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-[#0F172A] px-5 py-3 text-xs font-black uppercase tracking-wider text-white transition-all hover:-translate-y-0.5 hover:bg-[#1E293B]"
+              >
+                Compare Now
+                <ChevronRight className="h-4 w-4" />
+              </Link>
+            </div>
+
+            <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              {marketHighlights.map((item, index) => {
+                const Icon = item.icon;
+                return (
+                  <motion.div
+                    key={item.label}
+                    initial={{ opacity: 0, y: 22 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.45, delay: index * 0.08 }}
+                    className="group overflow-hidden rounded-2xl border border-slate-100 bg-[#FAF8F4] p-4 shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl"
+                  >
+                    <div className={`mb-4 flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br ${item.tone} text-white shadow-lg`}>
+                      <Icon className="h-5 w-5" />
+                    </div>
+                    <div className="font-serif text-2xl font-black text-[#0F172A]">{item.value}</div>
+                    <div className="mt-1 text-[11px] font-bold uppercase tracking-wider text-slate-500">{item.label}</div>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, x: 32 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.6, ease: [0.21, 0.85, 0.45, 1.01] }}
+            className="lg:col-span-4 rounded-[28px] bg-[#0F172A] p-5 text-white shadow-2xl shadow-[#0F172A]/20 sm:p-7"
+          >
+            <span className="text-[11px] font-black uppercase tracking-[0.28em] text-[#FACC15]">Buyer Flow</span>
+            <h3 className="mt-2 font-serif text-2xl font-black">From online search to site visit</h3>
+            <div className="mt-6 space-y-4">
+              {advisoryJourney.map((step, index) => (
+                <div key={step} className="flex gap-3">
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#FACC15]/40 bg-white/10 text-xs font-black text-[#FACC15]">
+                    {index + 1}
+                  </div>
+                  <p className="text-sm leading-6 text-white/80">{step}</p>
+                </div>
+              ))}
+            </div>
+            <Link
+              to="/contact-us"
+              className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#FB923C] px-5 py-3 text-xs font-black uppercase tracking-wider text-white transition-all hover:bg-[#EA580C]"
+            >
+              Book Free Advisory
+              <ChevronRight className="h-4 w-4" />
+            </Link>
+          </motion.div>
+        </div>
+      </section>
+
+      <section className="relative z-10 px-4 py-8" id="wealth-style-quick-actions">
+        <div className="mx-auto grid max-w-7xl grid-cols-1 gap-4 md:grid-cols-3">
+          {quickActionPanels.map((panel, index) => {
+            const Icon = panel.icon;
+            return (
+              <motion.div
+                key={panel.title}
+                initial={{ opacity: 0, y: 22 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-80px" }}
+                transition={{ duration: 0.45, delay: index * 0.08 }}
+                className="group rounded-3xl border border-[#EAD9C0] bg-white p-5 shadow-sm transition-all hover:-translate-y-1 hover:shadow-2xl hover:shadow-[#6B1A2A]/10"
+              >
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#FB923C]/10 text-[#FB923C]">
+                    <Icon className="h-5 w-5" />
+                  </div>
+                  <Link to={panel.href} className="text-xs font-black uppercase tracking-wider text-[#C45C1A]">
+                    {panel.cta}
+                  </Link>
+                </div>
+                <h3 className="mt-5 font-serif text-xl font-black text-[#0F172A]">{panel.title}</h3>
+                <p className="mt-2 text-sm leading-6 text-slate-500">{panel.text}</p>
+              </motion.div>
+            );
+          })}
+        </div>
+      </section>
+
+      <section className="relative z-10 px-4 py-8" id="wealth-style-property-intent">
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <span className="text-[11px] font-black uppercase tracking-[0.28em] text-[#C45C1A]">Choose Property Type</span>
+              <h2 className="mt-2 font-serif text-3xl font-black text-[#0F172A] sm:text-4xl">Explore by buyer intent</h2>
+            </div>
+            <Link to="/properties" className="inline-flex w-fit items-center gap-2 rounded-full bg-[#0F172A] px-5 py-3 text-xs font-black uppercase tracking-wider text-white">
+              View All Properties
+              <ChevronRight className="h-4 w-4" />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {propertyIntentCards.map((card, index) => (
+              <motion.div
+                key={card.title}
+                initial={{ opacity: 0, y: 26 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-80px" }}
+                transition={{ duration: 0.5, delay: index * 0.07 }}
+              >
+                <Link to={card.href} className="group block overflow-hidden rounded-[28px] bg-[#0F172A] shadow-xl shadow-[#0F172A]/10">
+                  <div className="relative h-56 overflow-hidden">
+                    <img src={card.image} alt={card.title} className="h-full w-full object-cover opacity-75 transition-transform duration-700 group-hover:scale-110" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A] via-[#0F172A]/40 to-transparent" />
+                    <div className="absolute bottom-0 left-0 right-0 p-5 text-white">
+                      <h3 className="font-serif text-2xl font-black">{card.title}</h3>
+                      <p className="mt-2 text-sm leading-6 text-white/75">{card.subtitle}</p>
+                    </div>
+                  </div>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* 2. DYNAMIC CATEGORIES GRID */}
       <section className="py-10 sm:py-16 px-4 max-w-7xl mx-auto scroll-mt-20" id="categories-grid-section">
         <div className="text-center max-w-3xl mx-auto mb-12">
@@ -486,6 +727,55 @@ export const Home: React.FC = () => {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      <section className="relative overflow-hidden bg-white px-4 py-14" id="wealth-style-right-property-guide">
+        <div className="absolute inset-y-0 right-0 hidden w-1/2 bg-[#F8FAFC] lg:block" />
+        <div className="relative mx-auto grid max-w-7xl grid-cols-1 gap-8 lg:grid-cols-12 lg:items-center">
+          <motion.div
+            initial={{ opacity: 0, x: -34 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.6 }}
+            className="lg:col-span-5"
+          >
+            <span className="text-[11px] font-black uppercase tracking-[0.28em] text-[#C45C1A]">Find The Right Property</span>
+            <h2 className="mt-3 font-serif text-3xl font-black leading-tight text-[#0F172A] sm:text-5xl">
+              Advisory-first buying for Mathura and Vrindavan.
+            </h2>
+            <p className="mt-5 text-sm leading-7 text-slate-600">
+              Like a premium real-estate marketplace, the experience helps buyers move from search to shortlist to comparison. Unlike a generic portal, every step is shaped around temple access, registry clarity and local Braj market realities.
+            </p>
+            <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+              <Link to="/properties" className="inline-flex items-center justify-center gap-2 rounded-full bg-[#FB923C] px-6 py-3 text-xs font-black uppercase tracking-wider text-white">
+                Search Properties
+                <ChevronRight className="h-4 w-4" />
+              </Link>
+              <Link to="/contact-us" className="inline-flex items-center justify-center gap-2 rounded-full border border-[#EAD9C0] bg-white px-6 py-3 text-xs font-black uppercase tracking-wider text-[#0F172A]">
+                Talk To Advisor
+              </Link>
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, x: 34 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.6 }}
+            className="lg:col-span-7"
+          >
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              {marketRows.map((item, index) => (
+                <div key={item} className="rounded-3xl border border-slate-100 bg-white p-5 shadow-sm">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#0F6E56]/10 text-[#0F6E56]">
+                    {index + 1}
+                  </div>
+                  <p className="mt-4 text-sm font-semibold leading-7 text-slate-700">{item}</p>
+                </div>
+              ))}
+            </div>
+          </motion.div>
         </div>
       </section>
 
@@ -812,6 +1102,72 @@ export const Home: React.FC = () => {
             ))}
           </div>
         )}
+      </section>
+
+      <section className="bg-white px-4 py-14" id="wealth-style-faq-section">
+        <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 lg:grid-cols-12">
+          <div className="lg:col-span-4">
+            <span className="text-[11px] font-black uppercase tracking-[0.28em] text-[#C45C1A]">Buyer Questions</span>
+            <h2 className="mt-3 font-serif text-3xl font-black leading-tight text-[#0F172A] sm:text-4xl">
+              Frequently asked before buying in Braj.
+            </h2>
+            <p className="mt-4 text-sm leading-7 text-slate-600">
+              Quick clarity for families, investors, NRIs and devotional second-home buyers comparing Mathura-Vrindavan property options.
+            </p>
+          </div>
+          <div className="space-y-4 lg:col-span-8">
+            {faqItems.map((item, index) => (
+              <motion.div
+                key={item.question}
+                initial={{ opacity: 0, y: 18 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-60px" }}
+                transition={{ duration: 0.45, delay: index * 0.05 }}
+                className="rounded-3xl border border-slate-100 bg-[#FAF8F4] p-5"
+              >
+                <div className="flex gap-4">
+                  <HelpCircle className="mt-1 h-5 w-5 shrink-0 text-[#FB923C]" />
+                  <div>
+                    <h3 className="font-serif text-lg font-black text-[#0F172A]">{item.question}</h3>
+                    <p className="mt-2 text-sm leading-7 text-slate-600">{item.answer}</p>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="border-y border-[#EAD9C0] bg-[#0F172A] px-4 py-12 text-white" id="wealth-style-seo-service-areas">
+        <div className="mx-auto max-w-7xl">
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
+            <div className="lg:col-span-5">
+              <span className="text-[11px] font-black uppercase tracking-[0.28em] text-[#FACC15]">Mathura Vrindavan Real Estate</span>
+              <h2 className="mt-3 font-serif text-3xl font-black">Premium property advisory across sacred growth corridors.</h2>
+            </div>
+            <div className="grid grid-cols-2 gap-3 text-sm sm:grid-cols-3 lg:col-span-7">
+              {[
+                "Property in Vrindavan",
+                "Mathura Real Estate",
+                "Rukmini Vihar Flats",
+                "Plots in Govardhan",
+                "Commercial Property Mathura",
+                "Villas near Prem Mandir",
+                "Banke Bihari Access Zone",
+                "ISKCON Vrindavan Homes",
+                "Braj Investment Property"
+              ].map((keyword) => (
+                <Link
+                  key={keyword}
+                  to="/properties"
+                  className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white/75 transition-colors hover:bg-white/10 hover:text-white"
+                >
+                  {keyword}
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* 10. NEWSLETTER SIGNUP BOX */}
