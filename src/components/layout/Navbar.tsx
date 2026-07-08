@@ -140,7 +140,7 @@ export const Navbar: React.FC = () => {
     <>
       {/* 1. Main Premium Fixed Header bar matching the mockup */}
       <nav 
-        className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-100 shadow-sm transition-all duration-300 h-16 sm:h-20 flex items-center select-none" 
+        className="sticky top-0 z-[80] bg-white/95 backdrop-blur-md border-b border-slate-100 shadow-sm transition-all duration-300 h-16 sm:h-20 flex items-center select-none" 
         id="nh-sticky-header"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex justify-between items-center">
@@ -272,7 +272,7 @@ export const Navbar: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -15 }}
             transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed inset-0 z-40 bg-white flex flex-col justify-between pt-16 sm:pt-20 h-[100svh] overflow-y-auto select-none"
+            className="fixed inset-0 z-[70] bg-white flex flex-col justify-between pt-16 sm:pt-20 h-[100dvh] overflow-y-auto select-none"
             id="fullscreen-mega-portal"
           >
             {/* Core central elements */}
@@ -500,7 +500,7 @@ export const Navbar: React.FC = () => {
       {/* 3. SLIDING DRAWER OVERLAY FOR LIKED / FAVORITES PROPERTIES */}
       <AnimatePresence>
         {isFavoritesOpen && (
-          <div className="fixed inset-0 z-50 overflow-hidden" id="favorites-drawer-root">
+          <div className="fixed inset-0 z-[90] overflow-hidden" id="favorites-drawer-root">
             {/* Dark blur glass backdrop */}
             <motion.div
               initial={{ opacity: 0 }}
@@ -580,7 +580,7 @@ export const Navbar: React.FC = () => {
                         {/* Remove trash element */}
                         <button
                           onClick={(e) => removeWishlistItem(p.id, e)}
-                          className="text-slate-400 hover:text-rose-500 p-1 rounded-md self-center transition-colors shrink-0"
+                          className="relative z-10 text-slate-400 hover:text-rose-500 p-1 rounded-md self-center transition-colors shrink-0"
                           title="Remove from favorites"
                         >
                           <Trash2 className="h-4 w-4" />
@@ -590,7 +590,7 @@ export const Navbar: React.FC = () => {
                         <Link 
                           to={`/properties/${p.slug}`} 
                           onClick={() => setIsFavoritesOpen(false)}
-                          className="absolute inset-0 z-0 bg-transparent"
+                          className="absolute inset-0 z-[1] bg-transparent"
                           aria-label={`View details of ${p.title}`}
                         />
                       </div>
