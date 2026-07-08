@@ -9,11 +9,16 @@ import {
   LayoutDashboard,
   Building,
   Users,
+  UserCheck,
+  UserX,
   Layers,
   MapPin,
   BookOpen,
   FileText,
   Settings,
+  Upload,
+  Image as ImageIcon,
+  Eye,
   Plus,
   Trash2,
   Edit2,
@@ -32,6 +37,7 @@ import {
   Globe2,
   PhoneCall,
   ShieldCheck,
+  ShieldOff,
   TrendingUp
 } from "lucide-react";
 import { motion } from "motion/react";
@@ -56,7 +62,11 @@ import {
   addPage as createPage,
   deletePage,
   getSiteConfig,
-  updateSiteConfig
+  updateSiteConfig,
+  getUsers,
+  getAdminIds,
+  addAdmin,
+  removeAdmin
 } from "../lib/firestore";
 import {
   Property,
@@ -66,6 +76,7 @@ import {
   Blog,
   Page,
   SiteConfig,
+  AppUser,
   PropertyStatus,
   LeadStatus,
   BlogStatus
@@ -73,7 +84,7 @@ import {
 import { formatPrice } from "../lib/utils";
 import { toast } from "react-hot-toast";
 
-type TabType = "properties" | "leads" | "categories" | "locations" | "blogs" | "pages" | "settings";
+type TabType = "properties" | "leads" | "users" | "categories" | "locations" | "blogs" | "pages" | "settings";
 
 export const AdminDashboard: React.FC = () => {
   const { user, isAdmin, loading: authLoading, logout, loginWithGoogle } = useAuth();
@@ -90,6 +101,8 @@ export const AdminDashboard: React.FC = () => {
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [pages, setPages] = useState<Page[]>([]);
   const [siteConfig, setSiteConfig] = useState<SiteConfig | null>(null);
+  const [adminUsers, setAdminUsers] = useState<AppUser[]>([]);
+  const [adminIds, setAdminIds] = useState<string[]>([]);
 
   // General Loading state
   const [loading, setLoading] = useState(true);
@@ -107,7 +120,33 @@ export const AdminDashboard: React.FC = () => {
   const [propCatId, setPropCatId] = useState("");
   const [propLocId, setPropLocId] = useState("");
   const [propImagesText, setPropImagesText] = useState(""); // newline separated URL specs
+  const [propFloorPlanUrl, setPropFloorPlanUrl] = useState("");
+  const [propBrochureUrl, setPropBrochureUrl] = useState("");
+  const [propVideoUrl, setPropVideoUrl] = useState("");
+  const [propAmenitiesText, setPropAmenitiesText] = useState("Modern Security\n24/7 Water Supply\nPaved Roads\nDirect Registry");
+  const [propLandmarksText, setPropLandmarksText] = useState("Prem Mandir | 1.2 km\nBanke Bihari Mandir | 2.4 km");
+  const [propSeoTitle, setPropSeoTitle] = useState("");
+  const [propSeoDescription, setPropSeoDescription] = useState("");
   const [propFeatured, setPropFeatured] = useState(false);
+
+  // Category Form State
+  const [catFormOpen, setCatFormOpen] = useState(false);
+  const [catName, setCatName] = useState("");
+  const [catSlug, setCatSlug] = useState("");
+  const [catIcon, setCatIcon] = useState("Building");
+  const [catDesc, setCatDesc] = useState("");
+  const [catImageUrl, setCatImageUrl] = useState("");
+  const [catSortOrder, setCatSortOrder] = useState(10);
+
+  // Location Form State
+  const [locFormOpen, setLocFormOpen] = useState(false);
+  const [locName, setLocName] = useState("");
+  const [locSlug, setLocSlug] = useState("");
+  const [locCity, setLocCity] = useState("Vrindavan");
+  const [locDesc, setLocDesc] = useState("");
+  const [locImageUrl, setLocImageUrl] = useState("");
+  const [locLat, setLocLat] = useState(27.565);
+  const [locLng, setLocLng] = useState(77.659);
 
   // Blog Form State
   const [blogFormOpen, setBlogFormOpen] = useState(false);
@@ -116,6 +155,39 @@ export const AdminDashboard: React.FC = () => {
   const [blogTime, setBlogTime] = useState("5 min read");
   const [blogCover, setBlogCover] = useState("");
   const [blogContent, setBlogContent] = useState("");
+
+  const slugify = (value: string) => value.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+
+  const fileToDataUrl = (file: File): Promise<string> => new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result));
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+
+  const handleUploadToField = async (
+    file: File | undefined,
+    setter: React.Dispatch<React.SetStateAction<string>>,
+    mode: "replace" | "append" = "replace"
+  ) => {
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please select an image file.");
+      return;
+    }
+    if (file.size > 350 * 1024) {
+      toast.error("Image is too large. Please upload an optimized image under 350KB.");
+      return;
+    }
+    const dataUrl = await fileToDataUrl(file);
+    setter((prev) => mode === "append" && prev.trim() ? `${prev.trim()}\n${dataUrl}` : dataUrl);
+    toast.success("Image uploaded into the field.");
+  };
+
+  const insertBlogMarkup = (before: string, after = "") => {
+    const selection = window.getSelection()?.toString() || "Your text";
+    setBlogContent((prev) => `${prev}${prev ? "\n" : ""}${before}${selection}${after}`);
+  };
 
   // Page Form State
   const [pageFormOpen, setPageFormOpen] = useState(false);
@@ -167,6 +239,13 @@ export const AdminDashboard: React.FC = () => {
         setConfPhone(config.phone || "");
         setConfReras(config.reranumbers?.join(", ") || "");
       }
+
+      const [knownUsers, privilegedIds] = await Promise.all([
+        getUsers(),
+        getAdminIds()
+      ]);
+      setAdminUsers(knownUsers);
+      setAdminIds(privilegedIds);
     } catch (err) {
       console.error("Admin dashboard data bootstrap failed:", err);
     } finally {
@@ -193,7 +272,15 @@ export const AdminDashboard: React.FC = () => {
       .map((url) => url.trim())
       .filter(Boolean);
 
-    const slugified = propTitle.toLowerCase().trim().replace(/\s+/g, "-");
+    const slugified = slugify(propTitle);
+    const amenitiesArray = propAmenitiesText.split("\n").map((item) => item.trim()).filter(Boolean);
+    const landmarksArray = propLandmarksText
+      .split("\n")
+      .map((line) => {
+        const [name, distance] = line.split("|").map((item) => item?.trim());
+        return name ? { name, distance: distance || "" } : null;
+      })
+      .filter(Boolean) as { name: string; distance: string }[];
 
     const payload = {
       title: propTitle,
@@ -206,17 +293,22 @@ export const AdminDashboard: React.FC = () => {
       status: propStatus,
       categoryId: propCatId,
       locationId: propLocId,
-      imageUrls: imagesArray.length > 0 ? imagesArray : ["https://images.unsplash.com/photo-1545229765-7018d6ff02bd?auto=format&fit=crop&q=80&w=600"],
+      imageUrls: imagesArray.length > 0 ? imagesArray : ["/projects/images/ai-buyer-residential.jpg"],
+      floorPlanUrl: propFloorPlanUrl,
+      brochureUrl: propBrochureUrl,
+      videoUrl: propVideoUrl,
       featured: propFeatured,
       newLaunch: true,
       exclusive: false,
-      amenities: ["Modern Security", "24/7 Water Supply", "Paved Roads", "Direct Registry"],
+      amenities: amenitiesArray.length ? amenitiesArray : ["Modern Security", "24/7 Water Supply", "Paved Roads", "Direct Registry"],
       possessionDate: "Immediate",
-      landmarks: [
+      landmarks: landmarksArray.length ? landmarksArray : [
         { name: "Prem Mandir", distance: "1.2 km" },
         { name: "Banke Bihari Mandir", distance: "2.4 km" }
       ],
-      reraNumber: "UPRERAPRJ" + Math.floor(Math.random() * 80000 + 10000)
+      reraNumber: "UPRERAPRJ" + Math.floor(Math.random() * 80000 + 10000),
+      seoTitle: propSeoTitle,
+      seoDescription: propSeoDescription
     };
 
     try {
@@ -248,6 +340,13 @@ export const AdminDashboard: React.FC = () => {
     setPropCatId(p.categoryId);
     setPropLocId(p.locationId);
     setPropImagesText(p.imageUrls?.join("\n") || "");
+    setPropFloorPlanUrl(p.floorPlanUrl || "");
+    setPropBrochureUrl(p.brochureUrl || "");
+    setPropVideoUrl(p.videoUrl || "");
+    setPropAmenitiesText(p.amenities?.join("\n") || "");
+    setPropLandmarksText(p.landmarks?.map((item) => `${item.name} | ${item.distance}`).join("\n") || "");
+    setPropSeoTitle(p.seoTitle || "");
+    setPropSeoDescription(p.seoDescription || "");
     setPropFeatured(p.featured || false);
     setPropFormOpen(true);
   };
@@ -261,7 +360,76 @@ export const AdminDashboard: React.FC = () => {
     setPropFacing("East");
     setPropStatus(PropertyStatus.CONSTRUCTION);
     setPropImagesText("");
+    setPropFloorPlanUrl("");
+    setPropBrochureUrl("");
+    setPropVideoUrl("");
+    setPropAmenitiesText("Modern Security\n24/7 Water Supply\nPaved Roads\nDirect Registry");
+    setPropLandmarksText("Prem Mandir | 1.2 km\nBanke Bihari Mandir | 2.4 km");
+    setPropSeoTitle("");
+    setPropSeoDescription("");
     setPropFeatured(false);
+  };
+
+  const handleCategorySubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!catName || !catDesc) {
+      toast.error("Category name and description are required.");
+      return;
+    }
+    try {
+      await createCategory({
+        name: catName,
+        slug: catSlug || slugify(catName),
+        icon: catIcon,
+        description: catDesc,
+        imageUrl: catImageUrl || "/projects/images/ai-buyer-residential.jpg",
+        sortOrder: Number(catSortOrder),
+        active: true
+      });
+      toast.success("Category created.");
+      setCatFormOpen(false);
+      setCatName("");
+      setCatSlug("");
+      setCatIcon("Building");
+      setCatDesc("");
+      setCatImageUrl("");
+      setCatSortOrder(10);
+      loadPanelData();
+    } catch (err) {
+      toast.error("Category creation failed.");
+    }
+  };
+
+  const handleLocationSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!locName || !locDesc) {
+      toast.error("Location name and description are required.");
+      return;
+    }
+    try {
+      await createLocation({
+        name: locName,
+        slug: locSlug || slugify(locName),
+        city: locCity,
+        description: locDesc,
+        imageUrl: locImageUrl || "/projects/images/ai-buyer-plots-land.jpg",
+        latitude: Number(locLat),
+        longitude: Number(locLng),
+        active: true
+      });
+      toast.success("Location created.");
+      setLocFormOpen(false);
+      setLocName("");
+      setLocSlug("");
+      setLocCity("Vrindavan");
+      setLocDesc("");
+      setLocImageUrl("");
+      setLocLat(27.565);
+      setLocLng(77.659);
+      loadPanelData();
+    } catch (err) {
+      toast.error("Location creation failed.");
+    }
   };
 
   const handleDeleteProperty = async (id: string) => {
@@ -283,6 +451,29 @@ export const AdminDashboard: React.FC = () => {
       loadPanelData();
     } catch (err) {
       toast.error("Lead status transition failed.");
+    }
+  };
+
+  const handleAdminToggle = async (targetUser: AppUser, shouldPromote: boolean) => {
+    if (!targetUser.uid || !targetUser.email) {
+      toast.error("User UID and email are required for admin changes.");
+      return;
+    }
+    if (!shouldPromote && targetUser.uid === user?.uid) {
+      toast.error("For safety, you cannot remove your own admin access from this panel.");
+      return;
+    }
+    try {
+      if (shouldPromote) {
+        await addAdmin(targetUser.uid, targetUser.email);
+        toast.success(`${targetUser.email} is now an admin.`);
+      } else {
+        await removeAdmin(targetUser.uid);
+        toast.success(`${targetUser.email} admin access removed.`);
+      }
+      loadPanelData();
+    } catch (err) {
+      toast.error("Admin permission update failed.");
     }
   };
 
@@ -310,7 +501,7 @@ export const AdminDashboard: React.FC = () => {
       toast.error("Please provide both Title and Content.");
       return;
     }
-    const bSlug = blogTitle.toLowerCase().trim().replace(/\s+/g, "-");
+    const bSlug = slugify(blogTitle);
     try {
       await createBlog({
         title: blogTitle,
@@ -318,7 +509,8 @@ export const AdminDashboard: React.FC = () => {
         content: blogContent,
         author: "Shri Nikunj Chaturvedi",
         category: blogCat,
-        coverUrl: blogCover || "https://images.unsplash.com/photo-1544085311-11a028465b03?auto=format&fit=crop&q=80&w=600",
+        readTime: blogTime,
+        coverUrl: blogCover || "/projects/images/ai-buyer-spiritual-retreat.jpg",
         status: BlogStatus.PUBLISHED
       });
       toast.success("Divine literature published successfully!");
@@ -487,6 +679,15 @@ export const AdminDashboard: React.FC = () => {
             >
               <Users className="h-4.5 w-4.5" />
               <span>Leads ({leads.filter(l => l.status === LeadStatus.NEW).length})</span>
+            </button>
+            <button
+              onClick={() => setActiveTab("users")}
+              className={`w-full text-left px-3.5 py-3 rounded-xl text-[11px] font-semibold uppercase tracking-wider flex items-center space-x-2 transition ${
+                activeTab === "users" ? "bg-[#FB923C] text-white shadow" : "hover:bg-[#FAF6F0]/5 text-slate-300"
+              }`}
+            >
+              <UserCheck className="h-4.5 w-4.5" />
+              <span>Users</span>
             </button>
             <button
               onClick={() => setActiveTab("categories")}
@@ -779,14 +980,63 @@ export const AdminDashboard: React.FC = () => {
                       </div>
 
                       <div>
-                        <label className="block text-[10px] uppercase font-bold mb-1 text-slate-400">Image URL lines (newline-delimited strings)</label>
+                        <div className="flex flex-wrap items-center justify-between gap-2">
+                          <label className="block text-[10px] uppercase font-bold mb-1 text-slate-400">Image URL lines or uploaded images</label>
+                          <label className="inline-flex cursor-pointer items-center gap-2 rounded-full bg-[#0F172A] px-3 py-1.5 text-[10px] font-black uppercase tracking-wider text-white">
+                            <Upload className="h-3.5 w-3.5" />
+                            Upload Gallery Image
+                            <input
+                              type="file"
+                              accept="image/*"
+                              className="hidden"
+                              onChange={(e) => handleUploadToField(e.target.files?.[0], setPropImagesText, "append")}
+                            />
+                          </label>
+                        </div>
                         <textarea
                           rows={3}
-                          placeholder="e.g., https://images.unsplash.com/your-image.jpg"
+                          placeholder="Paste image URLs or use upload. One image per line."
                           value={propImagesText}
                           onChange={(e) => setPropImagesText(e.target.value)}
                           className="w-full px-3 py-2 border rounded-lg outline-none font-mono"
                         />
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div>
+                          <label className="block text-[10px] uppercase font-bold mb-1 text-slate-400">Floor Plan URL / PDF</label>
+                          <input value={propFloorPlanUrl} onChange={(e) => setPropFloorPlanUrl(e.target.value)} className="w-full px-3 py-2 border rounded-lg font-mono" placeholder="/projects/documents/floor-plan.pdf" />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] uppercase font-bold mb-1 text-slate-400">Brochure URL / PDF</label>
+                          <input value={propBrochureUrl} onChange={(e) => setPropBrochureUrl(e.target.value)} className="w-full px-3 py-2 border rounded-lg font-mono" placeholder="/projects/documents/brochure.pdf" />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] uppercase font-bold mb-1 text-slate-400">Video URL</label>
+                          <input value={propVideoUrl} onChange={(e) => setPropVideoUrl(e.target.value)} className="w-full px-3 py-2 border rounded-lg font-mono" placeholder="/projects/videos/walkthrough.mp4" />
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-[10px] uppercase font-bold mb-1 text-slate-400">Amenities, one per line</label>
+                          <textarea rows={4} value={propAmenitiesText} onChange={(e) => setPropAmenitiesText(e.target.value)} className="w-full px-3 py-2 border rounded-lg outline-none" />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] uppercase font-bold mb-1 text-slate-400">Landmarks: name | distance</label>
+                          <textarea rows={4} value={propLandmarksText} onChange={(e) => setPropLandmarksText(e.target.value)} className="w-full px-3 py-2 border rounded-lg outline-none" />
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-[10px] uppercase font-bold mb-1 text-slate-400">SEO Title</label>
+                          <input value={propSeoTitle} onChange={(e) => setPropSeoTitle(e.target.value)} className="w-full px-3 py-2 border rounded-lg" placeholder="Property in Vrindavan | Nikunj Heritage" />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] uppercase font-bold mb-1 text-slate-400">SEO Description</label>
+                          <input value={propSeoDescription} onChange={(e) => setPropSeoDescription(e.target.value)} className="w-full px-3 py-2 border rounded-lg" placeholder="Short search result description for this asset" />
+                        </div>
                       </div>
 
                       <div>
@@ -844,6 +1094,13 @@ export const AdminDashboard: React.FC = () => {
                             </span>
                           </td>
                           <td className="p-4 text-center space-x-1.5 whitespace-nowrap">
+                            <button
+                              onClick={() => navigate(`/properties/${p.slug}`)}
+                              className="p-1.5 bg-blue-50 text-blue-700 border border-blue-200 rounded hover:bg-blue-100"
+                              title="View detail page"
+                            >
+                              <Eye className="h-3.5 w-3.5" />
+                            </button>
                             <button
                               onClick={() => handleEditPropertyClick(p)}
                               className="p-1.5 bg-yellow-50 text-yellow-700 border border-yellow-200 rounded hover:bg-yellow-100"
@@ -980,6 +1237,127 @@ export const AdminDashboard: React.FC = () => {
               </div>
             )}
 
+            {/* TAB 3: USERS AND ADMIN ACCESS */}
+            {activeTab === "users" && (
+              <div className="space-y-6">
+                <div className="flex flex-col gap-2 border-b border-slate-200 pb-4 sm:flex-row sm:items-end sm:justify-between">
+                  <div>
+                    <h2 className="font-serif text-2xl font-bold text-[#6B1A2A]">Users & Admin Control</h2>
+                    <p className="text-xs text-slate-500">
+                      View users who have logged into the website and manage their admin panel permissions.
+                    </p>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="inline-flex items-center gap-2 rounded-full bg-[#0F6E56]/10 px-4 py-2 text-xs font-black uppercase tracking-wider text-[#0F6E56]">
+                      <Users className="h-4 w-4" />
+                      {adminUsers.length} Known Users
+                    </span>
+                    <span className="inline-flex items-center gap-2 rounded-full bg-[#FB923C]/10 px-4 py-2 text-xs font-black uppercase tracking-wider text-[#C45C1A]">
+                      <ShieldCheck className="h-4 w-4" />
+                      {adminIds.length + (adminUsers.some((item) => item.email === "vksp207@gmail.com") ? 0 : 1)} Admin Rule
+                    </span>
+                  </div>
+                </div>
+
+                <div className="rounded-3xl border border-amber-200 bg-amber-50 p-5 text-sm leading-6 text-amber-900">
+                  <strong>Note:</strong> Firebase browser apps cannot list every Authentication account directly. This panel lists users after they log in once, then lets you promote or remove admin access using the Firestore admin registry.
+                </div>
+
+                {adminUsers.length === 0 ? (
+                  <div className="rounded-3xl border border-slate-100 bg-white p-8 text-center shadow-sm">
+                    <UserX className="mx-auto h-10 w-10 text-slate-300" />
+                    <h3 className="mt-3 font-serif text-xl font-black text-[#0F172A]">No Users Captured Yet</h3>
+                    <p className="mx-auto mt-2 max-w-lg text-sm leading-6 text-slate-500">
+                      Ask a user to sign in once. Their profile will appear here automatically for admin permission management.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-sm">
+                    <div className="overflow-x-auto">
+                      <table className="w-full min-w-[760px] text-left text-xs">
+                        <thead>
+                          <tr className="border-b bg-slate-50 text-[10px] font-black uppercase tracking-widest text-slate-400">
+                            <th className="p-4">User</th>
+                            <th className="p-4">UID</th>
+                            <th className="p-4">Provider</th>
+                            <th className="p-4">Role</th>
+                            <th className="p-4 text-center">Admin Control</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-100">
+                          {adminUsers.map((account) => {
+                            const isBootAdmin = account.email === "vksp207@gmail.com";
+                            const hasAdminAccess = isBootAdmin || adminIds.includes(account.uid);
+                            return (
+                              <tr key={account.uid} className="hover:bg-slate-50">
+                                <td className="p-4">
+                                  <div className="flex items-center gap-3">
+                                    <div className="h-11 w-11 overflow-hidden rounded-2xl bg-[#0F172A] text-white">
+                                      {account.photoURL ? (
+                                        <img src={account.photoURL} alt={account.displayName || account.email} className="h-full w-full object-cover" referrerPolicy="no-referrer" />
+                                      ) : (
+                                        <div className="flex h-full w-full items-center justify-center font-serif text-lg font-black">
+                                          {(account.displayName || account.email || "U").charAt(0).toUpperCase()}
+                                        </div>
+                                      )}
+                                    </div>
+                                    <div>
+                                      <p className="font-bold text-slate-900">{account.displayName || "Unnamed User"}</p>
+                                      <p className="font-mono text-[11px] text-slate-500">{account.email}</p>
+                                    </div>
+                                  </div>
+                                </td>
+                                <td className="p-4">
+                                  <span className="font-mono text-[10px] text-slate-400">{account.uid}</span>
+                                </td>
+                                <td className="p-4">
+                                  <span className="rounded-full bg-slate-100 px-3 py-1 font-black uppercase text-slate-500">
+                                    {account.providerId || "password"}
+                                  </span>
+                                </td>
+                                <td className="p-4">
+                                  <span className={`inline-flex items-center gap-2 rounded-full px-3 py-1 font-black uppercase ${
+                                    hasAdminAccess ? "bg-green-100 text-green-700" : "bg-slate-100 text-slate-500"
+                                  }`}>
+                                    {hasAdminAccess ? <ShieldCheck className="h-3.5 w-3.5" /> : <Users className="h-3.5 w-3.5" />}
+                                    {hasAdminAccess ? "Admin" : "User"}
+                                  </span>
+                                  {isBootAdmin && (
+                                    <span className="ml-2 rounded-full bg-amber-100 px-2 py-1 text-[9px] font-black uppercase text-amber-700">Bootstrap</span>
+                                  )}
+                                </td>
+                                <td className="p-4 text-center">
+                                  {hasAdminAccess ? (
+                                    <button
+                                      onClick={() => handleAdminToggle(account, false)}
+                                      disabled={isBootAdmin || account.uid === user?.uid}
+                                      className="inline-flex items-center gap-2 rounded-full border border-red-200 bg-red-50 px-4 py-2 text-[11px] font-black uppercase tracking-wider text-red-700 disabled:cursor-not-allowed disabled:opacity-40"
+                                      title={isBootAdmin ? "Bootstrap admin is protected in code" : "Remove admin access"}
+                                    >
+                                      <ShieldOff className="h-3.5 w-3.5" />
+                                      Remove Admin
+                                    </button>
+                                  ) : (
+                                    <button
+                                      onClick={() => handleAdminToggle(account, true)}
+                                      className="inline-flex items-center gap-2 rounded-full bg-[#0F6E56] px-4 py-2 text-[11px] font-black uppercase tracking-wider text-white"
+                                    >
+                                      <ShieldCheck className="h-3.5 w-3.5" />
+                                      Make Admin
+                                    </button>
+                                  )}
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* TAB 3: CATEGORIES */}
             {activeTab === "categories" && (
               <div className="space-y-6">
@@ -988,16 +1366,73 @@ export const AdminDashboard: React.FC = () => {
                     <h2 className="font-serif text-2xl font-bold text-[#6B1A2A]">Property Category Studio</h2>
                     <p className="text-xs text-slate-500">Review active sectors used across homepage filters, property cards and SEO navigation.</p>
                   </div>
-                  <span className="inline-flex w-fit items-center gap-2 rounded-full bg-[#0F6E56]/10 px-4 py-2 text-xs font-black uppercase tracking-wider text-[#0F6E56]">
-                    <Layers className="h-4 w-4" />
-                    {categories.length} Categories
-                  </span>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="inline-flex w-fit items-center gap-2 rounded-full bg-[#0F6E56]/10 px-4 py-2 text-xs font-black uppercase tracking-wider text-[#0F6E56]">
+                      <Layers className="h-4 w-4" />
+                      {categories.length} Categories
+                    </span>
+                    <button
+                      onClick={() => setCatFormOpen((open) => !open)}
+                      className="inline-flex items-center gap-2 rounded-full bg-[#FB923C] px-4 py-2 text-xs font-black uppercase tracking-wider text-white shadow"
+                    >
+                      <Plus className="h-4 w-4" />
+                      Add Category
+                    </button>
+                  </div>
                 </div>
+
+                {catFormOpen && (
+                  <form onSubmit={handleCategorySubmit} className="rounded-3xl border border-[#EAD9C0] bg-white p-5 text-xs shadow-sm">
+                    <div className="mb-4 flex items-center gap-2">
+                      <ImageIcon className="h-5 w-5 text-[#FB923C]" />
+                      <h3 className="font-serif text-xl font-black text-[#0F172A]">Create New Property Category</h3>
+                    </div>
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+                      <div>
+                        <label className="block text-[10px] font-black uppercase tracking-wider text-slate-400">Name</label>
+                        <input value={catName} onChange={(e) => setCatName(e.target.value)} required className="mt-1 w-full rounded-xl border px-3 py-2" placeholder="Luxury Villas" />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-black uppercase tracking-wider text-slate-400">Slug</label>
+                        <input value={catSlug} onChange={(e) => setCatSlug(e.target.value)} className="mt-1 w-full rounded-xl border px-3 py-2 font-mono" placeholder="luxury-villas" />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-black uppercase tracking-wider text-slate-400">Icon Name</label>
+                        <input value={catIcon} onChange={(e) => setCatIcon(e.target.value)} className="mt-1 w-full rounded-xl border px-3 py-2" placeholder="Building" />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-black uppercase tracking-wider text-slate-400">Sort Order</label>
+                        <input type="number" value={catSortOrder} onChange={(e) => setCatSortOrder(Number(e.target.value))} className="mt-1 w-full rounded-xl border px-3 py-2" />
+                      </div>
+                    </div>
+                    <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-3">
+                      <div className="lg:col-span-2">
+                        <label className="block text-[10px] font-black uppercase tracking-wider text-slate-400">Description</label>
+                        <textarea value={catDesc} onChange={(e) => setCatDesc(e.target.value)} required rows={3} className="mt-1 w-full rounded-xl border px-3 py-2" placeholder="Explain where this category appears and what buyers can expect." />
+                      </div>
+                      <div>
+                        <div className="flex items-center justify-between gap-2">
+                          <label className="block text-[10px] font-black uppercase tracking-wider text-slate-400">Image URL / Upload</label>
+                          <label className="cursor-pointer rounded-full bg-[#0F172A] px-3 py-1 text-[10px] font-black uppercase text-white">
+                            Upload
+                            <input type="file" accept="image/*" className="hidden" onChange={(e) => handleUploadToField(e.target.files?.[0], setCatImageUrl)} />
+                          </label>
+                        </div>
+                        <input value={catImageUrl} onChange={(e) => setCatImageUrl(e.target.value)} className="mt-1 w-full rounded-xl border px-3 py-2 font-mono" placeholder="/projects/images/ai-buyer-residential.jpg" />
+                      </div>
+                    </div>
+                    <div className="mt-4 flex justify-end gap-2">
+                      <button type="button" onClick={() => setCatFormOpen(false)} className="rounded-xl border px-4 py-2 font-bold text-slate-500">Cancel</button>
+                      <button type="submit" className="rounded-xl bg-[#6B1A2A] px-5 py-2 font-black uppercase tracking-wider text-white">Create Category</button>
+                    </div>
+                  </form>
+                )}
+
                 <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
                   {categories.map((cat) => (
                     <div key={cat.id} className="overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-sm">
                       <div className="h-36 bg-slate-100">
-                        <img src={cat.imageUrl} alt={cat.name} className="h-full w-full object-cover" />
+                        <img src={cat.imageUrl} alt={cat.name} className="h-full w-full object-cover" onError={(event) => { event.currentTarget.src = "/projects/images/ai-buyer-residential.jpg"; }} />
                       </div>
                       <div className="p-5">
                         <div className="flex items-start justify-between gap-3">
@@ -1032,16 +1467,77 @@ export const AdminDashboard: React.FC = () => {
                     <h2 className="font-serif text-2xl font-bold text-[#6B1A2A]">Divine Location Manager</h2>
                     <p className="text-xs text-slate-500">Manage Mathura, Vrindavan, Barsana and Govardhan market zones shown on the website.</p>
                   </div>
-                  <span className="inline-flex w-fit items-center gap-2 rounded-full bg-[#FB923C]/10 px-4 py-2 text-xs font-black uppercase tracking-wider text-[#C45C1A]">
-                    <MapPin className="h-4 w-4" />
-                    {locations.length} Zones
-                  </span>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="inline-flex w-fit items-center gap-2 rounded-full bg-[#FB923C]/10 px-4 py-2 text-xs font-black uppercase tracking-wider text-[#C45C1A]">
+                      <MapPin className="h-4 w-4" />
+                      {locations.length} Zones
+                    </span>
+                    <button
+                      onClick={() => setLocFormOpen((open) => !open)}
+                      className="inline-flex items-center gap-2 rounded-full bg-[#FB923C] px-4 py-2 text-xs font-black uppercase tracking-wider text-white shadow"
+                    >
+                      <Plus className="h-4 w-4" />
+                      Add Location
+                    </button>
+                  </div>
                 </div>
+
+                {locFormOpen && (
+                  <form onSubmit={handleLocationSubmit} className="rounded-3xl border border-[#EAD9C0] bg-white p-5 text-xs shadow-sm">
+                    <div className="mb-4 flex items-center gap-2">
+                      <MapPin className="h-5 w-5 text-[#FB923C]" />
+                      <h3 className="font-serif text-xl font-black text-[#0F172A]">Create New Location Zone</h3>
+                    </div>
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-5">
+                      <div>
+                        <label className="block text-[10px] font-black uppercase tracking-wider text-slate-400">Name</label>
+                        <input value={locName} onChange={(e) => setLocName(e.target.value)} required className="mt-1 w-full rounded-xl border px-3 py-2" placeholder="Rukmini Vihar" />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-black uppercase tracking-wider text-slate-400">Slug</label>
+                        <input value={locSlug} onChange={(e) => setLocSlug(e.target.value)} className="mt-1 w-full rounded-xl border px-3 py-2 font-mono" placeholder="rukmini-vihar" />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-black uppercase tracking-wider text-slate-400">City</label>
+                        <input value={locCity} onChange={(e) => setLocCity(e.target.value)} className="mt-1 w-full rounded-xl border px-3 py-2" />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-black uppercase tracking-wider text-slate-400">Latitude</label>
+                        <input type="number" step="0.000001" value={locLat} onChange={(e) => setLocLat(Number(e.target.value))} className="mt-1 w-full rounded-xl border px-3 py-2" />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-black uppercase tracking-wider text-slate-400">Longitude</label>
+                        <input type="number" step="0.000001" value={locLng} onChange={(e) => setLocLng(Number(e.target.value))} className="mt-1 w-full rounded-xl border px-3 py-2" />
+                      </div>
+                    </div>
+                    <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-3">
+                      <div className="lg:col-span-2">
+                        <label className="block text-[10px] font-black uppercase tracking-wider text-slate-400">Location Description</label>
+                        <textarea value={locDesc} onChange={(e) => setLocDesc(e.target.value)} required rows={3} className="mt-1 w-full rounded-xl border px-3 py-2" placeholder="Describe temple proximity, road access, buyer profile and investment appeal." />
+                      </div>
+                      <div>
+                        <div className="flex items-center justify-between gap-2">
+                          <label className="block text-[10px] font-black uppercase tracking-wider text-slate-400">Image URL / Upload</label>
+                          <label className="cursor-pointer rounded-full bg-[#0F172A] px-3 py-1 text-[10px] font-black uppercase text-white">
+                            Upload
+                            <input type="file" accept="image/*" className="hidden" onChange={(e) => handleUploadToField(e.target.files?.[0], setLocImageUrl)} />
+                          </label>
+                        </div>
+                        <input value={locImageUrl} onChange={(e) => setLocImageUrl(e.target.value)} className="mt-1 w-full rounded-xl border px-3 py-2 font-mono" placeholder="/projects/images/ai-buyer-plots-land.jpg" />
+                      </div>
+                    </div>
+                    <div className="mt-4 flex justify-end gap-2">
+                      <button type="button" onClick={() => setLocFormOpen(false)} className="rounded-xl border px-4 py-2 font-bold text-slate-500">Cancel</button>
+                      <button type="submit" className="rounded-xl bg-[#6B1A2A] px-5 py-2 font-black uppercase tracking-wider text-white">Create Location</button>
+                    </div>
+                  </form>
+                )}
+
                 <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
                   {locations.map((loc) => (
                     <div key={loc.id} className="grid overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-sm sm:grid-cols-5">
                       <div className="h-44 bg-slate-100 sm:col-span-2 sm:h-auto">
-                        <img src={loc.imageUrl} alt={loc.name} className="h-full w-full object-cover" />
+                        <img src={loc.imageUrl} alt={loc.name} className="h-full w-full object-cover" onError={(event) => { event.currentTarget.src = "/projects/images/ai-buyer-plots-land.jpg"; }} />
                       </div>
                       <div className="p-5 sm:col-span-3">
                         <p className="text-[10px] font-black uppercase tracking-widest text-[#0F6E56]">Region: {loc.city}</p>
@@ -1097,10 +1593,17 @@ export const AdminDashboard: React.FC = () => {
                         />
                       </div>
                       <div>
-                        <label className="block text-[9px] uppercase font-bold text-slate-400 mb-1">Cover Imagery URL</label>
+                        <div className="flex items-center justify-between gap-2">
+                          <label className="block text-[9px] uppercase font-bold text-slate-400 mb-1">Cover Imagery URL</label>
+                          <label className="inline-flex cursor-pointer items-center gap-1 rounded-full bg-[#0F172A] px-3 py-1 text-[10px] font-black uppercase tracking-wider text-white">
+                            <Upload className="h-3 w-3" />
+                            Upload
+                            <input type="file" accept="image/*" className="hidden" onChange={(e) => handleUploadToField(e.target.files?.[0], setBlogCover)} />
+                          </label>
+                        </div>
                         <input
                           type="text"
-                          placeholder="Unsplash placeholder URL..."
+                          placeholder="/projects/images/ai-buyer-spiritual-retreat.jpg"
                           value={blogCover}
                           onChange={(e) => setBlogCover(e.target.value)}
                           className="w-full px-3 py-2 border rounded-lg focus:border-[#C45C1A] outline-none font-mono"
@@ -1135,13 +1638,23 @@ export const AdminDashboard: React.FC = () => {
                     </div>
 
                     <div>
-                      <label className="block text-[9px] uppercase font-bold text-slate-400 mb-1">prose body (Simple Markdown headings ## and blocks supported)</label>
+                      <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+                        <label className="block text-[9px] uppercase font-bold text-slate-400">Advanced devotional editor</label>
+                        <div className="flex flex-wrap gap-2">
+                          <button type="button" onClick={() => insertBlogMarkup("## ")} className="rounded-full border px-3 py-1 text-[10px] font-black uppercase text-slate-600">H2</button>
+                          <button type="button" onClick={() => insertBlogMarkup("**", "**")} className="rounded-full border px-3 py-1 text-[10px] font-black uppercase text-slate-600">Bold</button>
+                          <button type="button" onClick={() => insertBlogMarkup("- ")} className="rounded-full border px-3 py-1 text-[10px] font-black uppercase text-slate-600">Bullet</button>
+                          <button type="button" onClick={() => insertBlogMarkup("> ")} className="rounded-full border px-3 py-1 text-[10px] font-black uppercase text-slate-600">Quote</button>
+                          <button type="button" onClick={() => setBlogContent((prev) => `${prev}${prev ? "\n\n" : ""}![Image alt text](${blogCover || "/projects/images/ai-buyer-spiritual-retreat.jpg"})`)} className="rounded-full border border-[#FB923C]/30 bg-[#FB923C]/10 px-3 py-1 text-[10px] font-black uppercase text-[#C45C1A]">Insert Image</button>
+                        </div>
+                      </div>
                       <textarea
-                        rows={6}
+                        rows={10}
                         required
                         value={blogContent}
                         onChange={(e) => setBlogContent(e.target.value)}
-                        className="w-full px-3 py-2.5 border rounded-lg outline-none text-slate-800"
+                        className="w-full px-3 py-2.5 border rounded-lg outline-none text-slate-800 font-mono leading-6"
+                        placeholder="Use ## headings, **bold**, bullet lists, quotes, and inserted images for richer devotional journal articles."
                       />
                     </div>
 

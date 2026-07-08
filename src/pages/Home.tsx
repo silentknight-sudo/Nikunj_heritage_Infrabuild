@@ -588,7 +588,7 @@ export const Home: React.FC = () => {
               >
                 <Link to={card.href} className="group block overflow-hidden rounded-[28px] bg-[#0F172A] shadow-xl shadow-[#0F172A]/10">
                   <div className="relative h-56 overflow-hidden">
-                    <img src={card.image} alt={card.title} className="h-full w-full object-cover opacity-75 transition-transform duration-700 group-hover:scale-110" />
+                    <img src={card.image} alt={card.title} className="h-full w-full object-cover opacity-75 transition-transform duration-700 group-hover:scale-110" onError={(event) => { event.currentTarget.src = "/projects/images/ai-buyer-residential.jpg"; }} />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A] via-[#0F172A]/40 to-transparent" />
                     <div className="absolute bottom-0 left-0 right-0 p-5 text-white">
                       <h3 className="font-serif text-2xl font-black">{card.title}</h3>
@@ -636,6 +636,7 @@ export const Home: React.FC = () => {
                         loading="lazy"
                         referrerPolicy="no-referrer"
                         className="w-full h-full object-cover opacity-65 group-hover:scale-110 transition-transform duration-500"
+                        onError={(event) => { event.currentTarget.src = "/projects/images/ai-buyer-residential.jpg"; }}
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A2E] via-[#1A1A2E]/40 to-transparent"></div>
                     </div>
@@ -850,6 +851,7 @@ export const Home: React.FC = () => {
                         loading="lazy"
                         referrerPolicy="no-referrer"
                         className="w-full h-full object-cover opacity-60 group-hover:scale-110 transition-transform duration-500"
+                        onError={(event) => { event.currentTarget.src = "/projects/images/ai-buyer-plots-land.jpg"; }}
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black via-black/35 to-transparent"></div>
                     </div>
@@ -1074,6 +1076,7 @@ export const Home: React.FC = () => {
                     src={blog.coverUrl}
                     alt={blog.title}
                     className="w-full h-44 object-cover"
+                    onError={(event) => { event.currentTarget.src = "/projects/images/ai-buyer-spiritual-retreat.jpg"; }}
                   />
                   <div className="p-4">
                     <span className="text-[10px] text-[#C45C1A] uppercase tracking-widest font-bold font-mono">

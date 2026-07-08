@@ -189,6 +189,7 @@ export const News: React.FC = () => {
                         alt={article.title} 
                         className="w-full h-full object-cover"
                         loading="lazy"
+                        onError={(event) => { event.currentTarget.src = "/projects/images/ai-buyer-commercial.jpg"; }}
                       />
                       <span className="absolute top-3 left-3 bg-[#1A1A2E] text-[#C9A84C] text-[9px] font-bold font-mono tracking-wider px-2 py-1 rounded">
                         {article.category}

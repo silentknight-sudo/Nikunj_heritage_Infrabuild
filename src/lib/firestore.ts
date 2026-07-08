@@ -20,7 +20,7 @@ import {
   serverTimestamp
 } from "firebase/firestore";
 import { db, auth } from "./firebase";
-import { Property, Category, Location, Lead, Blog, Testimonial, Developer, Event, Page, SiteConfig, LeadStatus, PropertyStatus, BlogStatus } from "../types";
+import { Property, Category, Location, Lead, Blog, Testimonial, Developer, Event, Page, SiteConfig, LeadStatus, PropertyStatus, BlogStatus, AppUser } from "../types";
 
 // ERROR HANDLER AS REQUIRED BY SKILL.MD
 export enum OperationType {
@@ -138,9 +138,53 @@ export async function addAdmin(uid: string, email: string): Promise<void> {
     await setDoc(doc(db, "admins", uid), {
       email,
       createdAt: serverTimestamp()
-    });
+    }, { merge: true });
   } catch (error) {
     handleFirestoreError(error, OperationType.WRITE, path);
+  }
+}
+
+export async function removeAdmin(uid: string): Promise<void> {
+  const path = `admins/${uid}`;
+  try {
+    await deleteDoc(doc(db, "admins", uid));
+  } catch (error) {
+    handleFirestoreError(error, OperationType.DELETE, path);
+  }
+}
+
+export async function getAdminIds(): Promise<string[]> {
+  const path = "admins";
+  try {
+    const qSnap = await getDocs(collection(db, "admins"));
+    return qSnap.docs.map((adminDoc) => adminDoc.id);
+  } catch (error) {
+    handleFirestoreError(error, OperationType.LIST, path);
+    throw error;
+  }
+}
+
+export async function upsertUserProfile(user: Pick<AppUser, "uid" | "email" | "displayName" | "photoURL" | "providerId">): Promise<void> {
+  const path = `users/${user.uid}`;
+  try {
+    await setDoc(doc(db, "users", user.uid), {
+      ...user,
+      updatedAt: serverTimestamp(),
+      lastLoginAt: serverTimestamp()
+    }, { merge: true });
+  } catch (error) {
+    handleFirestoreError(error, OperationType.WRITE, path);
+  }
+}
+
+export async function getUsers(): Promise<AppUser[]> {
+  const path = "users";
+  try {
+    const qSnap = await getDocs(query(collection(db, "users"), orderBy("lastLoginAt", "desc")));
+    return qSnap.docs.map(d => ({ id: d.id, uid: d.id, ...d.data() } as AppUser));
+  } catch (error) {
+    handleFirestoreError(error, OperationType.LIST, path);
+    throw error;
   }
 }
 
