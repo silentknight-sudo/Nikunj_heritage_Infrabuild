@@ -23,45 +23,45 @@ export interface ProjectMediaBundle {
 }
 
 const vrindavanOverview: ProjectMediaBundle = {
-  eyebrow: "Vrindavan Growth Story",
-  title: "A destination-focused view of Vrindavan's spiritual and investment momentum",
+  eyebrow: "Buyer Enquiry Story",
+  title: "Why buyers shortlist Vrindavan for property, returns, and trust",
   summary:
-    "This section presents Vrindavan's cultural pull, infrastructure growth, Rukmini Vihar positioning, and township context so visitors can understand both the emotional and practical side of the destination.",
+    "This section is built to move visitors toward enquiry: it explains why Vrindavan and Mathura attract serious buyers, what makes the micro-market credible, and how Nikunj Heritage can guide a shortlist, site visit, and purchase decision.",
   brochureUrl: "/projects/documents/vrindavan-investment-docket.pdf",
   videoUrl: "/projects/videos/vrindavan-township-drive.mp4",
   videoPoster: "/projects/images/vrindavan-township-drive-poster.jpg",
   highlights: [
-    "Faith-led destination story supported by brochure spreads",
-    "Infrastructure and connectivity pages for investor confidence",
-    "Township drive-through video for movement and scale"
+    "Clear reasons to enquire: temple proximity, market trust, and liveability",
+    "Site-visit support and comparison guidance for serious buyers",
+    "A practical path from interest to shortlist to booking"
   ],
   gallery: [
     {
-      title: "Vrindavan Overview",
-      subtitle: "Cover visual from the investment docket",
-      image: "/projects/images/vrindavan-cover.png"
+      title: "Enquiry Ready View",
+      subtitle: "Premium real-estate setting with strong buyer intent",
+      image: "/projects/images/mathura-vrindavan-hero-enquiry.jpg"
     },
     {
-      title: "Infrastructure Push",
-      subtitle: "Expressway and city-making narrative",
-      image: "/projects/images/vrindavan-infra-growth.png"
+      title: "Guided Site Visit",
+      subtitle: "Advisory-led walkthrough for property buyers",
+      image: "/projects/images/mathura-vrindavan-site-visit.jpg"
     },
     {
-      title: "Regional Connectivity",
-      subtitle: "Travel access and airport-driven growth",
-      image: "/projects/images/vrindavan-connectivity.png"
+      title: "Growth Corridor",
+      subtitle: "Connectivity and appreciation story",
+      image: "/projects/images/mathura-vrindavan-growth-corridor.jpg"
     },
     {
-      title: "Rukmini Vihar",
-      subtitle: "Localized context for the Vrindavan micro-market",
-      image: "/projects/images/rukmini-vihar-overview.png"
+      title: "Livability Aerial",
+      subtitle: "Aerial context for family buyers and investors",
+      image: "/projects/images/mathura-vrindavan-aerial-livability.jpg"
     }
   ],
   floorPlans: [
     {
-      title: "Master Layout Reference",
-      subtitle: "Illustrative township layout reference",
-      image: "/projects/images/omaxe-eternity-layout-plan.png"
+      title: "Shortlist Map",
+      subtitle: "A simple comparison reference for buyers",
+      image: "/projects/images/mathura-vrindavan-growth-corridor.jpg"
     }
   ]
 };

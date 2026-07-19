@@ -271,8 +271,8 @@ export const Home: React.FC = () => {
     { title: "Griha Pravesh Bliss", desc: "Celebrate stepping into your divine retreat with traditional sacred sweets and priest arrangements." }
   ];
 
-  return (
-    <div className="relative bg-[#FAF6F0] min-h-screen text-[#1A1A2E] overflow-hidden" id="homepage-container">
+    return (
+    <div className="relative min-h-screen overflow-hidden bg-[color:var(--brand-sandstone)] text-[color:var(--brand-night)]" id="homepage-container">
       <SeoHead
         title="Nikunj Heritage Infrabuild | Property in Vrindavan, Mathura & Braj Investment Opportunities"
         description="Explore verified residential apartments, luxury villas, commercial spaces, and plotted developments in Vrindavan and Mathura with Nikunj Heritage Infrabuild."
@@ -337,12 +337,12 @@ export const Home: React.FC = () => {
       <SacredPropertyBackdrop />
       <div className="relative z-10">
       {showEnquiryWidget ? (
-        <div className="fixed left-3 right-3 top-[4.75rem] z-50 sm:left-auto sm:right-4 sm:top-20 sm:w-[calc(100vw-2rem)] sm:max-w-sm">
-          <div className="rounded-2xl border border-[#C9A84C]/35 bg-white/95 backdrop-blur-md shadow-2xl overflow-hidden">
-            <div className="flex items-start justify-between gap-3 bg-[#0F172A] px-4 py-3 text-white sm:px-5 sm:py-4">
+          <div className="fixed left-3 right-3 top-[4.75rem] z-50 sm:left-auto sm:right-4 sm:top-20 sm:w-[calc(100vw-2rem)] sm:max-w-sm">
+          <div className="overflow-hidden rounded-2xl border border-[color:var(--brand-border)] bg-white/95 shadow-2xl backdrop-blur-md">
+            <div className="flex items-start justify-between gap-3 bg-[color:var(--brand-night)] px-4 py-3 text-white sm:px-5 sm:py-4">
               <div>
-                <span className="block text-[10px] uppercase tracking-[0.28em] text-[#F6D7A8] font-bold">Instant Enquiry</span>
-                <h2 className="font-serif text-lg font-bold mt-1 text-[#FB923C]" style={{ color: "#FB923C" }}>
+                <span className="block text-[10px] font-bold uppercase tracking-[0.28em] text-[color:var(--brand-gold)]">Instant Enquiry</span>
+                <h2 className="mt-1 font-serif text-lg font-bold text-[color:var(--brand-saffron)]">
                   Book Callback On Opening
                 </h2>
                 <p className="text-xs text-white/80 mt-1">Website khulte hi enquiry visible rahegi aur page scroll bhi normal chalega.</p>
@@ -363,7 +363,7 @@ export const Home: React.FC = () => {
                 <select
                   value={enquiryType}
                   onChange={(e) => setEnquiryType(e.target.value)}
-                  className="w-full text-xs px-3 py-2.5 rounded-lg border border-slate-200 outline-none focus:border-[#C45C1A] text-slate-800 bg-white"
+                  className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-xs text-slate-800 outline-none focus:border-[color:var(--brand-saffron)]"
                 >
                   <option>Property Enquiry</option>
                   <option>Site Visit</option>
@@ -379,7 +379,7 @@ export const Home: React.FC = () => {
                   value={consultationName}
                   onChange={(e) => setConsultationName(e.target.value)}
                   placeholder="Your name"
-                  className="w-full text-xs px-3 py-2.5 rounded-lg border border-slate-200 outline-none focus:border-[#C45C1A] text-slate-800"
+                  className="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs text-slate-800 outline-none focus:border-[color:var(--brand-saffron)]"
                 />
               </div>
               <div>
@@ -389,7 +389,7 @@ export const Home: React.FC = () => {
                   value={consultationPhone}
                   onChange={(e) => setConsultationPhone(e.target.value)}
                   placeholder="+91..."
-                  className="w-full text-xs px-3 py-2.5 rounded-lg border border-slate-200 outline-none focus:border-[#C45C1A] text-slate-800"
+                  className="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs text-slate-800 outline-none focus:border-[color:var(--brand-saffron)]"
                 />
               </div>
               <div>
@@ -399,13 +399,13 @@ export const Home: React.FC = () => {
                   value={consultationEmail}
                   onChange={(e) => setConsultationEmail(e.target.value)}
                   placeholder="Optional"
-                  className="w-full text-xs px-3 py-2.5 rounded-lg border border-slate-200 outline-none focus:border-[#C45C1A] text-slate-800"
+                  className="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs text-slate-800 outline-none focus:border-[color:var(--brand-saffron)]"
                 />
               </div>
               <button
                 type="submit"
                 disabled={isConsulting}
-                className="w-full rounded-lg bg-[#FB923C] px-4 py-3 text-xs font-bold uppercase tracking-wider text-white hover:bg-[#EA580C] transition-colors"
+                className="w-full rounded-lg bg-[color:var(--brand-saffron)] px-4 py-3 text-xs font-bold uppercase tracking-wider text-white transition-colors hover:opacity-95"
               >
                 {isConsulting ? "Submitting..." : "Request Callback"}
               </button>
@@ -430,9 +430,9 @@ export const Home: React.FC = () => {
         
         {/* Floating Overlapping Search Bar with 3D Depth */}
         <div className="absolute -bottom-20 left-1/2 -translate-x-1/2 z-30 w-full max-w-2xl px-4 pointer-events-auto sm:-bottom-7 sm:w-[95%]">
-          <form onSubmit={handleSearchSubmit} className="bg-white p-2.5 rounded-xl shadow-2xl flex flex-col sm:flex-row gap-2.5 border border-[#C9A84C]/35 hover:shadow-[#C9A84C]/10 transition-all duration-300">
+          <form onSubmit={handleSearchSubmit} className="flex flex-col gap-2.5 rounded-xl border border-[color:var(--brand-border)] bg-white p-2.5 shadow-2xl transition-all duration-300 hover:shadow-[0_20px_45px_rgba(11,16,48,0.12)] sm:flex-row">
             <div className="flex-grow flex items-center px-3 gap-2 border-b sm:border-b-0 sm:border-r border-slate-200 pb-2 sm:pb-0">
-              <Search className="h-5 w-5 text-[#C45C1A] shrink-0" />
+              <Search className="h-5 w-5 shrink-0 text-[color:var(--brand-saffron)]" />
               <input
                 type="text"
                 placeholder="Search flats near Prem Mandir, plots in Govardhan..."
@@ -444,7 +444,7 @@ export const Home: React.FC = () => {
             </div>
             <button
               type="submit"
-              className="bg-[#C45C1A] hover:bg-[#C45C1A]/90 text-white font-bold text-xs sm:text-sm px-6 py-3 rounded-lg flex items-center justify-center space-x-1.5 shrink-0 transition-all font-serif"
+              className="flex shrink-0 items-center justify-center space-x-1.5 rounded-lg bg-[color:var(--brand-saffron)] px-6 py-3 font-serif text-xs font-bold text-white transition-all hover:opacity-95 sm:text-sm"
             >
               <span>Explore Assets</span>
               <ChevronRight className="h-4 w-4" />
@@ -465,17 +465,17 @@ export const Home: React.FC = () => {
           >
             <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
               <div>
-                <span className="text-[11px] font-black uppercase tracking-[0.28em] text-[#C45C1A]">Braj Property Command Center</span>
-                <h2 className="mt-2 font-serif text-2xl font-black leading-tight text-[#0F172A] sm:text-3xl">
-                  Find, compare and visit verified Mathura-Vrindavan properties faster.
+                <span className="text-[11px] font-black uppercase tracking-[0.28em]" style={{ color: "var(--brand-gold)" }}>Braj Property Command Center</span>
+                <h2 className="mt-2 font-serif text-2xl font-black leading-tight sm:text-3xl" style={{ color: "var(--brand-night)" }}>
+                  Find, compare and visit verified Mathura-Vrindavan opportunities faster.
                 </h2>
                 <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-600">
-                  Inspired by modern property portals, rebuilt for Nikunj Heritage with temple-proximity filters, local advisory, registry clarity and investor-focused guidance.
+                  Built for serious buyers of Mathura and Vrindavan property with temple-proximity filters, registry clarity, and local advisory support.
                 </p>
               </div>
               <Link
                 to="/compare-properties"
-                className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-[#0F172A] px-5 py-3 text-xs font-black uppercase tracking-wider text-white transition-all hover:-translate-y-0.5 hover:bg-[#1E293B]"
+                className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-[color:var(--brand-night)] px-5 py-3 text-xs font-black uppercase tracking-wider text-white transition-all hover:-translate-y-0.5 hover:opacity-95"
               >
                 Compare Now
                 <ChevronRight className="h-4 w-4" />
@@ -492,7 +492,7 @@ export const Home: React.FC = () => {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.45, delay: index * 0.08 }}
-                    className="group overflow-hidden rounded-2xl border border-slate-100 bg-[#FAF8F4] p-4 shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl"
+                    className="group overflow-hidden rounded-2xl border border-slate-100 bg-white p-4 shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl"
                   >
                     <div className={`mb-4 flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br ${item.tone} text-white shadow-lg`}>
                       <Icon className="h-5 w-5" />
@@ -510,7 +510,7 @@ export const Home: React.FC = () => {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.6, ease: [0.21, 0.85, 0.45, 1.01] }}
-            className="lg:col-span-4 rounded-[28px] bg-[#0F172A] p-5 text-white shadow-2xl shadow-[#0F172A]/20 sm:p-7"
+            className="lg:col-span-4 rounded-[28px] bg-[color:var(--brand-night)] p-5 text-white shadow-2xl shadow-[#0F172A]/20 sm:p-7"
           >
             <span className="text-[11px] font-black uppercase tracking-[0.28em] text-[#FACC15]">Buyer Flow</span>
             <h3 className="mt-2 font-serif text-2xl font-black">From online search to site visit</h3>
@@ -546,17 +546,17 @@ export const Home: React.FC = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-80px" }}
                 transition={{ duration: 0.45, delay: index * 0.08 }}
-                className="group rounded-3xl border border-[#EAD9C0] bg-white p-5 shadow-sm transition-all hover:-translate-y-1 hover:shadow-2xl hover:shadow-[#6B1A2A]/10"
+                className="group rounded-3xl border border-[color:var(--brand-border)] bg-white p-5 shadow-sm transition-all hover:-translate-y-1 hover:shadow-2xl hover:shadow-[rgba(11,16,48,0.1)]"
               >
                 <div className="flex items-start justify-between gap-4">
-                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#FB923C]/10 text-[#FB923C]">
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[color:var(--brand-saffron)]/10 text-[color:var(--brand-saffron)]">
                     <Icon className="h-5 w-5" />
                   </div>
-                  <Link to={panel.href} className="text-xs font-black uppercase tracking-wider text-[#C45C1A]">
+                  <Link to={panel.href} className="text-xs font-black uppercase tracking-wider" style={{ color: "var(--brand-saffron)" }}>
                     {panel.cta}
                   </Link>
                 </div>
-                <h3 className="mt-5 font-serif text-xl font-black text-[#0F172A]">{panel.title}</h3>
+                <h3 className="mt-5 font-serif text-xl font-black text-[color:var(--brand-night)]">{panel.title}</h3>
                 <p className="mt-2 text-sm leading-6 text-slate-500">{panel.text}</p>
               </motion.div>
             );
@@ -568,10 +568,10 @@ export const Home: React.FC = () => {
         <div className="mx-auto max-w-7xl">
           <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <span className="text-[11px] font-black uppercase tracking-[0.28em] text-[#C45C1A]">Choose Property Type</span>
-              <h2 className="mt-2 font-serif text-3xl font-black text-[#0F172A] sm:text-4xl">Explore by buyer intent</h2>
+              <span className="text-[11px] font-black uppercase tracking-[0.28em]" style={{ color: "var(--brand-saffron)" }}>Choose Property Type</span>
+              <h2 className="mt-2 font-serif text-3xl font-black text-[color:var(--brand-night)] sm:text-4xl">Explore by buyer intent</h2>
             </div>
-            <Link to="/properties" className="inline-flex w-fit items-center gap-2 rounded-full bg-[#0F172A] px-5 py-3 text-xs font-black uppercase tracking-wider text-white">
+            <Link to="/properties" className="inline-flex w-fit items-center gap-2 rounded-full bg-[color:var(--brand-night)] px-5 py-3 text-xs font-black uppercase tracking-wider text-white">
               View All Properties
               <ChevronRight className="h-4 w-4" />
             </Link>
@@ -586,13 +586,13 @@ export const Home: React.FC = () => {
                 viewport={{ once: true, margin: "-80px" }}
                 transition={{ duration: 0.5, delay: index * 0.07 }}
               >
-                <Link to={card.href} className="group block overflow-hidden rounded-[28px] bg-[#0F172A] shadow-xl shadow-[#0F172A]/10">
+                  <Link to={card.href} className="group block overflow-hidden rounded-[28px] bg-[color:var(--brand-night)] shadow-xl shadow-[#0F172A]/10">
                   <div className="relative h-56 overflow-hidden">
                     <img src={card.image} alt={card.title} className="h-full w-full object-cover opacity-75 transition-transform duration-700 group-hover:scale-110" onError={(event) => { event.currentTarget.src = "/projects/images/ai-buyer-residential.jpg"; }} />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A] via-[#0F172A]/40 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[color:var(--brand-night)] via-[color:var(--brand-night)]/40 to-transparent" />
                     <div className="absolute bottom-0 left-0 right-0 p-5 text-white">
                       <h3 className="font-serif text-2xl font-black">{card.title}</h3>
-                      <p className="mt-2 text-sm leading-6 text-white/75">{card.subtitle}</p>
+                      <p className="mt-2 text-sm leading-6 text-white/80">{card.subtitle}</p>
                     </div>
                   </div>
                 </Link>
@@ -605,12 +605,12 @@ export const Home: React.FC = () => {
       {/* 2. DYNAMIC CATEGORIES GRID */}
       <section className="py-10 sm:py-16 px-4 max-w-7xl mx-auto scroll-mt-20" id="categories-grid-section">
         <div className="text-center max-w-3xl mx-auto mb-12">
-          <span className="text-[11px] uppercase tracking-widest text-[#C45C1A] font-bold font-mono">Select Your Vibe</span>
-          <h2 className="font-serif text-2xl sm:text-4xl text-[#6B1A2A] font-bold mt-1 shadow-sm">
-            Celestial Property Sectors
+              <span className="text-[11px] uppercase tracking-widest font-bold font-mono" style={{ color: "var(--brand-saffron)" }}>Select Your Vibe</span>
+          <h2 className="font-serif text-2xl sm:text-4xl font-bold mt-1 shadow-sm" style={{ color: "var(--brand-night)" }}>
+            Property categories for Mathura and Vrindavan buyers
           </h2>
           <p className="text-xs sm:text-sm text-slate-500 mt-2 max-w-xl mx-auto leading-relaxed">
-            Manage your Brijbhoomi investments across dedicated residential, plots registry, haveli villas, and spiritual ashrams categories.
+            Browse residential, commercial, and spiritual retreat opportunities with the context buyers actually ask for.
           </p>
         </div>
 
@@ -641,8 +641,8 @@ export const Home: React.FC = () => {
                       <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A2E] via-[#1A1A2E]/40 to-transparent"></div>
                     </div>
                     <div className="relative z-10 text-left">
-                      <span className="text-[10px] text-[#C9A84C] font-mono font-semibold uppercase">{cat.slug.replace("-", " ")}</span>
-                      <h3 className="font-serif text-white font-bold text-sm sm:text-base tracking-wide leading-tight" style={{ color: "#FFFFFF" }}>
+                      <span className="text-[10px] text-[color:var(--brand-gold)] font-mono font-semibold uppercase">{cat.slug.replace("-", " ")}</span>
+                      <h3 className="font-serif font-bold text-sm sm:text-base tracking-wide leading-tight text-white">
                         {cat.name}
                       </h3>
                     </div>
@@ -655,78 +655,114 @@ export const Home: React.FC = () => {
       </section>
 
       {/* 3. BROCHURE + VIDEO STORYTELLING */}
-      <section className="py-10 px-4 max-w-7xl mx-auto" id="brochure-media-section">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          <div className="lg:col-span-5 bg-[#6B1A2A] text-white rounded-[28px] overflow-hidden shadow-2xl">
-            <div className="aspect-[4/3] overflow-hidden">
-              <img
-                src={homeMediaShowcase.overview.gallery[0].image}
-                alt={homeMediaShowcase.overview.gallery[0].title}
-                className="h-full w-full object-cover"
-              />
-            </div>
-            <div className="p-6 sm:p-8 space-y-4">
-              <span className="text-[11px] uppercase tracking-[0.28em] text-[#F6D7A8] font-bold">Why Vrindavan</span>
-              <h2 className="font-serif text-2xl sm:text-4xl font-bold leading-tight text-white" style={{ color: "#FFFFFF" }}>
-                {homeMediaShowcase.overview.title}
+      <section className="py-12 sm:py-16 px-4" id="brochure-media-section">
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <span className="text-[11px] font-black uppercase tracking-[0.28em]" style={{ color: "var(--brand-saffron)" }}>Why Vrindavan</span>
+              <h2 className="mt-2 font-serif text-3xl font-black text-[#0F172A] sm:text-4xl">
+                A destination-focused view of Vrindavan’s spiritual and investment momentum
               </h2>
-              <p className="text-sm text-white/80 leading-relaxed">{homeMediaShowcase.overview.summary}</p>
-              <div className="space-y-2 text-sm text-white/90">
-                {homeMediaShowcase.overview.highlights.map((item) => (
-                  <div key={item} className="flex items-start gap-2">
-                    <CheckCircle className="h-4 w-4 mt-0.5 text-[#F6D7A8] shrink-0" />
-                    <span>{item}</span>
-                  </div>
-                ))}
-              </div>
-              <div className="flex flex-wrap gap-3 pt-2">
-                <a href={homeMediaShowcase.overview.brochureUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-xs font-bold uppercase tracking-wider text-[#6B1A2A]">
-                  <FileText className="h-4 w-4" />
-                  <span>Open Docket</span>
-                </a>
-                <a href="/contact" className="inline-flex items-center gap-2 rounded-full border border-white/25 px-4 py-2 text-xs font-bold uppercase tracking-wider text-white">
-                  <Layers className="h-4 w-4" />
-                  <span>Request Consultation</span>
-                </a>
-              </div>
             </div>
+            <p className="max-w-2xl text-sm leading-7 text-slate-600">
+              Shortlist guidance for buyers comparing Mathura and Vrindavan properties, with temple access, trust signals, and a direct path to enquiry.
+            </p>
           </div>
 
-          <div className="lg:col-span-7 grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="md:col-span-2 bg-white rounded-[28px] border border-[#C9A84C]/25 shadow-sm overflow-hidden">
-              <div className="grid md:grid-cols-2">
-                <div className="p-6 sm:p-8 flex flex-col justify-center">
-                  <span className="text-[11px] uppercase tracking-[0.28em] text-[#C45C1A] font-bold">Nikunj Promise</span>
-                  <h3 className="font-serif text-2xl text-[#6B1A2A] font-bold mt-3">The homepage should strengthen Nikunj Heritage first</h3>
-                  <p className="text-sm text-slate-600 mt-3 leading-relaxed">
-                    We now keep the main homepage focused on company identity, Vrindavan market understanding, buyer guidance, and your own positioning instead of highlighting another brand's project media.
-                  </p>
-                  <a href="/about" className="mt-5 inline-flex w-fit items-center gap-2 rounded-full bg-[#C45C1A] px-4 py-2 text-xs font-bold uppercase tracking-wider text-white">
-                    <PlayCircle className="h-4 w-4" />
-                    <span>About Nikunj Heritage</span>
-                  </a>
-                </div>
-                <div className="aspect-video md:aspect-auto bg-slate-200">
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+            <div className="lg:col-span-7 overflow-hidden rounded-[28px] border border-[#C9A84C]/20 bg-white shadow-sm">
+              <div className="grid lg:grid-cols-[1.05fr_0.95fr]">
+                <div className="relative min-h-[26rem] overflow-hidden bg-[#6B1A2A] text-white">
                   <img
-                    src={homeMediaShowcase.overview.gallery[1].image}
-                    alt={homeMediaShowcase.overview.gallery[1].title}
-                    className="h-full w-full object-cover"
+                    src={homeMediaShowcase.overview.gallery[0].image}
+                    alt={homeMediaShowcase.overview.gallery[0].title}
+                    className="absolute inset-0 h-full w-full object-cover opacity-40"
                   />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A]/95 via-[#6B1A2A]/55 to-[#6B1A2A]/15" />
+                  <div className="relative flex h-full flex-col justify-end p-6 sm:p-8">
+                    <span className="text-[11px] uppercase tracking-[0.28em] text-[color:var(--brand-gold)] font-bold">Market Lens</span>
+                    <h3 className="mt-3 max-w-xl font-serif text-3xl font-black leading-tight text-white">
+                      {homeMediaShowcase.overview.title}
+                    </h3>
+                    <p className="mt-4 max-w-xl text-sm leading-7 text-white/85">
+                      {homeMediaShowcase.overview.summary}
+                    </p>
+                    <div className="mt-6 grid gap-3 sm:grid-cols-2">
+                      {homeMediaShowcase.overview.highlights.map((item) => (
+                        <div key={item} className="flex items-start gap-2 rounded-2xl border border-white/10 bg-white/10 p-3 text-sm text-white/90 backdrop-blur-sm">
+                          <CheckCircle className="mt-0.5 h-4 w-4 shrink-0 text-[#F6D7A8]" />
+                          <span>{item}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="mt-6 flex flex-wrap gap-3">
+                      <a href={homeMediaShowcase.overview.brochureUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-xs font-black uppercase tracking-wider text-[color:var(--brand-night)]">
+                        <FileText className="h-4 w-4" />
+                        <span>Open Docket</span>
+                      </a>
+                      <a href="/contact-us" className="inline-flex items-center gap-2 rounded-full border border-white/20 px-4 py-2 text-xs font-black uppercase tracking-wider text-white">
+                        <Layers className="h-4 w-4" />
+                        <span>Request Consultation</span>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid gap-4 bg-[#F8FAFC] p-5 sm:p-6">
+                  <div className="rounded-[24px] border border-[#C9A84C]/20 bg-white p-5 shadow-sm">
+                    <span className="text-[11px] font-black uppercase tracking-[0.28em] text-[#C45C1A]">Nikunj Promise</span>
+                    <h3 className="mt-3 font-serif text-2xl font-black leading-tight text-[#0F172A]">
+                      Company-first, buyer-first, and rooted in Braj context.
+                    </h3>
+                    <p className="mt-3 text-sm leading-7 text-slate-600">
+                      The homepage should speak about Nikunj Heritage, local market clarity, and serious buyer guidance before it speaks about any single asset.
+                    </p>
+                    <div className="mt-4 flex items-center gap-2 rounded-2xl bg-[#0F6E56]/10 px-4 py-3 text-sm font-semibold text-[#0F6E56]">
+                      <Sparkles className="h-4 w-4 shrink-0" />
+                      <span>Temple access, registry clarity, and investor confidence in one view.</span>
+                    </div>
+                    <a href="/about-us" className="mt-5 inline-flex w-fit items-center gap-2 rounded-full bg-[color:var(--brand-saffron)] px-4 py-2 text-xs font-black uppercase tracking-wider text-white">
+                      <PlayCircle className="h-4 w-4" />
+                      <span>About Nikunj Heritage</span>
+                    </a>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    {homeMediaShowcase.overview.gallery.slice(1).map((plan) => (
+                      <div key={plan.title} className="overflow-hidden rounded-[24px] border border-[#C9A84C]/15 bg-white shadow-sm">
+                        <div className="aspect-[4/3] overflow-hidden bg-[#F6F0E7]">
+                          <img src={plan.image} alt={plan.title} className="h-full w-full object-cover" />
+                        </div>
+                        <div className="p-4">
+                          <h4 className="font-serif text-base font-bold text-[#6B1A2A]">{plan.title}</h4>
+                          <p className="mt-1 text-sm text-slate-500">{plan.subtitle}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
 
-            {homeMediaShowcase.overview.gallery.map((plan) => (
-              <div key={plan.title} className="bg-white rounded-[24px] overflow-hidden border border-[#C9A84C]/20 shadow-sm">
-                <div className="aspect-[4/3] overflow-hidden bg-[#F6F0E7]">
-                  <img src={plan.image} alt={plan.title} className="h-full w-full object-cover" />
+            <div className="lg:col-span-5 grid gap-4">
+              {homeMediaShowcase.overview.gallery.map((item, index) => (
+                <div key={item.title} className="overflow-hidden rounded-[24px] border border-[#C9A84C]/15 bg-white shadow-sm">
+                  <div className="grid grid-cols-[1.05fr_0.95fr]">
+                    <div className="p-5 sm:p-6">
+                      <div className="mb-3 flex items-center gap-2 text-[11px] font-black uppercase tracking-[0.28em] text-[#0E7B6C]">
+                        <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-[#0E7B6C]/10 text-[11px]">{index + 1}</span>
+                        <span>{index === 0 ? "Cover Story" : "Supporting Sheet"}</span>
+                      </div>
+                      <h3 className="font-serif text-2xl font-black leading-tight text-[color:var(--brand-night)]">{item.title}</h3>
+                      <p className="mt-2 text-sm leading-7 text-slate-600">{item.subtitle}</p>
+                    </div>
+                    <div className="min-h-[11rem] bg-[#F6F0E7]">
+                      <img src={item.image} alt={item.title} className="h-full w-full object-cover" />
+                    </div>
+                  </div>
                 </div>
-                <div className="p-4">
-                  <h4 className="font-serif text-lg font-bold text-[#6B1A2A]">{plan.title}</h4>
-                  <p className="text-sm text-slate-500 mt-1">{plan.subtitle}</p>
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -741,19 +777,19 @@ export const Home: React.FC = () => {
             transition={{ duration: 0.6 }}
             className="lg:col-span-5"
           >
-            <span className="text-[11px] font-black uppercase tracking-[0.28em] text-[#C45C1A]">Find The Right Property</span>
-            <h2 className="mt-3 font-serif text-3xl font-black leading-tight text-[#0F172A] sm:text-5xl">
+            <span className="text-[11px] font-black uppercase tracking-[0.28em]" style={{ color: "var(--brand-saffron)" }}>Find The Right Property</span>
+            <h2 className="mt-3 font-serif text-3xl font-black leading-tight text-[color:var(--brand-night)] sm:text-5xl">
               Advisory-first buying for Mathura and Vrindavan.
             </h2>
             <p className="mt-5 text-sm leading-7 text-slate-600">
-              Like a premium real-estate marketplace, the experience helps buyers move from search to shortlist to comparison. Unlike a generic portal, every step is shaped around temple access, registry clarity and local Braj market realities.
+              The experience helps buyers move from search to shortlist to comparison. Every step is shaped around temple access, registry clarity, and local Braj market realities.
             </p>
             <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-              <Link to="/properties" className="inline-flex items-center justify-center gap-2 rounded-full bg-[#FB923C] px-6 py-3 text-xs font-black uppercase tracking-wider text-white">
+              <Link to="/properties" className="inline-flex items-center justify-center gap-2 rounded-full bg-[color:var(--brand-saffron)] px-6 py-3 text-xs font-black uppercase tracking-wider text-white">
                 Search Properties
                 <ChevronRight className="h-4 w-4" />
               </Link>
-              <Link to="/contact-us" className="inline-flex items-center justify-center gap-2 rounded-full border border-[#EAD9C0] bg-white px-6 py-3 text-xs font-black uppercase tracking-wider text-[#0F172A]">
+              <Link to="/contact-us" className="inline-flex items-center justify-center gap-2 rounded-full border border-[color:var(--brand-border)] bg-white px-6 py-3 text-xs font-black uppercase tracking-wider text-[color:var(--brand-night)]">
                 Talk To Advisor
               </Link>
             </div>
@@ -954,8 +990,8 @@ export const Home: React.FC = () => {
       {/* 7. ROI CALCULATOR INTEGRATOR */}
       <section className="py-10 sm:py-16 bg-slate-50 border-t border-b border-[#C9A84C]/15 px-4" id="roi-calculator-section">
         <div className="text-center max-w-2xl mx-auto mb-4">
-          <span className="text-[11px] uppercase tracking-widest text-[#6B1A2A] font-bold font-mono">Return Projections</span>
-          <h2 className="font-serif text-2xl sm:text-3xl text-[#1A1A2E] font-bold mt-1">
+          <span className="text-[11px] uppercase tracking-widest font-bold font-mono" style={{ color: "var(--brand-saffron)" }}>Return Projections</span>
+          <h2 className="font-serif text-2xl sm:text-3xl font-bold mt-1 text-[color:var(--brand-night)]">
             Maximize Your Brijbhoomi Return
           </h2>
         </div>
@@ -963,13 +999,13 @@ export const Home: React.FC = () => {
       </section>
 
       {/* 8. BOOKING CALL DIRECT DIALOGS / QUICK CALLBACK */}
-      <section className="py-12 sm:py-16 px-4 bg-gradient-to-br from-[#6B1A2A] to-[#1A1A2E] text-white border-y border-[#C9A84C]/40 relative overflow-hidden" id="homepage-callback">
+      <section className="py-12 sm:py-16 px-4 bg-gradient-to-br from-[color:var(--brand-night)] to-[#11193c] text-white border-y border-[color:var(--brand-gold)]/30 relative overflow-hidden" id="homepage-callback">
         {/* Subtle decorative mandalas */}
         <div className="absolute -right-16 -bottom-16 h-48 w-48 opacity-10 border-4 border-[#C9A84C] rounded-full"></div>
         
         <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-10 items-center relative z-10">
           <div className="md:col-span-7 space-y-4">
-            <span className="text-xs uppercase text-[#C9A84C] tracking-widest font-semibold font-mono block">Zero Cost Consultation</span>
+            <span className="text-xs uppercase text-[color:var(--brand-gold)] tracking-widest font-semibold font-mono block">Zero Cost Consultation</span>
             <h2
               className="font-serif text-2xl sm:text-4xl font-bold tracking-wide text-white"
               style={{ color: "#FFFFFF" }}
@@ -977,7 +1013,7 @@ export const Home: React.FC = () => {
               Book a Free Personal Site Visit & Consultation
             </h2>
             <p className="text-xs sm:text-sm text-[#FAF6F0]/80 leading-relaxed max-w-xl font-sans">
-              Pranam! Experience Mathura-Vrindavan like a native. Our personal air-conditioned car will transport you and your family directly from Mathura junction or central hotels to all certified ready-to-move projects.
+              Pranam! Experience Mathura-Vrindavan like a native. Our team can help you shortlist the right property, arrange a guided visit, and answer the questions buyers usually ask before they enquire.
             </p>
           </div>
 
@@ -1034,7 +1070,7 @@ export const Home: React.FC = () => {
               <button
                 type="submit"
                 disabled={isConsulting}
-                className="w-full py-3 bg-[#6B1A2A] hover:bg-[#6B1A2A]/90 text-white font-bold rounded-lg text-sm transition-colors shadow flex items-center justify-center font-serif uppercase tracking-wider"
+                className="w-full rounded-lg bg-[color:var(--brand-saffron)] py-3 text-sm font-bold uppercase tracking-wider text-white shadow transition-colors hover:opacity-95 flex items-center justify-center font-serif"
               >
                 {isConsulting ? "Submitting..." : "Submit Enquiry"}
               </button>
@@ -1047,8 +1083,8 @@ export const Home: React.FC = () => {
       <section className="py-16 max-w-7xl mx-auto px-4 scroll-mt-20" id="blogs-section">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-10">
           <div>
-            <span className="text-[11px] uppercase tracking-widest text-[#C45C1A] font-bold font-mono">Brijbhoomi Journal</span>
-            <h2 className="font-serif text-2xl sm:text-3xl text-[#6B1A2A] font-bold mt-1">
+          <span className="text-[11px] uppercase tracking-widest font-bold font-mono" style={{ color: "var(--brand-saffron)" }}>Brijbhoomi Journal</span>
+            <h2 className="font-serif text-2xl sm:text-3xl font-bold mt-1" style={{ color: "var(--brand-night)" }}>
               Latest Insights & Guides
             </h2>
           </div>
@@ -1079,7 +1115,7 @@ export const Home: React.FC = () => {
                     onError={(event) => { event.currentTarget.src = "/projects/images/ai-buyer-spiritual-retreat.jpg"; }}
                   />
                   <div className="p-4">
-                    <span className="text-[10px] text-[#C45C1A] uppercase tracking-widest font-bold font-mono">
+                    <span className="text-[10px] uppercase tracking-widest font-bold font-mono" style={{ color: "var(--brand-saffron)" }}>
                       Category • {blog.category}
                     </span>
                     <Link to={`/blogs/${blog.slug}`} className="block block-title mt-1.5 mb-2.5">
@@ -1110,8 +1146,8 @@ export const Home: React.FC = () => {
       <section className="bg-white px-4 py-14" id="wealth-style-faq-section">
         <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 lg:grid-cols-12">
           <div className="lg:col-span-4">
-            <span className="text-[11px] font-black uppercase tracking-[0.28em] text-[#C45C1A]">Buyer Questions</span>
-            <h2 className="mt-3 font-serif text-3xl font-black leading-tight text-[#0F172A] sm:text-4xl">
+              <span className="text-[11px] font-black uppercase tracking-[0.28em]" style={{ color: "var(--brand-saffron)" }}>Buyer Questions</span>
+            <h2 className="mt-3 font-serif text-3xl font-black leading-tight text-[color:var(--brand-night)] sm:text-4xl">
               Frequently asked before buying in Braj.
             </h2>
             <p className="mt-4 text-sm leading-7 text-slate-600">
@@ -1141,11 +1177,11 @@ export const Home: React.FC = () => {
         </div>
       </section>
 
-      <section className="border-y border-[#EAD9C0] bg-[#0F172A] px-4 py-12 text-white" id="wealth-style-seo-service-areas">
+      <section className="border-y border-[color:var(--brand-gold)]/20 bg-[color:var(--brand-night)] px-4 py-12 text-white" id="wealth-style-seo-service-areas">
         <div className="mx-auto max-w-7xl">
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
             <div className="lg:col-span-5">
-              <span className="text-[11px] font-black uppercase tracking-[0.28em] text-[#FACC15]">Mathura Vrindavan Real Estate</span>
+              <span className="text-[11px] font-black uppercase tracking-[0.28em] text-[color:var(--brand-gold)]">Mathura Vrindavan Real Estate</span>
               <h2 className="mt-3 font-serif text-3xl font-black">Premium property advisory across sacred growth corridors.</h2>
             </div>
             <div className="grid grid-cols-2 gap-3 text-sm sm:grid-cols-3 lg:col-span-7">

@@ -3,288 +3,239 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "motion/react";
-import { ChevronLeft, ChevronRight, ArrowRight, ShieldCheck, Star, MapPin } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { ChevronLeft, ChevronRight, PhoneCall, ArrowRight, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
-import brijHavenImage from "../../assets/images/brij_haven_glorious_temple_1781557829970.jpg";
-import heritageHaveliImage from "../../assets/images/heritage_haveli_courtyard_1781557848504.jpg";
-import nidhivanImage from "../../assets/images/nidhivan_peaceful_forest_grove_1781557896104.jpg";
-import spiritualAshramImage from "../../assets/images/spiritual_ashram_serviced_suite_1781557880359.jpg";
-import vrindavanVillaImage from "../../assets/images/vrindavan_premium_villa_layout_1781557864653.jpg";
+import { Button } from "../ui/Button";
 
-export interface SlideData {
-  image: string;
-  tag: string;
+type Slide = {
+  eyebrow: string;
   title: string;
   subtitle: string;
-  ctaText: string;
-  ctaLink: string;
-  badge: string;
-}
+  image: string;
+  ctaPrimary: string;
+  ctaPrimaryHref: string;
+  ctaSecondary: string;
+  ctaSecondaryHref: string;
+  note: string;
+};
 
-const SLIDES: SlideData[] = [
+const slides: Slide[] = [
   {
-    image: vrindavanVillaImage,
-    tag: "NIKUNJ HERITAGE",
-    title: "Trusted guidance for residential, commercial, and plotted opportunities in Vrindavan",
-    subtitle: "Nikunj Heritage Infrabuild helps buyers explore high-potential locations, devotional neighborhoods, and growth-led property opportunities with clarity and confidence.",
-    ctaText: "Explore Vrindavan Projects",
-    ctaLink: "/properties",
-    badge: "Local market understanding"
+    eyebrow: "Vrindavan Parikrama Marg",
+    title: "Temple-close property guidance for buyers who want clarity before commitment",
+    subtitle: "Shortlist verified homes, plots, and retreat-led opportunities with temple proximity, registry clarity, and guided site visits.",
+    image: "/projects/images/mathura-vrindavan-hero-enquiry.jpg",
+    ctaPrimary: "Book a Free Site Visit",
+    ctaPrimaryHref: "/contact-us",
+    ctaSecondary: "Explore Projects",
+    ctaSecondaryHref: "/properties",
+    note: "Trusted by buyers looking for devotional location value and long-term appreciation."
   },
   {
-    image: brijHavenImage,
-    tag: "PREMIUM RESIDENCES",
-    title: "Homes and heritage-inspired living spaces near Vrindavan's most sought-after spiritual zones",
-    subtitle: "From family apartments to premium villas, we present properties that balance location quality, comfort, connectivity, and long-term value.",
-    ctaText: "View Residential Projects",
-    ctaLink: "/properties?category=residential-apartments",
-    badge: "End-user and investor ready"
+    eyebrow: "Mathura Heritage Streets",
+    title: "Premium advisory for residential and commercial opportunities in the sacred growth belt",
+    subtitle: "We help buyers compare liveability, access, and investment context around Mathura’s most active property corridors.",
+    image: "/projects/images/mathura-vrindavan-site-visit.jpg",
+    ctaPrimary: "Talk to an Advisor",
+    ctaPrimaryHref: "/contact-us",
+    ctaSecondary: "View Listings",
+    ctaSecondaryHref: "/properties",
+    note: "Built for serious buyers, NRIs, and families evaluating Mathura real estate."
   },
   {
-    image: heritageHaveliImage,
-    tag: "RUKMINI VIHAR",
-    title: "Live close to Vrindavan's spiritual core in a well-connected residential neighborhood",
-    subtitle: "Rukmini Vihar offers a balance of devotional surroundings, daily convenience, and long-term appreciation potential for families, end users, and second-home buyers.",
-    ctaText: "Browse Vrindavan Homes",
-    ctaLink: "/properties?location=vrindavan-rukmani-vihar",
-    badge: "High-demand residential pocket"
-  },
-  {
-    image: spiritualAshramImage,
-    tag: "PLANNED COMMUNITIES",
-    title: "Project selection backed by location study, planning logic, and practical buyer needs",
-    subtitle: "We focus on projects that make sense on the ground, with attention to access, surrounding development, livability, and future appreciation potential.",
-    ctaText: "See All Listings",
-    ctaLink: "/properties",
-    badge: "Clarity before commitment"
-  },
-  {
-    image: nidhivanImage,
-    tag: "GROWTH & CONNECTIVITY",
-    title: "Invest where infrastructure, access, and pilgrimage-driven demand strengthen property value",
-    subtitle: "Better road links, improving regional access, and sustained visitor movement continue to support Vrindavan's real estate potential across multiple segments.",
-    ctaText: "Talk To An Advisor",
-    ctaLink: "/contact-us",
-    badge: "Research-led recommendations"
+    eyebrow: "Yamuna Riverside",
+    title: "A destination-led real estate experience rooted in trust, access, and buyer support",
+    subtitle: "Use the site to move from interest to shortlist to enquiry with guided navigation, RERA focus, and practical property filters.",
+    image: "/projects/images/mathura-vrindavan-aerial-livability.jpg",
+    ctaPrimary: "Enquire Now",
+    ctaPrimaryHref: "/contact-us",
+    ctaSecondary: "See Investment Zones",
+    ctaSecondaryHref: "/properties?category=plots-and-land",
+    note: "For buyers comparing residential, plotted, and spiritual retreat inventory."
   }
 ];
 
 export const HeroSlider: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [direction, setDirection] = useState(0); // -1 for left, 1 for right
-  const [isHovered, setIsHovered] = useState(false);
+  const [direction, setDirection] = useState(1);
+  const [paused, setPaused] = useState(false);
+  const prefersReducedMotion = useReducedMotion();
 
-  // Auto cyclic slide transitions
   useEffect(() => {
-    if (isHovered) return;
-    const interval = setInterval(() => {
-      handleNext();
-    }, 6500);
-    return () => clearInterval(interval);
-  }, [currentIndex, isHovered]);
+    if (paused || prefersReducedMotion) return;
+    const timer = window.setInterval(() => {
+      setDirection(1);
+      setCurrentIndex((prev) => (prev + 1) % slides.length);
+    }, 6200);
+    return () => window.clearInterval(timer);
+  }, [paused, prefersReducedMotion]);
 
-  const handleNext = () => {
-    setDirection(1);
-    setCurrentIndex((prev) => (prev + 1) % SLIDES.length);
+  const goTo = (index: number) => {
+    setDirection(index > currentIndex ? 1 : -1);
+    setCurrentIndex(index);
   };
 
-  const handlePrev = () => {
-    setDirection(-1);
-    setCurrentIndex((prev) => (prev - 1 + SLIDES.length) % SLIDES.length);
-  };
-
-  const handleSelect = (idx: number) => {
-    setDirection(idx > currentIndex ? 1 : -1);
-    setCurrentIndex(idx);
-  };
-
-  // Slide sliding animation variants
-  const slideVariants = {
-    enter: (dir: number) => ({
-      x: dir > 0 ? "100%" : "-100%",
-      opacity: 0,
-      scale: 1.05
-    }),
-    center: {
-      x: "0%",
-      opacity: 1,
-      scale: 1,
-      transition: {
-        x: { type: "spring", stiffness: 300, damping: 30 },
-        opacity: { duration: 0.6 },
-        scale: { duration: 0.8, ease: "easeOut" }
-      }
-    },
-    exit: (dir: number) => ({
-      x: dir < 0 ? "100%" : "-100%",
-      opacity: 0,
-      scale: 0.95,
-      transition: {
-        x: { type: "spring", stiffness: 300, damping: 30 },
-        opacity: { duration: 0.4 }
-      }
-    })
-  };
+  const slide = slides[currentIndex];
 
   return (
-    <div 
-      className="relative w-full min-h-[690px] h-[calc(100svh-4rem)] max-h-[860px] sm:h-[calc(100vh-5rem)] bg-[#11111A] overflow-hidden group select-none"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      id="hero-3d-immersion-viewport"
+    <section
+      className="relative isolate h-[calc(100svh-4rem)] min-h-[620px] overflow-hidden bg-[color:var(--brand-night)] text-white sm:h-[calc(100vh-5rem)]"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      onFocusCapture={() => setPaused(true)}
+      onBlurCapture={() => setPaused(false)}
+      aria-label="Homepage hero slider"
     >
-      {/* Background Cinematic Images */}
-      <div className="absolute inset-0 z-0">
-        <AnimatePresence initial={false} custom={direction} mode="popLayout">
+      <AnimatePresence initial={false} custom={direction} mode="popLayout">
+        <motion.div
+          key={slide.image}
+          custom={direction}
+          initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, x: direction > 0 ? 48 : -48 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, x: direction > 0 ? -48 : 48 }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          className="absolute inset-0"
+        >
+          <motion.img
+            src={slide.image}
+            alt={slide.title}
+            className="h-full w-full object-cover"
+            initial={false}
+            animate={prefersReducedMotion ? { scale: 1 } : { scale: 1.08 }}
+            transition={{ duration: 8, ease: "linear" }}
+          />
+          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(11,16,48,0.45)_0%,rgba(11,16,48,0.64)_56%,rgba(11,16,48,0.92)_100%)]" />
+        </motion.div>
+      </AnimatePresence>
+
+      <div className="relative z-10 mx-auto flex h-full max-w-7xl flex-col justify-between px-4 pb-24 pt-24 sm:px-6 lg:px-8">
+        <div className="max-w-3xl">
           <motion.div
-            key={currentIndex}
-            custom={direction}
-            variants={slideVariants}
-            initial="enter"
-            animate="center"
-            exit="exit"
-            className="absolute inset-0 w-full h-full"
+            initial={prefersReducedMotion ? false : { opacity: 0, y: 22 }}
+            animate={prefersReducedMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
+            transition={{ duration: 0.55 }}
+            className="flex flex-wrap items-center gap-2"
           >
-            {/* Cinematic Ken Burns Effect implemented via continuous slow scaling */}
-            <motion.img
-              src={SLIDES[currentIndex].image}
-              alt={SLIDES[currentIndex].title}
-              referrerPolicy="no-referrer"
-              className="w-full h-full object-cover opacity-45"
-              initial={{ scale: 1.02 }}
-              animate={{ scale: 1.09 }}
-              transition={{ duration: 7, ease: "linear" }}
-            />
-            {/* Saffron & Charcoal Soft Vignette mask */}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A] via-[#0F172A]/45 to-[#0F6E56]/10"></div>
+            <span className="rounded-full border border-white/15 bg-white/10 px-4 py-1 text-[11px] font-black uppercase tracking-[0.28em] text-[color:var(--brand-gold)] backdrop-blur">
+              {slide.eyebrow}
+            </span>
+            <span className="rounded-full bg-[color:var(--brand-gold)] px-4 py-1 text-[11px] font-black uppercase tracking-[0.24em] text-[color:var(--brand-night)]">
+              Temple proximity. Registry clarity.
+            </span>
           </motion.div>
-        </AnimatePresence>
-      </div>
 
-      {/* Slide Interactive Contents */}
-      <div className="absolute inset-0 z-10 flex flex-col justify-start px-4 pt-20 pb-40 sm:justify-center sm:px-6 sm:pt-0 sm:pb-28 lg:px-8 max-w-7xl mx-auto pointer-events-none">
-        <div className="max-w-3xl pointer-events-auto">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={currentIndex}
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.5, ease: "easeOut" }}
-              className="space-y-4"
+          <motion.h1
+            initial={prefersReducedMotion ? false : { opacity: 0, y: 28 }}
+            animate={prefersReducedMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
+            transition={{ duration: 0.55, delay: 0.05 }}
+            className="mt-5 max-w-3xl font-serif text-[clamp(2.75rem,6vw,5.5rem)] font-bold leading-[0.9] tracking-tight text-white"
+          >
+            {slide.title}
+          </motion.h1>
+
+          <motion.p
+            initial={prefersReducedMotion ? false : { opacity: 0, y: 24 }}
+            animate={prefersReducedMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
+            transition={{ duration: 0.55, delay: 0.12 }}
+            className="mt-5 max-w-2xl text-base leading-8 text-[color:var(--brand-sandstone)]/88 sm:text-lg"
+          >
+            {slide.subtitle}
+          </motion.p>
+
+          <motion.div
+            initial={prefersReducedMotion ? false : { opacity: 0, y: 24 }}
+            animate={prefersReducedMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
+            transition={{ duration: 0.55, delay: 0.18 }}
+            className="mt-8 flex flex-col gap-3 sm:flex-row"
+          >
+            <Link to={slide.ctaPrimaryHref}>
+              <Button variant="primary" size="lg" className="min-w-[220px]">
+                {slide.ctaPrimary}
+              </Button>
+            </Link>
+            <Link to={slide.ctaSecondaryHref}>
+              <Button variant="secondary" size="lg" className="min-w-[220px]">
+                {slide.ctaSecondary}
+              </Button>
+            </Link>
+          </motion.div>
+
+          <div className="mt-6 flex items-center gap-2 text-sm text-white/75">
+            <MapPin className="h-4 w-4 text-[color:var(--brand-gold)]" />
+            <span>{slide.note}</span>
+          </div>
+        </div>
+
+        <div className="grid gap-4 lg:grid-cols-[1fr_auto] lg:items-end">
+          <div className="flex items-center gap-2 overflow-x-auto pb-1">
+            {slides.map((item, index) => {
+              const active = index === currentIndex;
+              return (
+                <button
+                  key={item.eyebrow}
+                  onClick={() => goTo(index)}
+                  className="group flex min-w-[170px] flex-1 items-center gap-3 rounded-full border px-3 py-2 text-left transition-all"
+                  style={{
+                    borderColor: active ? "rgba(232,179,61,0.65)" : "rgba(255,255,255,0.14)",
+                    backgroundColor: active ? "rgba(255,255,255,0.08)" : "rgba(255,255,255,0.03)"
+                  }}
+                >
+                  <span
+                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-black"
+                    style={{
+                      backgroundColor: active ? "var(--brand-gold)" : "rgba(255,255,255,0.1)",
+                      color: active ? "var(--brand-night)" : "white"
+                    }}
+                  >
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <div className="min-w-0">
+                    <div className="truncate text-[11px] font-black uppercase tracking-[0.24em] text-[color:var(--brand-gold)]">
+                      {item.eyebrow}
+                    </div>
+                    <div className="truncate text-sm font-semibold text-white/90">{item.ctaSecondary}</div>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="rounded-[28px] border border-white/12 bg-white/8 p-4 backdrop-blur-xl lg:w-[22rem]">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <div className="text-[11px] font-black uppercase tracking-[0.28em] text-[color:var(--brand-gold)]">Talk To An Advisor</div>
+                <div className="mt-1 font-serif text-2xl font-bold text-white">Need a shortlist today?</div>
+              </div>
+              <div className="rounded-full bg-white/10 p-3 text-[color:var(--brand-gold)]">
+                <PhoneCall className="h-5 w-5" />
+              </div>
+            </div>
+            <a
+              href="tel:+919719920888"
+              className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-full bg-[color:var(--brand-saffron)] px-4 py-3 text-sm font-black uppercase tracking-[0.24em] text-white transition-all hover:opacity-95"
             >
-              {/* Dynamic Badges with 3D glowing aura */}
-              <div className="flex flex-wrap items-center gap-2.5">
-                <span className="bg-[#0F172A] text-white text-[10px] sm:text-xs font-bold font-mono tracking-widest px-3 py-1 rounded-full border border-[#FACC15]/30 shadow-lg shadow-[#0F172A]/20 flex items-center gap-1.5 uppercase">
-                  <Star className="h-3 w-3 text-[#FACC15] animate-spin" />
-                  {SLIDES[currentIndex].tag}
-                </span>
-
-                <span className="bg-[#FACC15] backdrop-blur-md text-[#0F172A] text-[10px] sm:text-xs font-medium tracking-wide px-3 py-1 rounded-full border border-[#FDE68A] flex items-center gap-1">
-                  <ShieldCheck className="h-3.5 w-3.5 text-[#0F172A]" />
-                  {SLIDES[currentIndex].badge}
-                </span>
-              </div>
-
-              {/* Title Transition with premium serif font and text-shadowing */}
-              <h1
-                className="font-serif text-[clamp(2rem,10vw,3.35rem)] sm:text-5xl md:text-6xl font-extrabold tracking-wide leading-[1.05] drop-shadow-md"
-                style={{ color: "#FFFFFF" }}
-              >
-                {SLIDES[currentIndex].title}
-              </h1>
-
-              {/* Subtitle transition with relaxed spacing */}
-              <p className="text-xs sm:text-sm md:text-base text-[#FAF6F0]/85 font-sans leading-relaxed max-w-2xl font-light tracking-wide py-1 border-l-2 border-[#FB923C] pl-4">
-                {SLIDES[currentIndex].subtitle}
-              </p>
-
-              {/* Action and Helpline links */}
-              <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-3.5 pt-4">
-                <Link
-                  to={SLIDES[currentIndex].ctaLink}
-                  className="group inline-flex items-center justify-center space-x-2 px-4 sm:px-6 py-3.5 bg-gradient-to-r from-[#FB923C] to-[#EA580C] text-white hover:to-[#FB923C] text-xs sm:text-sm font-bold font-serif uppercase tracking-widest rounded-lg shadow-xl shadow-black/30 transition-all duration-300 hover:-translate-y-0.5 border border-[#FDBA74]/40"
-                >
-                  <span>{SLIDES[currentIndex].ctaText}</span>
-                  <ArrowRight className="h-4 w-4 transform group-hover:translate-x-1.5 transition-transform" />
-                </Link>
-
-                <a
-                  href="https://wa.me/919719920888?text=Pranam!%20I%20saw%20your%20featured%20slideshow.%20Please%20send%20brochures."
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-4 sm:px-5 py-3.5 bg-white/10 hover:bg-white/15 backdrop-blur-md border border-[#FAF6F0]/25 text-white text-xs sm:text-sm font-bold font-mono rounded-lg transition-all flex items-center justify-center gap-1.5"
-                >
-                  <MapPin className="h-4 w-4 text-[#0F6E56]" />
-                  Verify Proximity
-                </a>
-              </div>
-            </motion.div>
-          </AnimatePresence>
+              Call Now
+              <ArrowRight className="h-4 w-4" />
+            </a>
+          </div>
         </div>
       </div>
 
-      {/* Left/Right Arrow Navigation Controls with 3D magnetic feel */}
-      <button
-        onClick={handlePrev}
-        className="absolute left-4 top-1/2 -translate-y-1/2 z-20 h-10 w-10 sm:h-12 sm:w-12 rounded-full border border-[#FAF6F0]/20 bg-[#11111A]/60 text-white backdrop-blur-md items-center justify-center hidden group-hover:flex hover:bg-[#FB923C] hover:border-transparent transition-all shadow-xl"
-        style={{ contentVisibility: "auto" }}
-        aria-label="Previous Banner Slide"
-      >
-        <ChevronLeft className="h-5 w-5 sm:h-6 sm:w-6" />
-      </button>
-
-      <button
-        onClick={handleNext}
-        className="absolute right-4 top-1/2 -translate-y-1/2 z-20 h-10 w-10 sm:h-12 sm:w-12 rounded-full border border-[#FAF6F0]/20 bg-[#11111A]/60 text-white backdrop-blur-md items-center justify-center hidden group-hover:flex hover:bg-[#FB923C] hover:border-transparent transition-all shadow-xl"
-        style={{ contentVisibility: "auto" }}
-        aria-label="Next Banner Slide"
-      >
-        <ChevronRight className="h-5 w-5 sm:h-6 sm:w-6" />
-      </button>
-
-      {/* Premium Multi-track Interactive Progress Pagination */}
-      <div className="absolute bottom-24 sm:bottom-6 left-1/2 -translate-x-1/2 z-20 w-[90%] max-w-5xl flex items-center justify-between gap-2.5 bg-black/45 backdrop-blur-lg p-2 rounded-xl border border-white/10">
-        {SLIDES.map((slide, idx) => {
-          const isActive = idx === currentIndex;
-          return (
-            <button
-              key={idx}
-              onClick={() => handleSelect(idx)}
-              className="flex-1 text-left relative focus:outline-none py-1 group"
-            >
-              <div className="flex flex-col">
-                {/* Micro heading representing the slide category */}
-                <span className={`text-[8px] uppercase tracking-widest font-bold hidden md:block transition-all ${
-                  isActive ? "text-[#C9A84C]" : "text-white/40 group-hover:text-white/70"
-                }`}>
-                  0{idx + 1} • {slide.tag.split(" ")[0]}
-                </span>
-                
-                {/* Horizontal high-fidelity loading bar */}
-                <div className="h-1.5 w-full bg-white/15 rounded-full overflow-hidden mt-1 relative">
-                  {isActive && (
-                    <motion.div
-                      className="absolute inset-y-0 left-0 bg-[#FB923C] rounded-full"
-                      initial={{ width: "0%" }}
-                      animate={{ width: "100%" }}
-                      transition={{ duration: 6, ease: "linear" }}
-                      style={{ originX: 0 }}
-                    />
-                  )}
-                  {!isActive && (
-                    <div className={`absolute inset-full rounded-full transition-all duration-300 ${
-                      idx < currentIndex ? "bg-[#FB923C] inset-y-0 inset-x-0" : "bg-transparent"
-                    }`} />
-                  )}
-                </div>
-              </div>
-            </button>
-          );
-        })}
+      <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/10">
+        <motion.div
+          className="h-full bg-[color:var(--brand-gold)]"
+          key={currentIndex}
+          initial={{ width: "0%" }}
+          animate={{ width: "100%" }}
+          transition={{ duration: 6.2, ease: "linear" }}
+        />
       </div>
-    </div>
+
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[color:var(--brand-night)] to-transparent" />
+    </section>
   );
 };
+
+export default HeroSlider;

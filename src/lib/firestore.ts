@@ -22,6 +22,8 @@ import {
 import { db, auth } from "./firebase";
 import { Property, Category, Location, Lead, Blog, Testimonial, Developer, Event, Page, SiteConfig, LeadStatus, PropertyStatus, BlogStatus, AppUser } from "../types";
 
+export const DEFAULT_ADMIN_EMAIL = "vksp207@gmail.com";
+
 // ERROR HANDLER AS REQUIRED BY SKILL.MD
 export enum OperationType {
   CREATE = 'create',
@@ -120,15 +122,15 @@ export async function checkIsAdmin(uid: string): Promise<boolean> {
   const path = `admins/${uid}`;
   try {
     // If user is our bootstrapped developer mail, bypass to support easy initial testing
-    const currentUserEmail = auth.currentUser?.email;
-    if (currentUserEmail === "vksp207@gmail.com") {
+    const currentUserEmail = auth.currentUser?.email?.toLowerCase();
+    if (currentUserEmail === DEFAULT_ADMIN_EMAIL) {
       return true;
     }
     const adminDoc = await getDoc(doc(db, "admins", uid));
     return adminDoc.exists();
   } catch (e) {
     console.warn("Permission check failed, returning false or checking fallback email:", e);
-    return auth.currentUser?.email === "vksp207@gmail.com";
+    return auth.currentUser?.email?.toLowerCase() === DEFAULT_ADMIN_EMAIL;
   }
 }
 

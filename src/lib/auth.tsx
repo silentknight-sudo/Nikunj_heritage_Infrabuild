@@ -15,7 +15,7 @@ import {
   updateProfile
 } from "firebase/auth";
 import { auth } from "./firebase";
-import { checkIsAdmin, upsertUserProfile } from "./firestore";
+import { DEFAULT_ADMIN_EMAIL, checkIsAdmin, upsertUserProfile } from "./firestore";
 
 interface AuthContextType {
   user: User | null;
@@ -39,6 +39,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUser(currentUser);
       if (currentUser) {
         try {
+          const isDefaultAdmin = currentUser.email?.toLowerCase() === DEFAULT_ADMIN_EMAIL;
+          if (isDefaultAdmin) {
+            setIsAdmin(true);
+          }
           await upsertUserProfile({
             uid: currentUser.uid,
             email: currentUser.email || "",
@@ -46,11 +50,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             photoURL: currentUser.photoURL || "",
             providerId: currentUser.providerData?.[0]?.providerId || "password"
           });
-          const privileged = await checkIsAdmin(currentUser.uid);
-          setIsAdmin(privileged);
+          if (!isDefaultAdmin) {
+            const privileged = await checkIsAdmin(currentUser.uid);
+            setIsAdmin(privileged);
+          }
         } catch (err) {
           console.error("Admin verification error:", err);
-          setIsAdmin(false);
+          setIsAdmin(currentUser.email?.toLowerCase() === DEFAULT_ADMIN_EMAIL);
         }
       } else {
         setIsAdmin(false);
@@ -78,7 +84,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setLoading(true);
     try {
       const cred = await signInWithEmailAndPassword(auth, email, pass);
-      const privileged = await checkIsAdmin(cred.user.uid);
+      const privileged = cred.user.email?.toLowerCase() === DEFAULT_ADMIN_EMAIL || await checkIsAdmin(cred.user.uid);
       setIsAdmin(privileged);
       return cred.user;
     } catch (e) {

@@ -55,13 +55,14 @@ export default function App() {
   return (
     <AuthProvider>
       <Router>
-        <div className="relative flex flex-col min-h-screen overflow-hidden bg-[#F8FAFC] font-sans text-[#0F172A]">
+        <div className="relative flex flex-col min-h-screen overflow-x-clip bg-[#F8FAFC] font-sans text-[#0F172A]">
           <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-0 bg-[#F8FAFC]" />
-          <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-0 bg-[url('/projects/images/ai-buyer-plots-land.jpg')] bg-cover bg-center opacity-[0.045]" />
-          <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-0 bg-gradient-to-b from-white/95 via-[#F8FAFC]/96 to-white/98" />
+          <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-0 bg-[url('/projects/images/site-real-estate-background.jpg')] bg-cover bg-center opacity-[0.18]" />
+          <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-0 bg-gradient-to-b from-white/82 via-[#F8FAFC]/88 to-white/92" />
+          <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-[11] bg-[url('/projects/images/site-real-estate-background.jpg')] bg-cover bg-center opacity-[0.035] mix-blend-multiply" />
           <AppSeo />
           {/* Main sticky header */}
-          <div className="relative z-10">
+          <div className="relative z-[100]">
             <Navbar />
           </div>
 

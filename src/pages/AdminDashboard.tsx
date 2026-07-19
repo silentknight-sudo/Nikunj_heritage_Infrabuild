@@ -63,6 +63,7 @@ import {
   deletePage,
   getSiteConfig,
   updateSiteConfig,
+  DEFAULT_ADMIN_EMAIL,
   getUsers,
   getAdminIds,
   addAdmin,
@@ -244,8 +245,16 @@ export const AdminDashboard: React.FC = () => {
         getUsers(),
         getAdminIds()
       ]);
-      setAdminUsers(knownUsers);
-      setAdminIds(privilegedIds);
+      const hasDefaultAdmin = knownUsers.some((knownUser) => knownUser.email?.toLowerCase() === DEFAULT_ADMIN_EMAIL);
+      const defaultAdminUser: AppUser = {
+        id: "default-admin",
+        uid: user?.email?.toLowerCase() === DEFAULT_ADMIN_EMAIL ? user.uid : "default-admin-email-rule",
+        email: DEFAULT_ADMIN_EMAIL,
+        displayName: "Default Admin",
+        providerId: "bootstrap"
+      };
+      setAdminUsers(hasDefaultAdmin ? knownUsers : [defaultAdminUser, ...knownUsers]);
+      setAdminIds(Array.from(new Set([...privilegedIds, defaultAdminUser.uid])));
     } catch (err) {
       console.error("Admin dashboard data bootstrap failed:", err);
     } finally {
@@ -1254,7 +1263,7 @@ export const AdminDashboard: React.FC = () => {
                     </span>
                     <span className="inline-flex items-center gap-2 rounded-full bg-[#FB923C]/10 px-4 py-2 text-xs font-black uppercase tracking-wider text-[#C45C1A]">
                       <ShieldCheck className="h-4 w-4" />
-                      {adminIds.length + (adminUsers.some((item) => item.email === "vksp207@gmail.com") ? 0 : 1)} Admin Rule
+                      {adminIds.length} Admin Rule
                     </span>
                   </div>
                 </div>
@@ -1286,7 +1295,7 @@ export const AdminDashboard: React.FC = () => {
                         </thead>
                         <tbody className="divide-y divide-slate-100">
                           {adminUsers.map((account) => {
-                            const isBootAdmin = account.email === "vksp207@gmail.com";
+                            const isBootAdmin = account.email?.toLowerCase() === DEFAULT_ADMIN_EMAIL;
                             const hasAdminAccess = isBootAdmin || adminIds.includes(account.uid);
                             return (
                               <tr key={account.uid} className="hover:bg-slate-50">
