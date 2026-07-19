@@ -20,14 +20,14 @@ export const Button: React.FC<ButtonProps> = ({
   disabled,
   ...props
 }) => {
-  const baseStyle = "inline-flex items-center justify-center font-medium rounded-md tracking-wide transition-all duration-300 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed transform hover:active:scale-95";
+  const baseStyle = "inline-flex items-center justify-center font-semibold rounded-full tracking-wide transition-all duration-300 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98] hover:-translate-y-0.5";
   
   const variants = {
-    primary: "bg-[#C45C1A] text-white hover:bg-[#C45C1A]/90 border border-[#C45C1A] shadow-md hover:shadow-lg",
-    secondary: "bg-[#6B1A2A] text-white hover:bg-[#6B1A2A]/90 border border-[#6B1A2A] shadow-md",
-    outline: "border border-[#C9A84C] text-[#1A1A2E] bg-transparent hover:bg-[#C9A84C]/10",
+    primary: "bg-[color:var(--brand-saffron)] text-white hover:opacity-95 border border-[color:var(--brand-saffron)] shadow-[0_14px_30px_rgba(232,121,46,0.25)]",
+    secondary: "bg-[color:var(--brand-night)] text-white hover:bg-[color:var(--brand-night-soft)] border border-[color:var(--brand-night)] shadow-[0_14px_30px_rgba(11,16,48,0.18)]",
+    outline: "border border-[color:var(--brand-gold)] text-[color:var(--brand-night)] bg-transparent hover:bg-[color:var(--brand-gold)]/10",
     danger: "bg-red-600 text-white hover:bg-red-700 shadow-sm",
-    teal: "bg-[#0E7B6C] text-white hover:bg-[#0E7B6C]/90 shadow-md"
+    teal: "bg-[color:var(--brand-verified)] text-white hover:opacity-95 shadow-md"
   };
 
   const sizes = {

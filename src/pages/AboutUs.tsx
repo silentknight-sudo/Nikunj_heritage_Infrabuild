@@ -51,7 +51,7 @@ export const AboutUs: React.FC = () => {
             The Pillars of Trust & Tradition
           </h2>
           <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-sans">
-            Under the spiritual philosophy of "Dwarka to Brijvas", Nikunj Heritage Infrabuild Pvt Ltd. (formerly registered in Uttar Pradesh under Corporate Identification Number NHI-2011) was founded with a unified spiritual dream: allowing Brijbhoomi pilgrims to secure beautiful, hassle-free ancestral homes in their holy hometown of Lord Krishna.
+            Under the spiritual philosophy of "Dwarka to Brijvas", Nikunj Heritage Infrabuild was founded with a unified spiritual dream: allowing Brijbhoomi pilgrims to secure beautiful, hassle-free ancestral homes in their holy hometown of Lord Krishna.
           </p>
           <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-sans">
             Whether it is checking original revenue ledger (Khasra) books, validating land conversions (143 status under UP Revenue Codes), securing active approvals from Vrindavan-Mathura Joint Development Authorities, or managing RERA compliance registration certificates; we take the burden of corporate audits off your shoulders.

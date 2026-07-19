@@ -63,7 +63,7 @@ export const Footer: React.FC = () => {
                   NIKUNJ HERITAGE
                 </span>
                 <span className="block text-[11px] uppercase tracking-widest text-[#FB923C] font-semibold">
-                  Infrabuild Private Ltd.
+                  Infrabuild
                 </span>
               </div>
             </div>
@@ -216,7 +216,7 @@ export const Footer: React.FC = () => {
             “ परम्परा विश्वास की नींव प्रगति की ”
           </p>
           <p className="text-[10px] text-[#FAF6F0]/45">
-            © {new Date().getFullYear()} Nikunj Heritage Infrabuild Pvt Ltd. Built with celestial luxury and devotion.
+            © {new Date().getFullYear()} Nikunj Heritage Infrabuild. Built with celestial luxury and devotion.
           </p>
         </div>
 
