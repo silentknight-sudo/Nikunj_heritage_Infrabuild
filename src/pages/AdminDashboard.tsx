@@ -39,6 +39,7 @@ import {
   ShieldCheck,
   ShieldOff,
   TrendingUp
+  ,Landmark
 } from "lucide-react";
 import { motion } from "motion/react";
 import { useAuth } from "../lib/auth";
@@ -84,8 +85,9 @@ import {
 } from "../types";
 import { formatPrice } from "../lib/utils";
 import { toast } from "react-hot-toast";
+import { FinanceAdminPanel } from "../components/admin/FinanceAdminPanel";
 
-type TabType = "properties" | "leads" | "users" | "categories" | "locations" | "blogs" | "pages" | "settings";
+type TabType = "properties" | "finance" | "leads" | "users" | "categories" | "locations" | "blogs" | "pages" | "settings";
 
 export const AdminDashboard: React.FC = () => {
   const { user, isAdmin, loading: authLoading, logout, loginWithGoogle } = useAuth();
@@ -681,6 +683,15 @@ export const AdminDashboard: React.FC = () => {
               <span>Properties</span>
             </button>
             <button
+              onClick={() => setActiveTab("finance")}
+              className={`w-full text-left px-3.5 py-3 rounded-xl text-[11px] font-semibold uppercase tracking-wider flex items-center space-x-2 transition ${
+                activeTab === "finance" ? "bg-[#FB923C] text-white shadow" : "hover:bg-[#FAF6F0]/5 text-slate-300"
+              }`}
+            >
+              <Landmark className="h-4.5 w-4.5" />
+              <span>Finance Partners</span>
+            </button>
+            <button
               onClick={() => setActiveTab("leads")}
               className={`w-full text-left px-3.5 py-3 rounded-xl text-[11px] font-semibold uppercase tracking-wider flex items-center space-x-2 transition ${
                 activeTab === "leads" ? "bg-[#FB923C] text-white shadow" : "hover:bg-[#FAF6F0]/5 text-slate-300"
@@ -1132,6 +1143,8 @@ export const AdminDashboard: React.FC = () => {
                 </div>
               </div>
             )}
+
+            {activeTab === "finance" && <FinanceAdminPanel />}
 
             {/* TAB 2: LEADS TRACKER */}
             {activeTab === "leads" && (

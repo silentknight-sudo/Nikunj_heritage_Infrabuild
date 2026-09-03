@@ -99,6 +99,9 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
               FEATURED
             </span>
           )}
+          {(property.investmentProject || property.status === PropertyStatus.SOLD_OUT) && (
+            <span className="self-start rounded border border-[#FACC15]/50 bg-[#0F172A]/90 px-2 py-0.5 text-[9px] font-bold tracking-widest text-[#FACC15]">INVESTMENT PROJECT</span>
+          )}
         </div>
 
         {/* Heart Wishlist Overlay */}
@@ -170,9 +173,11 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
         <div className="flex flex-wrap items-center gap-y-2 gap-x-3 text-xs text-slate-600 mb-3 border-b border-[#C9A84C]/10 pb-3">
           <div className="flex items-center space-x-1">
             <MapPin className="h-3.5 w-3.5 text-[#0E7B6C] shrink-0" />
-            <span className="truncate max-w-[120px] sm:max-w-none">Brijbhoomi Belt</span>
+            <span className="truncate max-w-[150px] sm:max-w-none">
+              {property.slug === "hare-krishna-resort-suites" ? "Sunrakh Bangar, Vrindavan" : "Brijbhoomi Belt"}
+            </span>
           </div>
-          {property.reraNumber && (
+          {(property.reraNumber || property.reraApproved) && (
             <div className="flex items-center space-x-1 text-[10px] font-mono bg-amber-50 border border-amber-200 px-1.5 py-0.5 rounded text-amber-800 shrink-0">
               <Award className="h-3 w-3 text-amber-600" />
               <span>RERA Approved</span>

@@ -127,6 +127,9 @@ export const PropertyDetail: React.FC = () => {
   const publishedFloorPlanUrl = property.floorPlanUrl || mediaBundle.floorPlanUrl;
   const publishedVideoUrl = property.videoUrl || mediaBundle.videoUrl;
   const fallbackPropertyImage = "/projects/images/ai-buyer-residential.jpg";
+  const propertyLocation = property.slug === "hare-krishna-resort-suites"
+    ? "Sunrakh Bangar, Vrindavan, Uttar Pradesh, India"
+    : "Dwarka to Brij Core Road, Vrindavan, Uttar Pradesh, India";
 
   return (
     <div className="bg-[#FAF6F0] min-h-screen text-[#1A1A2E] py-12" id={`property-details-view-${property.id}`}>
@@ -177,10 +180,10 @@ export const PropertyDetail: React.FC = () => {
                 <span className="px-2.5 py-1 text-[10px] font-bold font-mono tracking-wider bg-[#0E7B6C] text-white rounded uppercase shadow-sm">
                   {property.status}
                 </span>
-                {property.reraNumber && (
+                {(property.reraNumber || property.reraApproved) && (
                   <span className="px-2.5 py-1 text-[10px] font-bold font-mono tracking-wider bg-amber-100 border border-amber-300 text-amber-800 rounded flex items-center space-x-1 shadow-sm">
                     <Award className="h-3.5 w-3.5 text-amber-600" />
-                    <span>RERA APPROVED: {property.reraNumber}</span>
+                    <span>{property.reraNumber ? `RERA APPROVED: ${property.reraNumber}` : "RERA APPROVED PROJECT"}</span>
                   </span>
                 )}
               </div>
@@ -189,7 +192,7 @@ export const PropertyDetail: React.FC = () => {
               </h1>
               <div className="flex items-center space-x-1.5 text-slate-500 mt-2 text-xs sm:text-sm">
                 <MapPin className="h-4 w-4 text-[#C45C1A]" />
-                <span>Dwarka to Brij Core Road, Vrindavan, Uttar Pradesh, India</span>
+                <span>{propertyLocation}</span>
               </div>
             </div>
 
@@ -321,6 +324,18 @@ export const PropertyDetail: React.FC = () => {
                   >
                     {publishedVideoUrl && <source src={publishedVideoUrl} type="video/mp4" />}
                   </video>
+                  {mediaBundle.additionalVideos && mediaBundle.additionalVideos.length > 0 && (
+                    <div className="grid gap-3 border-t border-[#C9A84C]/20 bg-[#F6F0E7] p-4 sm:grid-cols-2">
+                      {mediaBundle.additionalVideos.map((video) => (
+                        <div key={video.src} className="overflow-hidden rounded-xl border border-[#C9A84C]/20 bg-white">
+                          <video className="aspect-video w-full object-cover" controls preload="metadata">
+                            <source src={video.src} type="video/mp4" />
+                          </video>
+                          <p className="p-3 text-xs font-semibold text-slate-700">{video.title}</p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -354,6 +369,7 @@ export const PropertyDetail: React.FC = () => {
               </div>
             </div>
 
+            {mediaBundle.floorPlans.length > 0 && (
             <div className="bg-white p-6 rounded-2xl border border-[#C9A84C]/20 shadow-sm">
               <div className="flex items-center justify-between gap-4 mb-5">
                 <div>
@@ -386,6 +402,7 @@ export const PropertyDetail: React.FC = () => {
                 ))}
               </div>
             </div>
+            )}
 
             {/* Architectural Floor Details */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

@@ -96,7 +96,7 @@ export const BlogDetail: React.FC = () => {
             name: "Nikunj Heritage Infrabuild",
             logo: {
               "@type": "ImageObject",
-              url: `${SITE_URL}/logo.svg`,
+              url: `${SITE_URL}/logo-512.png`,
             },
           },
           description: blog.seoDescription || blog.content.slice(0, 160),

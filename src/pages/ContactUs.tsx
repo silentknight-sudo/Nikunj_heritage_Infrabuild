@@ -96,7 +96,7 @@ export const ContactUs: React.FC = () => {
                   <span className="block font-serif text-sm font-bold text-slate-800">Mobile Hotlines</span>
                   <span className="block text-xs sm:text-sm text-slate-600 leading-snug mt-0.5 font-mono">
                     +91 97199 20888<br />
-                    +91 74092 12222
+                    +91 97199 20888
                   </span>
                 </div>
               </div>
