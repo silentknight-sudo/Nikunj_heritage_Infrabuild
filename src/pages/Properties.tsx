@@ -80,7 +80,9 @@ export const Properties: React.FC = () => {
     }
 
     // 2. Category selection
-    if (selectedCategory !== "all" && prop.categoryId !== selectedCategory) {
+    if (selectedCategory === "investment-projects") {
+      if (!prop.investmentProject && prop.status !== PropertyStatus.SOLD_OUT) return false;
+    } else if (selectedCategory !== "all" && prop.categoryId !== selectedCategory) {
       return false;
     }
 
@@ -240,6 +242,7 @@ export const Properties: React.FC = () => {
                 className="w-full text-xs px-2.5 py-2.5 rounded-md border border-slate-200 outline-none text-slate-800 focus:border-[#C45C1A] bg-slate-50"
               >
                 <option value="all">All Sectors</option>
+                <option value="investment-projects">Investment Projects</option>
                 {categories.map((cat) => (
                   <option key={cat.id} value={cat.id}>{cat.name}</option>
                 ))}

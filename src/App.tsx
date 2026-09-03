@@ -80,6 +80,7 @@ export default function App() {
               <Route path="/career" element={<Career />} />
               <Route path="/testimonials" element={<Testimonials />} />
               <Route path="/roi-calculator" element={<RoiCalculator />} />
+              <Route path="/finance" element={<RoiCalculator />} />
               <Route path="/compare-properties" element={<CompareProperties />} />
               <Route path="/news" element={<News />} />
               <Route path="/developers" element={<Developers />} />

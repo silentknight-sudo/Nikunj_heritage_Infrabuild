@@ -17,6 +17,7 @@ export interface ProjectMediaBundle {
   sitePlanUrl?: string;
   videoUrl?: string;
   videoPoster?: string;
+  additionalVideos?: { title: string; src: string }[];
   highlights: string[];
   gallery: MediaCard[];
   floorPlans: MediaCard[];
@@ -64,6 +65,39 @@ const vrindavanOverview: ProjectMediaBundle = {
       image: "/projects/images/mathura-vrindavan-growth-corridor.jpg"
     }
   ]
+};
+
+const hareKrishnaResort: ProjectMediaBundle = {
+  eyebrow: "New Vrindavan Opportunity",
+  title: "Hare Krishna Resort & Suites",
+  summary:
+    "A 645 sq ft 1 BHK premium resort apartment in Sunrakh Bangar, Vrindavan, positioned for holiday-home living, spiritual stays, and long-term rental and investment enquiries.",
+  brochureUrl: "/projects/hare-krishna/hare-krishna-resort-suites-brochure.pdf",
+  videoUrl: "/projects/hare-krishna/walkthrough-1.mp4",
+  videoPoster: "/projects/hare-krishna/price-list.jpeg",
+  additionalVideos: [
+    { title: "Construction & Payment Plan Walkthrough", src: "/projects/hare-krishna/walkthrough-2.mp4" },
+    { title: "Resort Living Project Walkthrough", src: "/projects/hare-krishna/walkthrough-3.mp4" }
+  ],
+  highlights: [
+    "Starting price: Rs 45 lakh* for a 645 sq ft 1 BHK apartment",
+    "Near Prem Mandir and the Banke Bihari Corridor",
+    "Stilt + 14 floors with gated, resort-style community amenities",
+    "Possession target: December 2027"
+  ],
+  gallery: [
+    {
+      title: "Project Price List",
+      subtitle: "1 BHK, 645 sq ft, starting price Rs 45 lakh*",
+      image: "/projects/hare-krishna/price-list.jpeg"
+    },
+    {
+      title: "Construction-linked Payment Plan",
+      subtitle: "Payment stages supplied in the project brochure",
+      image: "/projects/hare-krishna/payment-plan.jpeg"
+    }
+  ],
+  floorPlans: []
 };
 
 const courtyardCommercial: ProjectMediaBundle = {
@@ -151,6 +185,10 @@ export const homeMediaShowcase = {
 };
 
 export function getPropertyMedia(property: Property): ProjectMediaBundle {
+  if (property.slug === "hare-krishna-resort-suites") {
+    return hareKrishnaResort;
+  }
+
   if (
     property.slug === "the-vrinda-bazaar-retail-plaza" ||
     property.slug === "shree-vrindavan-commercial-hub-offices" ||

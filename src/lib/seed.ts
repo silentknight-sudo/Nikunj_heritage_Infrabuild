@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { doc, writeBatch, collection, getDocs, deleteDoc, Timestamp, serverTimestamp } from "firebase/firestore";
+import { doc, writeBatch, collection, getDocs, getDoc, deleteDoc, Timestamp, serverTimestamp } from "firebase/firestore";
 import { db } from "./firebase";
 import { PropertyStatus } from "../types";
 
@@ -61,6 +61,17 @@ export const CATEGORIES_SEED = [
 ];
 
 export const LOCATIONS_SEED = [
+  {
+    id: "sunrakh-bangar",
+    name: "Sunrakh Bangar, Vrindavan",
+    slug: "sunrakh-bangar-vrindavan",
+    city: "Vrindavan",
+    description: "A growing Vrindavan residential corridor near Prem Mandir and the Banke Bihari Corridor.",
+    imageUrl: "/projects/hare-krishna/price-list.jpeg",
+    latitude: 27.579,
+    longitude: 77.681,
+    active: true
+  },
   {
     id: "vrindavan-bihari",
     name: "Vrindavan (Rukmani Vihar)",
@@ -130,6 +141,47 @@ export const LOCATIONS_SEED = [
 ];
 
 export const PROPERTIES_SEED = [
+  {
+    id: "hare-krishna-resort-suites",
+    title: "Hare Krishna Resort & Suites",
+    slug: "hare-krishna-resort-suites",
+    categoryId: "residential-apartments",
+    locationId: "sunrakh-bangar",
+    status: PropertyStatus.CONSTRUCTION,
+    price: 4500000,
+    area: 645,
+    bhk: "1 BHK Premium Resort Apartment",
+    floor: "Stilt + 14 Floors",
+    possessionDate: "December 2027",
+    developerId: "Hare Krishna Resort & Suites",
+    reraApproved: true,
+    description: "Hare Krishna Resort & Suites brings resort-style living to Sunrakh Bangar, Vrindavan, near Prem Mandir and the Banke Bihari Corridor. The project is planned for buyers looking for a peaceful spiritual stay, a holiday home, or a Vrindavan apartment with long-term investment and rental-income potential. This listing reflects the supplied project brief; pricing is shown as starting price and may change.",
+    imageUrls: [
+      "/projects/hare-krishna/price-list.jpeg",
+      "/projects/hare-krishna/payment-plan.jpeg"
+    ],
+    brochureUrl: "/projects/hare-krishna/hare-krishna-resort-suites-brochure.pdf",
+    videoUrl: "/projects/hare-krishna/walkthrough-1.mp4",
+    amenities: [
+      "100% RCC Construction",
+      "Gated Community",
+      "Resort-Style Living",
+      "24x7 Security",
+      "Lift & Power Backup",
+      "Green Landscape",
+      "Spiritual Environment",
+      "Investment & Rental Income Opportunity"
+    ],
+    landmarks: [
+      { name: "Prem Mandir", distance: "Nearby" },
+      { name: "Banke Bihari Corridor", distance: "Nearby" }
+    ],
+    seoTitle: "Hare Krishna Resort & Suites Vrindavan | 1 BHK from Rs 45 Lakh",
+    seoDescription: "Explore Hare Krishna Resort & Suites in Sunrakh Bangar, Vrindavan: 645 sq ft 1 BHK resort apartments from Rs 45 lakh, near Prem Mandir and the Banke Bihari Corridor, with December 2027 possession.",
+    featured: true,
+    newLaunch: true,
+    exclusive: false
+  },
   {
     id: "keshav-heights-2bhk",
     title: "Keshav Divine Heights - 2 BHK",
@@ -376,7 +428,8 @@ export const PROPERTIES_SEED = [
     ],
     featured: false,
     newLaunch: false,
-    exclusive: false
+    exclusive: false,
+    investmentProject: true
   }
 ];
 
@@ -491,6 +544,26 @@ export async function runDatabaseSeed(): Promise<{ success: boolean; count: numb
     // Check if we already have seeded items using Categories
     const existingCats = await getDocs(collection(db, "categories"));
     if (!existingCats.empty) {
+      const newPropertyRef = doc(db, "properties", "hare-krishna-resort-suites");
+      const existingNewProperty = await getDoc(newPropertyRef);
+      if (!existingNewProperty.exists()) {
+        const migrationBatch = writeBatch(db);
+        const hareKrishna = PROPERTIES_SEED.find((prop) => prop.id === "hare-krishna-resort-suites");
+        const sunrakhBangar = LOCATIONS_SEED.find((location) => location.id === "sunrakh-bangar");
+        if (hareKrishna) {
+          migrationBatch.set(newPropertyRef, {
+            ...hareKrishna,
+            createdAt: serverTimestamp(),
+            updatedAt: serverTimestamp()
+          });
+        }
+        if (sunrakhBangar && !(await getDoc(doc(db, "locations", "sunrakh-bangar"))).exists()) {
+          migrationBatch.set(doc(db, "locations", "sunrakh-bangar"), sunrakhBangar);
+        }
+        await migrationBatch.commit();
+        console.log("Hare Krishna Resort & Suites listing migrated successfully.");
+        return { success: true, count: 1 };
+      }
       console.log("Database already seeded with demo data.");
       return { success: true, count: existingCats.size };
     }

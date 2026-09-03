@@ -25,7 +25,7 @@ interface SeoHeadProps {
 }
 
 const MANAGED_META_NAMES = ["description", "keywords", "robots"];
-const MANAGED_META_PROPS = ["og:title", "og:description", "og:type", "og:url", "og:image", "og:site_name", "og:locale", "twitter:card", "twitter:title", "twitter:description", "twitter:image"];
+const MANAGED_META_PROPS = ["og:title", "og:description", "og:type", "og:url", "og:image", "og:image:alt", "og:site_name", "og:locale", "twitter:card", "twitter:title", "twitter:description", "twitter:image", "twitter:image:alt"];
 
 function ensureMetaByName(name: string) {
   let el = document.head.querySelector(`meta[name="${name}"]`) as HTMLMetaElement | null;
@@ -83,6 +83,7 @@ export const SeoHead: React.FC<SeoHeadProps> = ({
     ensureMetaByProperty("og:type").setAttribute("content", type);
     ensureMetaByProperty("og:url").setAttribute("content", canonical);
     ensureMetaByProperty("og:image").setAttribute("content", resolvedImage);
+    ensureMetaByProperty("og:image:alt").setAttribute("content", title);
     ensureMetaByProperty("og:site_name").setAttribute("content", SITE_NAME);
     ensureMetaByProperty("og:locale").setAttribute("content", DEFAULT_LOCALE);
 
@@ -90,6 +91,7 @@ export const SeoHead: React.FC<SeoHeadProps> = ({
     ensureMetaByName("twitter:title").setAttribute("content", title);
     ensureMetaByName("twitter:description").setAttribute("content", resolvedDescription);
     ensureMetaByName("twitter:image").setAttribute("content", resolvedImage);
+    ensureMetaByName("twitter:image:alt").setAttribute("content", title);
 
     ensureCanonical().setAttribute("href", canonical);
 
@@ -123,4 +125,3 @@ export const SeoHead: React.FC<SeoHeadProps> = ({
 
   return null;
 };
-

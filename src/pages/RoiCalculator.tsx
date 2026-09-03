@@ -5,6 +5,7 @@
 
 import React from "react";
 import { ROICalculator } from "../components/home/ROICalculator";
+import { ConstructionCostCalculator, FinancePartnersTable, FinanceRoiCalculator } from "../components/finance/FinanceTools";
 import { TrendingUp, Award, Compass, Heart, ShieldCheck } from "lucide-react";
 
 export const RoiCalculator: React.FC = () => {
@@ -26,6 +27,15 @@ export const RoiCalculator: React.FC = () => {
         {/* The Interactive Calculator widget */}
         <div className="my-8">
           <ROICalculator />
+        </div>
+
+        <div className="my-8 grid gap-6 lg:grid-cols-2">
+          <ConstructionCostCalculator />
+          <FinanceRoiCalculator />
+        </div>
+
+        <div className="my-8">
+          <FinancePartnersTable />
         </div>
 
         {/* Real Estate Growth Catalysts Grid */}

@@ -1,4 +1,4 @@
-export const SITE_URL = "https://www.nikunjheritageinfrabuilds.com";
+export const SITE_URL = "https://nhibuild.com";
 export const SITE_NAME = "Nikunj Heritage Infrabuild";
 export const DEFAULT_TITLE = "Nikunj Heritage Infrabuild | Vrindavan Property, Mathura Real Estate & Investment";
 export const DEFAULT_DESCRIPTION =

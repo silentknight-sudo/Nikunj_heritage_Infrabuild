@@ -52,6 +52,12 @@ const routeMeta: Record<string, { title: string; description: string; keywords: 
       "Estimate property appreciation scenarios, entry budgets, and investment outcomes for Vrindavan and Mathura real estate opportunities.",
     keywords: ["Vrindavan ROI calculator", "property return calculator", "Mathura investment calculator"],
   },
+  "/finance": {
+    title: "Construction Cost, EMI & Finance Options | Mathura Vrindavan Property",
+    description:
+      "Estimate construction costs, bank finance EMI, projected property ROI, and compare verified bank and NBFC options for Mathura and Vrindavan property buyers.",
+    keywords: ["Vrindavan construction cost calculator", "Mathura home loan EMI", "Vrindavan property finance", "NBFC property loan Mathura"],
+  },
   "/compare-properties": {
     title: "Compare Vrindavan Properties | Nikunj Heritage Infrabuild",
     description:

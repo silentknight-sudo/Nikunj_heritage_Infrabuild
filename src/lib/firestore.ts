@@ -20,9 +20,9 @@ import {
   serverTimestamp
 } from "firebase/firestore";
 import { db, auth } from "./firebase";
-import { Property, Category, Location, Lead, Blog, Testimonial, Developer, Event, Page, SiteConfig, LeadStatus, PropertyStatus, BlogStatus, AppUser } from "../types";
+import { Property, Category, Location, Lead, Blog, Testimonial, Developer, Event, Page, SiteConfig, FinancePartner, LeadStatus, PropertyStatus, BlogStatus, AppUser } from "../types";
 
-export const DEFAULT_ADMIN_EMAIL = "vksp207@gmail.com";
+export const DEFAULT_ADMIN_EMAIL = "nikunjhomes99@gmail.com";
 
 // ERROR HANDLER AS REQUIRED BY SKILL.MD
 export enum OperationType {
@@ -315,6 +315,53 @@ export async function deleteProperty(id: string): Promise<void> {
   const path = `properties/${id}`;
   try {
     await deleteDoc(doc(db, "properties", id));
+  } catch (error) {
+    handleFirestoreError(error, OperationType.DELETE, path);
+  }
+}
+
+// --- FINANCE PARTNERS CRUD ---
+export async function getFinancePartners(includeUnpublished = false): Promise<FinancePartner[]> {
+  const path = "financePartners";
+  try {
+    const partnerQuery = includeUnpublished
+      ? collection(db, path)
+      : query(collection(db, path), where("published", "==", true));
+    const qSnap = await getDocs(partnerQuery);
+    return qSnap.docs
+      .map((item) => ({ id: item.id, ...item.data() } as FinancePartner))
+      .filter((partner) => includeUnpublished || partner.published)
+      .sort((a, b) => a.name.localeCompare(b.name));
+  } catch (error) {
+    handleFirestoreError(error, OperationType.LIST, path);
+    throw error;
+  }
+}
+
+export async function addFinancePartner(partner: Omit<FinancePartner, "id" | "createdAt" | "updatedAt">): Promise<string> {
+  const path = "financePartners";
+  try {
+    const docRef = await addDoc(collection(db, path), { ...partner, createdAt: serverTimestamp(), updatedAt: serverTimestamp() });
+    return docRef.id;
+  } catch (error) {
+    handleFirestoreError(error, OperationType.CREATE, path);
+    throw error;
+  }
+}
+
+export async function updateFinancePartner(id: string, partner: Partial<FinancePartner>): Promise<void> {
+  const path = `financePartners/${id}`;
+  try {
+    await updateDoc(doc(db, "financePartners", id), { ...partner, updatedAt: serverTimestamp() });
+  } catch (error) {
+    handleFirestoreError(error, OperationType.UPDATE, path);
+  }
+}
+
+export async function deleteFinancePartner(id: string): Promise<void> {
+  const path = `financePartners/${id}`;
+  try {
+    await deleteDoc(doc(db, "financePartners", id));
   } catch (error) {
     handleFirestoreError(error, OperationType.DELETE, path);
   }

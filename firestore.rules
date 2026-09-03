@@ -15,7 +15,7 @@ service cloud.firestore {
     function isAdmin() {
       return isSignedIn() && (
         exists(/databases/$(database)/documents/admins/$(request.auth.uid)) ||
-        request.auth.token.email == "vksp207@gmail.com"
+        request.auth.token.email == "nikunjhomes99@gmail.com"
       );
     }
 
@@ -122,6 +122,16 @@ service cloud.firestore {
              data.address is string && data.address.size() <= 500;
     }
 
+    function isValidFinancePartner(data) {
+      return data.name is string && data.name.size() <= 200 &&
+             data.type in ["Bank", "NBFC"] &&
+             data.interestRateMin is number && data.interestRateMin >= 0 &&
+             data.interestRateMax is number && data.interestRateMax >= data.interestRateMin &&
+             data.tenureYears is string && data.tenureYears.size() <= 100 &&
+             data.eligibility is string && data.eligibility.size() <= 1000 &&
+             data.published is bool;
+    }
+
     // --- MATCH BLOCKS FOR COLLECTIONS ---
 
     match /admins/{uid} {
@@ -144,6 +154,13 @@ service cloud.firestore {
       allow create: if (isDatabaseUnseeded() || isAdmin()) && isValidId(propertyId) && isValidProperty(incoming()) && incoming().createdAt == request.time;
       allow update: if isAdmin() && isValidId(propertyId) && isValidProperty(incoming()) && incoming().updatedAt == request.time && incoming().createdAt == existing().createdAt;
       allow delete: if isAdmin() && isValidId(propertyId);
+    }
+
+    match /financePartners/{partnerId} {
+      allow read: if resource.data.published == true || isAdmin();
+      allow create: if isAdmin() && isValidId(partnerId) && isValidFinancePartner(incoming());
+      allow update: if isAdmin() && isValidId(partnerId) && isValidFinancePartner(incoming());
+      allow delete: if isAdmin() && isValidId(partnerId);
     }
 
     match /leads/{leadId} {

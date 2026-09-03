@@ -29,6 +29,7 @@ export interface Property {
   facing?: string;
   possessionDate?: string;
   reraNumber?: string;
+  reraApproved?: boolean;
   developerId?: string;
   description: string;
   imageUrls: string[];
@@ -42,6 +43,7 @@ export interface Property {
   featured: boolean;
   newLaunch: boolean;
   exclusive: boolean;
+  investmentProject?: boolean;
   createdAt: any; // Firestore Timestamp
   updatedAt: any; // Firestore Timestamp
 }
@@ -193,4 +195,21 @@ export interface SiteConfig {
   statDelivered?: string;
   statExperience?: string;
   statFamilies?: string;
+}
+
+export type FinancePartnerType = "Bank" | "NBFC";
+
+export interface FinancePartner {
+  id: string;
+  name: string;
+  type: FinancePartnerType;
+  interestRateMin: number;
+  interestRateMax: number;
+  tenureYears: string;
+  eligibility: string;
+  notes?: string;
+  website?: string;
+  published: boolean;
+  createdAt?: any;
+  updatedAt?: any;
 }
