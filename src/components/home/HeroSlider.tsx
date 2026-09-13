@@ -19,9 +19,22 @@ type Slide = {
   ctaSecondary: string;
   ctaSecondaryHref: string;
   note: string;
+  promoImage?: string;
 };
 
 const slides: Slide[] = [
+  {
+    eyebrow: "New launch | Sunrakh Bangar, Vrindavan",
+    title: "A devotional address for the stays your family will look forward to",
+    subtitle: "Hare Krishna Resort & Suites presents 645 sq ft 1 BHK premium resort apartments—created for spiritual stays, holiday-home living, and investment enquiries.",
+    image: "/projects/images/mathura-vrindavan-hero-enquiry.jpg",
+    promoImage: "/projects/hare-krishna/hare-krishna-launch-promo.png",
+    ctaPrimary: "View Hare Krishna Resort & Suites",
+    ctaPrimaryHref: "/properties/hare-krishna-resort-suites",
+    ctaSecondary: "Schedule a Site Visit",
+    ctaSecondaryHref: "/contact-us",
+    note: "1 BHK · 645 sq ft · Current campaign price ₹49.5 lakh*"
+  },
   {
     eyebrow: "Vrindavan Parikrama Marg",
     title: "Temple-close property guidance for buyers who want clarity before commitment",
@@ -111,7 +124,8 @@ export const HeroSlider: React.FC = () => {
       </AnimatePresence>
 
       <div className="relative z-10 mx-auto flex h-full max-w-7xl flex-col justify-between px-4 pb-24 pt-24 sm:px-6 lg:px-8">
-        <div className="max-w-3xl">
+        <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_240px] lg:items-center lg:gap-12">
+          <div className="max-w-3xl">
           <motion.div
             initial={prefersReducedMotion ? false : { opacity: 0, y: 22 }}
             animate={prefersReducedMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
@@ -166,6 +180,18 @@ export const HeroSlider: React.FC = () => {
             <MapPin className="h-4 w-4 text-[color:var(--brand-gold)]" />
             <span>{slide.note}</span>
           </div>
+          </div>
+
+          {slide.promoImage && (
+            <motion.div
+              initial={prefersReducedMotion ? false : { opacity: 0, y: 20 }}
+              animate={prefersReducedMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
+              transition={{ duration: 0.55, delay: 0.16 }}
+              className="mx-auto hidden w-full max-w-[240px] overflow-hidden rounded-2xl border border-white/25 bg-white/10 shadow-2xl backdrop-blur sm:block"
+            >
+              <img src={slide.promoImage} alt="Hare Krishna Resort & Suites launch offer" className="aspect-[9/16] w-full object-cover" />
+            </motion.div>
+          )}
         </div>
 
         <div className="grid gap-4 lg:grid-cols-[1fr_auto] lg:items-end">

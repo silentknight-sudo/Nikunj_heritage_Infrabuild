@@ -71,7 +71,7 @@ const hareKrishnaResort: ProjectMediaBundle = {
   eyebrow: "New Vrindavan Opportunity",
   title: "Hare Krishna Resort & Suites",
   summary:
-    "A 645 sq ft 1 BHK premium resort apartment in Sunrakh Bangar, Vrindavan, positioned for holiday-home living, spiritual stays, and long-term rental and investment enquiries.",
+    "A 645 sq ft 1 BHK premium resort apartment in Sunrakh Bangar, Vrindavan, created for devotional stays, holiday-home living, and long-term investment enquiries.",
   brochureUrl: "/projects/hare-krishna/hare-krishna-resort-suites-brochure.pdf",
   videoUrl: "/projects/hare-krishna/walkthrough-1.mp4",
   videoPoster: "/projects/hare-krishna/price-list.jpeg",
@@ -80,7 +80,7 @@ const hareKrishnaResort: ProjectMediaBundle = {
     { title: "Resort Living Project Walkthrough", src: "/projects/hare-krishna/walkthrough-3.mp4" }
   ],
   highlights: [
-    "Starting price: Rs 45 lakh* for a 645 sq ft 1 BHK apartment",
+    "Current campaign price: Rs 49.5 lakh* for a 645 sq ft 1 BHK apartment",
     "Near Prem Mandir and the Banke Bihari Corridor",
     "Stilt + 14 floors with gated, resort-style community amenities",
     "Possession target: December 2027"
@@ -88,7 +88,7 @@ const hareKrishnaResort: ProjectMediaBundle = {
   gallery: [
     {
       title: "Project Price List",
-      subtitle: "1 BHK, 645 sq ft, starting price Rs 45 lakh*",
+      subtitle: "1 BHK, 645 sq ft, campaign pricing subject to availability*",
       image: "/projects/hare-krishna/price-list.jpeg"
     },
     {

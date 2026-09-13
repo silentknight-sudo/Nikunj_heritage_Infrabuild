@@ -148,14 +148,14 @@ export const PROPERTIES_SEED = [
     categoryId: "residential-apartments",
     locationId: "sunrakh-bangar",
     status: PropertyStatus.CONSTRUCTION,
-    price: 4500000,
+    price: 4950000,
     area: 645,
     bhk: "1 BHK Premium Resort Apartment",
     floor: "Stilt + 14 Floors",
     possessionDate: "December 2027",
     developerId: "Hare Krishna Resort & Suites",
     reraApproved: true,
-    description: "Hare Krishna Resort & Suites brings resort-style living to Sunrakh Bangar, Vrindavan, near Prem Mandir and the Banke Bihari Corridor. The project is planned for buyers looking for a peaceful spiritual stay, a holiday home, or a Vrindavan apartment with long-term investment and rental-income potential. This listing reflects the supplied project brief; pricing is shown as starting price and may change.",
+    description: "Hare Krishna Resort & Suites is a thoughtfully planned resort-apartment address in Sunrakh Bangar, Vrindavan. Designed for buyers seeking a devotional second home, a comfortable holiday stay, or a long-term investment opportunity, the project brings together contemporary apartment living, a spiritual setting, and everyday convenience. The 645 sq ft 1 BHK layout is suited to families, devotees, and investors looking to stay connected to Vrindavan’s key temple corridors. Pricing is indicative and subject to availability and change.",
     imageUrls: [
       "/projects/hare-krishna/price-list.jpeg",
       "/projects/hare-krishna/payment-plan.jpeg"
@@ -176,8 +176,8 @@ export const PROPERTIES_SEED = [
       { name: "Prem Mandir", distance: "Nearby" },
       { name: "Banke Bihari Corridor", distance: "Nearby" }
     ],
-    seoTitle: "Hare Krishna Resort & Suites Vrindavan | 1 BHK from Rs 45 Lakh",
-    seoDescription: "Explore Hare Krishna Resort & Suites in Sunrakh Bangar, Vrindavan: 645 sq ft 1 BHK resort apartments from Rs 45 lakh, near Prem Mandir and the Banke Bihari Corridor, with December 2027 possession.",
+    seoTitle: "Hare Krishna Resort & Suites Vrindavan | 1 BHK from Rs 49.5 Lakh",
+    seoDescription: "Explore Hare Krishna Resort & Suites in Sunrakh Bangar, Vrindavan: 645 sq ft 1 BHK resort apartments from Rs 49.5 lakh, near Prem Mandir and the Banke Bihari Corridor, with December 2027 possession.",
     featured: true,
     newLaunch: true,
     exclusive: false
@@ -563,6 +563,24 @@ export async function runDatabaseSeed(): Promise<{ success: boolean; count: numb
         await migrationBatch.commit();
         console.log("Hare Krishna Resort & Suites listing migrated successfully.");
         return { success: true, count: 1 };
+      }
+
+      // Keep the published launch listing in sync with the current approved campaign copy.
+      // A merge avoids touching operational fields such as enquiries or admin-assigned metadata.
+      const hareKrishna = PROPERTIES_SEED.find((prop) => prop.id === "hare-krishna-resort-suites");
+      if (hareKrishna) {
+        await writeBatch(db)
+          .set(doc(db, "properties", "hare-krishna-resort-suites"), {
+            price: hareKrishna.price,
+            description: hareKrishna.description,
+            seoTitle: hareKrishna.seoTitle,
+            seoDescription: hareKrishna.seoDescription,
+            imageUrls: hareKrishna.imageUrls,
+            featured: true,
+            newLaunch: true,
+            updatedAt: serverTimestamp()
+          }, { merge: true })
+          .commit();
       }
       console.log("Database already seeded with demo data.");
       return { success: true, count: existingCats.size };
