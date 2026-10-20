@@ -62,7 +62,7 @@ export default function App() {
           <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-[11] bg-[url('/projects/images/site-real-estate-background.jpg')] bg-cover bg-center opacity-[0.035] mix-blend-multiply" />
           <AppSeo />
           {/* Main sticky header */}
-          <div className="relative z-[100]">
+          <div className="sticky top-0 z-[100] md:-top-9">
             <Navbar />
           </div>
 

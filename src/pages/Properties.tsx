@@ -28,7 +28,10 @@ export const Properties: React.FC = () => {
   const [selectedLocation, setSelectedLocation] = useState(searchParams.get("location") || "all");
   const [selectedStatus, setSelectedStatus] = useState("all");
   const [selectedBHK, setSelectedBHK] = useState("all");
-  const [budgetRange, setBudgetRange] = useState(25000000); // Max 2.5 Cr
+  const [budgetRange, setBudgetRange] = useState(() => {
+    const maxPrice = Number(searchParams.get("maxPrice"));
+    return maxPrice > 0 ? Math.min(maxPrice, 25000000) : 25000000; // Max 2.5 Cr
+  });
   const [sortBy, setSortBy] = useState("newest");
   const [searchKeyword, setSearchKeyword] = useState(searchParams.get("search") || "");
   const [viewMode, setViewMode] = useState<"grid" | "map">("grid");
@@ -67,7 +70,21 @@ export const Properties: React.FC = () => {
 
     const searchStr = searchParams.get("search");
     if (searchStr) setSearchKeyword(searchStr);
+
+    const maxPriceParam = Number(searchParams.get("maxPrice"));
+    if (maxPriceParam > 0) setBudgetRange(Math.min(maxPriceParam, 25000000));
   }, [searchParams]);
+
+  // Links may carry a category/location slug instead of its id; normalise to the id
+  useEffect(() => {
+    const cat = categories.find((c) => c.slug === selectedCategory && c.id !== selectedCategory);
+    if (cat) setSelectedCategory(cat.id);
+  }, [categories, selectedCategory]);
+
+  useEffect(() => {
+    const loc = locations.find((l) => l.slug === selectedLocation && l.id !== selectedLocation);
+    if (loc) setSelectedLocation(loc.id);
+  }, [locations, selectedLocation]);
 
   // Filtering Logic
   const filteredProperties = properties.filter((prop) => {
@@ -162,7 +179,7 @@ export const Properties: React.FC = () => {
   };
 
   return (
-    <div className="bg-[#FAF6F0] min-h-screen text-[#1A1A2E] py-10" id="properties-directory-container">
+    <div className="bg-slate-50 min-h-screen text-[color:var(--brand-night)] py-10" id="properties-directory-container">
       <SeoHead
         title="Properties in Vrindavan & Mathura | Flats, Villas, Plots & Commercial Spaces"
         description="Browse residential apartments, luxury villas, commercial spaces, and plotted developments in Vrindavan, Mathura, Govardhan, and Barsana."
@@ -180,9 +197,9 @@ export const Properties: React.FC = () => {
         {/* Header Titles */}
         <div className="mb-8 justify-between flex flex-col md:flex-row items-start md:items-end gap-4">
           <div>
-            <span className="text-[10px] uppercase font-bold tracking-widest text-[#C45C1A] font-mono">Brij Vas Registry</span>
-            <h1 className="font-serif text-3xl font-bold text-[#6B1A2A]" id="properties-main-title">
-              Explore Available Properties
+            <span className="text-xs uppercase font-bold tracking-[0.18em] text-[color:var(--brand-saffron)]">Verified listings</span>
+            <h1 className="mt-1 font-sans text-2xl sm:text-3xl font-extrabold tracking-tight text-[color:var(--brand-night)]" id="properties-main-title">
+              Properties in Mathura & Vrindavan
             </h1>
             <p className="text-xs sm:text-sm text-slate-500 mt-1 font-sans">
               Find secure residential apartments, sacred plots near Govardhan, and heritage havelis.
@@ -190,12 +207,12 @@ export const Properties: React.FC = () => {
           </div>
 
           {/* View Toggle Controller */}
-          <div className="flex bg-white border border-[#C9A84C]/30 p-1 rounded-lg shrink-0" id="view-mode-toggle">
+          <div className="flex bg-white border border-slate-200 p-1 rounded-lg shrink-0" id="view-mode-toggle">
             <button
               onClick={() => setViewMode("grid")}
               className={`p-1.5 rounded-md flex items-center space-x-1.5 text-xs font-semibold ${
                 viewMode === "grid"
-                  ? "bg-[#C45C1A] text-white shadow-sm"
+                  ? "bg-[color:var(--brand-saffron)] text-white shadow-sm"
                   : "text-slate-600 hover:text-slate-900"
               }`}
             >
@@ -206,7 +223,7 @@ export const Properties: React.FC = () => {
               onClick={() => setViewMode("map")}
               className={`p-1.5 rounded-md flex items-center space-x-1.5 text-xs font-semibold ${
                 viewMode === "map"
-                  ? "bg-[#C45C1A] text-white shadow-sm"
+                  ? "bg-[color:var(--brand-saffron)] text-white shadow-sm"
                   : "text-slate-600 hover:text-slate-900"
               }`}
             >
@@ -226,7 +243,7 @@ export const Properties: React.FC = () => {
         )}
 
         {/* Primary Filter Shelf Bar */}
-        <div className="bg-white p-6 rounded-xl border border-[#C9A84C]/25 shadow-sm mb-8" id="filters-shelf-box">
+        <div className="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200 shadow-sm mb-8" id="filters-shelf-box">
           <div className="flex items-center space-x-2 border-b border-slate-100 pb-3 mb-4">
             <Filter className="h-4.5 w-4.5 text-[#C45C1A]" />
             <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700">Filter Properties</h3>
@@ -235,11 +252,11 @@ export const Properties: React.FC = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
             {/* 1. Category filter selection */}
             <div>
-              <label className="block text-[10px] uppercase font-semibold text-slate-400 mb-1 font-mono">Category</label>
+              <label className="block text-xs font-semibold text-slate-500 mb-1.5">Category</label>
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="w-full text-xs px-2.5 py-2.5 rounded-md border border-slate-200 outline-none text-slate-800 focus:border-[#C45C1A] bg-slate-50"
+                className="w-full text-sm px-3 py-2.5 rounded-lg border border-slate-200 outline-none text-slate-800 focus:border-[color:var(--brand-saffron)] bg-white"
               >
                 <option value="all">All Sectors</option>
                 <option value="investment-projects">Investment Projects</option>
@@ -251,11 +268,11 @@ export const Properties: React.FC = () => {
 
             {/* 2. Area/Location selection */}
             <div>
-              <label className="block text-[10px] uppercase font-semibold text-slate-400 mb-1 font-mono">Location</label>
+              <label className="block text-xs font-semibold text-slate-500 mb-1.5">Location</label>
               <select
                 value={selectedLocation}
                 onChange={(e) => setSelectedLocation(e.target.value)}
-                className="w-full text-xs px-2.5 py-2.5 rounded-md border border-slate-200 outline-none text-slate-800 focus:border-[#C45C1A] bg-slate-50"
+                className="w-full text-sm px-3 py-2.5 rounded-lg border border-slate-200 outline-none text-slate-800 focus:border-[color:var(--brand-saffron)] bg-white"
               >
                 <option value="all">All Locations</option>
                 {locations.map((loc) => (
@@ -266,11 +283,11 @@ export const Properties: React.FC = () => {
 
             {/* 3. Status selection */}
             <div>
-              <label className="block text-[10px] uppercase font-semibold text-slate-400 mb-1 font-mono">Status</label>
+              <label className="block text-xs font-semibold text-slate-500 mb-1.5">Status</label>
               <select
                 value={selectedStatus}
                 onChange={(e) => setSelectedStatus(e.target.value)}
-                className="w-full text-xs px-2.5 py-2.5 rounded-md border border-slate-200 outline-none text-slate-800 focus:border-[#C45C1A] bg-slate-50"
+                className="w-full text-sm px-3 py-2.5 rounded-lg border border-slate-200 outline-none text-slate-800 focus:border-[color:var(--brand-saffron)] bg-white"
               >
                 <option value="all">Any Status</option>
                 <option value={PropertyStatus.READY}>Ready to Move</option>
@@ -282,11 +299,11 @@ export const Properties: React.FC = () => {
 
             {/* 4. BHK selection */}
             <div>
-              <label className="block text-[10px] uppercase font-semibold text-slate-400 mb-1 font-mono">BHK Configuration</label>
+              <label className="block text-xs font-semibold text-slate-500 mb-1.5">BHK Configuration</label>
               <select
                 value={selectedBHK}
                 onChange={(e) => setSelectedBHK(e.target.value)}
-                className="w-full text-xs px-2.5 py-2.5 rounded-md border border-slate-200 outline-none text-slate-800 focus:border-[#C45C1A] bg-slate-50"
+                className="w-full text-sm px-3 py-2.5 rounded-lg border border-slate-200 outline-none text-slate-800 focus:border-[color:var(--brand-saffron)] bg-white"
               >
                 <option value="all">Any Config</option>
                 <option value="1">1 BHK</option>
@@ -318,11 +335,11 @@ export const Properties: React.FC = () => {
 
             {/* 6. Sorting options */}
             <div>
-              <label className="block text-[10px] uppercase font-semibold text-slate-400 mb-1 font-mono">Sort By</label>
+              <label className="block text-xs font-semibold text-slate-500 mb-1.5">Sort By</label>
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="w-full text-xs px-2.5 py-2.5 rounded-md border border-slate-200 outline-none text-slate-800 focus:border-[#C45C1A] bg-slate-50"
+                className="w-full text-sm px-3 py-2.5 rounded-lg border border-slate-200 outline-none text-slate-800 focus:border-[color:var(--brand-saffron)] bg-white"
               >
                 <option value="newest">Newest Launch</option>
                 <option value="price-asc">Price: Low to High</option>
