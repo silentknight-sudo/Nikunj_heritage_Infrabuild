@@ -23,6 +23,12 @@ import { db, auth } from "./firebase";
 import { Property, Category, Location, Lead, Blog, Testimonial, Developer, Event, Page, SiteConfig, FinancePartner, LeadStatus, PropertyStatus, BlogStatus, AppUser } from "../types";
 
 export const DEFAULT_ADMIN_EMAIL = "nikunjhomes99@gmail.com";
+// Accounts that are always admins; keep in sync with isAdmin() in firestore.rules
+export const BOOTSTRAP_ADMIN_EMAILS = [DEFAULT_ADMIN_EMAIL, "vksp207@gmail.com"];
+
+export function isBootstrapAdminEmail(email?: string | null): boolean {
+  return !!email && BOOTSTRAP_ADMIN_EMAILS.includes(email.toLowerCase());
+}
 
 // ERROR HANDLER AS REQUIRED BY SKILL.MD
 export enum OperationType {
@@ -123,14 +129,14 @@ export async function checkIsAdmin(uid: string): Promise<boolean> {
   try {
     // If user is our bootstrapped developer mail, bypass to support easy initial testing
     const currentUserEmail = auth.currentUser?.email?.toLowerCase();
-    if (currentUserEmail === DEFAULT_ADMIN_EMAIL) {
+    if (isBootstrapAdminEmail(currentUserEmail)) {
       return true;
     }
     const adminDoc = await getDoc(doc(db, "admins", uid));
     return adminDoc.exists();
   } catch (e) {
     console.warn("Permission check failed, returning false or checking fallback email:", e);
-    return auth.currentUser?.email?.toLowerCase() === DEFAULT_ADMIN_EMAIL;
+    return isBootstrapAdminEmail(auth.currentUser?.email);
   }
 }
 

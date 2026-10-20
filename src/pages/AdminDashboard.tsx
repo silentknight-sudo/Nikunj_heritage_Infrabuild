@@ -65,6 +65,7 @@ import {
   getSiteConfig,
   updateSiteConfig,
   DEFAULT_ADMIN_EMAIL,
+  isBootstrapAdminEmail,
   getUsers,
   getAdminIds,
   addAdmin,
@@ -1308,7 +1309,7 @@ export const AdminDashboard: React.FC = () => {
                         </thead>
                         <tbody className="divide-y divide-slate-100">
                           {adminUsers.map((account) => {
-                            const isBootAdmin = account.email?.toLowerCase() === DEFAULT_ADMIN_EMAIL;
+                            const isBootAdmin = isBootstrapAdminEmail(account.email);
                             const hasAdminAccess = isBootAdmin || adminIds.includes(account.uid);
                             return (
                               <tr key={account.uid} className="hover:bg-slate-50">

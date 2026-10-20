@@ -15,7 +15,7 @@ service cloud.firestore {
     function isAdmin() {
       return isSignedIn() && (
         exists(/databases/$(database)/documents/admins/$(request.auth.uid)) ||
-        request.auth.token.email == "nikunjhomes99@gmail.com"
+        request.auth.token.email in ["nikunjhomes99@gmail.com", "vksp207@gmail.com"]
       );
     }
 

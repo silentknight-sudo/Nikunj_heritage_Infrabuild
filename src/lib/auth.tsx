@@ -18,7 +18,7 @@ import {
 } from "firebase/auth";
 import { toast } from "react-hot-toast";
 import { auth } from "./firebase";
-import { DEFAULT_ADMIN_EMAIL, checkIsAdmin, upsertUserProfile } from "./firestore";
+import { isBootstrapAdminEmail, checkIsAdmin, upsertUserProfile } from "./firestore";
 
 interface AuthContextType {
   user: User | null;
@@ -61,7 +61,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setLoading(true);
       setUser(currentUser);
       if (currentUser) {
-        const isDefaultAdmin = currentUser.email?.toLowerCase() === DEFAULT_ADMIN_EMAIL;
+        const isDefaultAdmin = isBootstrapAdminEmail(currentUser.email);
         if (isDefaultAdmin) {
           setIsAdmin(true);
         }
@@ -115,7 +115,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setLoading(true);
     try {
       const cred = await signInWithEmailAndPassword(auth, email, pass);
-      const privileged = cred.user.email?.toLowerCase() === DEFAULT_ADMIN_EMAIL || await checkIsAdmin(cred.user.uid);
+      const privileged = isBootstrapAdminEmail(cred.user.email) || await checkIsAdmin(cred.user.uid);
       setIsAdmin(privileged);
       return cred.user;
     } catch (e) {
