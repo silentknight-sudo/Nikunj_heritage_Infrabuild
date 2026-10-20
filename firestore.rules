@@ -134,6 +134,15 @@ service cloud.firestore {
 
     // --- MATCH BLOCKS FOR COLLECTIONS ---
 
+    // Signed-in users keep their own profile; admins can list everyone for role management
+    match /users/{uid} {
+      allow read: if isSignedIn() && (request.auth.uid == uid || isAdmin());
+      allow create, update: if isSignedIn() && request.auth.uid == uid &&
+                               incoming().uid == uid &&
+                               incoming().email is string && incoming().email.size() <= 320;
+      allow delete: if isAdmin();
+    }
+
     match /admins/{uid} {
       allow read: if isSignedIn();
       allow write: if isAdmin();
