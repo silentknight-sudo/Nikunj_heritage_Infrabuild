@@ -59,182 +59,164 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
     }
   };
 
-  // Status-dependent theme tags
   const statusConfig = {
-    [PropertyStatus.READY]: "bg-[#0E7B6C] text-white",
-    [PropertyStatus.CONSTRUCTION]: "bg-[#C45C1A] text-white",
-    [PropertyStatus.NEW_LAUNCH]: "bg-[#C9A84C] text-[#1A1A2E] font-semibold",
-    [PropertyStatus.SOLD_OUT]: "bg-gray-500 text-white"
+    [PropertyStatus.READY]: "bg-emerald-600 text-white",
+    [PropertyStatus.CONSTRUCTION]: "bg-amber-500 text-white",
+    [PropertyStatus.NEW_LAUNCH]: "bg-[color:var(--brand-saffron)] text-white",
+    [PropertyStatus.SOLD_OUT]: "bg-slate-500 text-white"
   };
 
+  const images = property.imageUrls || [];
+  const locationLabel = property.slug === "hare-krishna-resort-suites" ? "Sunrakh Bangar, Vrindavan" : "Mathura–Vrindavan";
+  const pricePerSqFt = property.area > 0 ? Math.round(property.price / property.area) : 0;
+
   return (
-    <div className="group bg-white rounded-xl overflow-hidden border border-[#C9A84C]/20 shadow-md hover:shadow-xl transition-all duration-300 flex flex-col relative" id={`property-card-${property.id}`}>
-      
-      {/* Upper Media Zone */}
-      <div className="relative h-48 sm:h-56 w-full overflow-hidden shrink-0">
-        <Link to={`/properties/${property.slug}`} className="block h-full w-full">
-          {property.imageUrls && property.imageUrls.length > 0 ? (
+    <div className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl" id={`property-card-${property.id}`}>
+
+      {/* Media */}
+      <div className="relative aspect-[4/3] w-full shrink-0 overflow-hidden bg-slate-100">
+        <Link to={`/properties/${property.slug}`} className="block h-full w-full" aria-label={property.title}>
+          {images.length > 0 ? (
             <img
-              src={property.imageUrls[activeImageIdx]}
+              src={images[activeImageIdx]}
               alt={property.title}
               loading="lazy"
               referrerPolicy="no-referrer"
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
               onError={(event) => { event.currentTarget.src = "/projects/images/ai-buyer-residential.jpg"; }}
             />
           ) : (
-            <div className="w-full h-full bg-[#FAF6F0] flex items-center justify-center">
-              <span className="text-[#C9A84C] text-xs font-mono">Nikunj Sanctum Asset</span>
-            </div>
+            <div className="flex h-full w-full items-center justify-center text-xs text-slate-400">Photos coming soon</div>
           )}
         </Link>
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/40 to-transparent" />
 
-        {/* Dynamic Badges Overlay */}
-        <div className="absolute top-3 left-3 flex flex-col gap-1.5 z-10">
-          <span className={`px-2.5 py-1 rounded text-[11px] font-semibold tracking-wider uppercase ${statusConfig[property.status]}`}>
+        {/* Badges */}
+        <div className="absolute left-3 top-3 z-10 flex flex-wrap gap-1.5">
+          <span className={`rounded-md px-2 py-1 text-[11px] font-bold ${statusConfig[property.status] || "bg-slate-700 text-white"}`}>
             {property.status}
           </span>
           {property.featured && (
-            <span className="bg-[#6B1A2A] text-white px-2 py-0.5 rounded text-[9px] font-bold tracking-widest uppercase self-start border border-[#C9A84C]/40">
-              FEATURED
-            </span>
+            <span className="rounded-md bg-[color:var(--brand-night)] px-2 py-1 text-[11px] font-bold text-white">Featured</span>
           )}
-          {(property.investmentProject || property.status === PropertyStatus.SOLD_OUT) && (
-            <span className="self-start rounded border border-[#FACC15]/50 bg-[#0F172A]/90 px-2 py-0.5 text-[9px] font-bold tracking-widest text-[#FACC15]">INVESTMENT PROJECT</span>
+          {property.investmentProject && (
+            <span className="rounded-md bg-white/95 px-2 py-1 text-[11px] font-bold text-[color:var(--brand-night)]">Investment</span>
           )}
         </div>
 
-        {/* Heart Wishlist Overlay */}
+        {/* Wishlist */}
         <button
           onClick={handleWishlistClick}
-          className="absolute top-3 right-3 p-2 bg-white/80 backdrop-blur-sm rounded-full text-[#6B1A2A] hover:bg-white transition-colors duration-200 shadow-sm z-10"
+          className="absolute right-3 top-3 z-10 rounded-full bg-white/95 p-2 text-slate-600 shadow-sm transition-colors hover:text-rose-500"
           type="button"
-          aria-label="Toggle Wishlist"
+          aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
+          aria-pressed={isWishlisted}
         >
-          <Heart className={`h-4.5 w-4.5 ${isWishlisted ? "fill-current text-[#6B1A2A]" : ""}`} />
+          <Heart className={`h-4 w-4 ${isWishlisted ? "fill-rose-500 text-rose-500" : ""}`} />
         </button>
 
-        {/* Carousel Arrow Buttons */}
-        {property.imageUrls && property.imageUrls.length > 1 && (
+        {/* Carousel controls */}
+        {images.length > 1 && (
           <>
             <button
               onClick={prevImage}
-              className="absolute left-2.5 top-1/2 -translate-y-1/2 p-1 rounded-full bg-white/40 hover:bg-white/80 text-[#1A1A2E] transition-all opacity-0 group-hover:opacity-100 duration-200 z-10"
+              className="absolute left-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-white/90 p-1.5 text-slate-800 opacity-0 shadow transition-opacity duration-200 group-hover:opacity-100"
               type="button"
+              aria-label="Previous photo"
             >
               <ChevronLeft className="h-4 w-4" />
             </button>
             <button
               onClick={nextImage}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 rounded-full bg-white/40 hover:bg-white/80 text-[#1A1A2E] transition-all opacity-0 group-hover:opacity-100 duration-200 z-10"
+              className="absolute right-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-white/90 p-1.5 text-slate-800 opacity-0 shadow transition-opacity duration-200 group-hover:opacity-100"
               type="button"
+              aria-label="Next photo"
             >
               <ChevronRight className="h-4 w-4" />
             </button>
+            <span className="absolute bottom-2.5 right-3 z-10 rounded-md bg-black/55 px-2 py-0.5 text-[11px] font-semibold text-white">
+              {activeImageIdx + 1}/{images.length}
+            </span>
           </>
-        )}
-
-        {/* Dot Carousel Indicators */}
-        {property.imageUrls && property.imageUrls.length > 1 && (
-          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex space-x-1 z-10 bg-black/20 px-2 py-1 rounded-full">
-            {property.imageUrls.map((_, idx) => (
-              <span
-                key={idx}
-                className={`h-1.5 w-1.5 rounded-full transition-colors ${
-                  idx === activeImageIdx ? "bg-[#C45C1A]" : "bg-white/60"
-                }`}
-              />
-            ))}
-          </div>
         )}
       </div>
 
-      {/* Info details Body */}
-      <div className="p-4 flex flex-col flex-grow">
-        
-        {/* Category Chip & Price Badge */}
-        <div className="flex justify-between items-start mb-2">
-          <span className="text-[10px] sm:text-[11px] text-[#C45C1A] uppercase tracking-wider font-semibold font-mono">
-            {property.bhk}
-          </span>
-          <span className="text-sm sm:text-base text-[#6B1A2A] font-bold font-serif">
-            {formatPrice(property.price)}
-          </span>
+      {/* Body */}
+      <div className="flex flex-grow flex-col p-4">
+        <div className="flex items-baseline justify-between gap-2">
+          <span className="text-lg font-extrabold text-[color:var(--brand-night)]">{formatPrice(property.price)}</span>
+          {pricePerSqFt > 0 && (
+            <span className="text-xs text-slate-400">₹{pricePerSqFt.toLocaleString("en-IN")}/sq ft</span>
+          )}
         </div>
 
-        {/* Property Main Title */}
-        <Link to={`/properties/${property.slug}`} className="block block-title mb-2.5">
-          <h3 className="font-serif text-[#1A1A2E] font-semibold text-base leading-tight hover:text-[#C45C1A] line-clamp-1">
+        <Link to={`/properties/${property.slug}`} className="mt-1 block">
+          <h3 className="line-clamp-1 font-sans text-base font-bold text-[color:var(--brand-night)] transition-colors hover:text-[color:var(--brand-saffron)]">
             {property.title}
           </h3>
         </Link>
 
-        {/* Location & RERA Badge Row */}
-        <div className="flex flex-wrap items-center gap-y-2 gap-x-3 text-xs text-slate-600 mb-3 border-b border-[#C9A84C]/10 pb-3">
-          <div className="flex items-center space-x-1">
-            <MapPin className="h-3.5 w-3.5 text-[#0E7B6C] shrink-0" />
-            <span className="truncate max-w-[150px] sm:max-w-none">
-              {property.slug === "hare-krishna-resort-suites" ? "Sunrakh Bangar, Vrindavan" : "Brijbhoomi Belt"}
-            </span>
+        <div className="mt-1 flex items-center gap-1 text-xs text-slate-500">
+          <MapPin className="h-3.5 w-3.5 shrink-0 text-slate-400" />
+          <span className="truncate">{locationLabel}</span>
+        </div>
+
+        {/* Specs */}
+        <div className="mt-3 grid grid-cols-3 divide-x divide-slate-100 rounded-xl bg-slate-50 py-2.5 text-center">
+          <div className="px-1">
+            <span className="block text-[10px] uppercase tracking-wide text-slate-400">Config</span>
+            <span className="block truncate text-xs font-bold text-slate-700">{property.bhk.split(" ").slice(0, 2).join(" ")}</span>
           </div>
+          <div className="px-1">
+            <span className="block text-[10px] uppercase tracking-wide text-slate-400">Area</span>
+            <span className="block text-xs font-bold text-slate-700">{property.area} sq ft</span>
+          </div>
+          <div className="px-1">
+            <span className="block text-[10px] uppercase tracking-wide text-slate-400">Possession</span>
+            <span className="block truncate text-xs font-bold text-slate-700">{property.possessionDate || "On request"}</span>
+          </div>
+        </div>
+
+        {/* Highlights */}
+        <div className="mt-3 flex flex-wrap gap-1.5">
           {(property.reraNumber || property.reraApproved) && (
-            <div className="flex items-center space-x-1 text-[10px] font-mono bg-amber-50 border border-amber-200 px-1.5 py-0.5 rounded text-amber-800 shrink-0">
-              <Award className="h-3 w-3 text-amber-600" />
-              <span>RERA Approved</span>
-            </div>
+            <span className="inline-flex items-center gap-1 rounded-md bg-emerald-50 px-2 py-1 text-[11px] font-semibold text-emerald-700">
+              <Award className="h-3 w-3" />
+              RERA Approved
+            </span>
+          )}
+          {property.landmarks?.[0] && (
+            <span className="inline-flex max-w-full items-center gap-1 truncate rounded-md bg-amber-50 px-2 py-1 text-[11px] font-semibold text-amber-800">
+              {property.landmarks[0].name} · {property.landmarks[0].distance}
+            </span>
           )}
         </div>
 
-        {/* Key Specification Metrics highlights */}
-        <div className="grid grid-cols-2 gap-2 text-xs text-slate-500 mb-4 font-mono">
-          <div>
-            <span className="block text-[10px] text-slate-400 capitalize">Carpet Area</span>
-            <span className="font-semibold text-slate-700">{property.area} Sq Ft</span>
-          </div>
-          <div>
-            <span className="block text-[10px] text-slate-400 capitalize">Possession</span>
-            <span className="font-semibold text-[#0E7B6C]">{property.possessionDate || "Under Way"}</span>
-          </div>
-        </div>
-
-        {/* Landmark distance highlights */}
-        {property.landmarks && property.landmarks.length > 0 && (
-          <div className="mt-auto bg-[#FAF6F0] p-2.5 rounded-md text-[11px] text-slate-600 border border-[#C9A84C]/10 mb-4 shrink-0">
-            <span className="font-serif font-semibold text-[#6B1A2A] block mb-1">Divine Proximity:</span>
-            <div className="flex flex-col gap-0.5 font-sans">
-              {property.landmarks.slice(0, 2).map((lm, idx) => (
-                <div key={idx} className="flex justify-between">
-                  <span>• {lm.name}</span>
-                  <span className="font-bold text-[#0E7B6C]">{lm.distance}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Footer Actions: Comparison Control & Nav link */}
-        <div className="flex justify-between items-center pt-2.5 border-t border-slate-100 mt-auto">
-          {/* Comparison Toggle Box */}
-          {onCompareToggle && (
+        {/* Footer */}
+        <div className="min-h-4 flex-grow" />
+        <div className="flex items-center justify-between gap-2 border-t border-slate-100 pt-3">
+          {onCompareToggle ? (
             <button
               onClick={() => onCompareToggle(property.id)}
-              className="flex items-center space-x-1.5 text-xs text-slate-500 hover:text-[#C45C1A] transition-colors"
+              className="flex items-center gap-1.5 text-xs font-semibold text-slate-500 transition-colors hover:text-[color:var(--brand-saffron)]"
               type="button"
             >
               {isComparing ? (
-                <CheckSquare className="h-4 w-4 text-[#C45C1A]" />
+                <CheckSquare className="h-4 w-4 text-[color:var(--brand-saffron)]" />
               ) : (
                 <Square className="h-4 w-4" />
               )}
               <span>Compare</span>
             </button>
+          ) : (
+            <span />
           )}
 
           <Link
             to={`/properties/${property.slug}`}
-            className="text-xs font-semibold text-[#C45C1A] hover:text-[#6B1A2A] uppercase tracking-wider underline underline-offset-4"
+            className="rounded-lg bg-[color:var(--brand-saffron)] px-3.5 py-2 text-xs font-bold text-white transition-colors hover:bg-[#d4661d]"
           >
-            Full Details →
+            View Details
           </Link>
         </div>
 

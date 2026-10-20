@@ -8,14 +8,17 @@ import {
   User,
   onAuthStateChanged,
   signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
   GoogleAuthProvider,
   signOut,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   updateProfile
 } from "firebase/auth";
+import { toast } from "react-hot-toast";
 import { auth } from "./firebase";
-import { DEFAULT_ADMIN_EMAIL, checkIsAdmin, upsertUserProfile } from "./firestore";
+import { isBootstrapAdminEmail, checkIsAdmin, upsertUserProfile } from "./firestore";
 
 interface AuthContextType {
   user: User | null;
@@ -27,6 +30,19 @@ interface AuthContextType {
   logout: () => Promise<void>;
 }
 
+function describeAuthError(err: any): string {
+  switch (err?.code) {
+    case "auth/unauthorized-domain":
+      return `Sign-in is not enabled for ${window.location.hostname}. Add this domain under Firebase Console → Authentication → Settings → Authorized domains.`;
+    case "auth/network-request-failed":
+      return "Network error during sign-in. Please check your connection and try again.";
+    case "auth/operation-not-allowed":
+      return "Google sign-in is disabled for this Firebase project.";
+    default:
+      return `Sign-in failed${err?.code ? ` (${err.code})` : ""}. Please try again.`;
+  }
+}
+
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -35,14 +51,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Surface errors from a redirect-based sign-in (used when popups are blocked)
+    getRedirectResult(auth).catch((err) => {
+      console.error("Google redirect sign-in failed:", err);
+      toast.error(describeAuthError(err));
+    });
+
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      setLoading(true);
       setUser(currentUser);
       if (currentUser) {
+        const isDefaultAdmin = isBootstrapAdminEmail(currentUser.email);
+        if (isDefaultAdmin) {
+          setIsAdmin(true);
+        }
+
+        // Profile sync is best-effort; it must never block the admin check
         try {
-          const isDefaultAdmin = currentUser.email?.toLowerCase() === DEFAULT_ADMIN_EMAIL;
-          if (isDefaultAdmin) {
-            setIsAdmin(true);
-          }
           await upsertUserProfile({
             uid: currentUser.uid,
             email: currentUser.email || "",
@@ -50,13 +75,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             photoURL: currentUser.photoURL || "",
             providerId: currentUser.providerData?.[0]?.providerId || "password"
           });
-          if (!isDefaultAdmin) {
-            const privileged = await checkIsAdmin(currentUser.uid);
-            setIsAdmin(privileged);
-          }
         } catch (err) {
-          console.error("Admin verification error:", err);
-          setIsAdmin(currentUser.email?.toLowerCase() === DEFAULT_ADMIN_EMAIL);
+          console.warn("User profile sync failed:", err);
+        }
+
+        if (!isDefaultAdmin) {
+          const privileged = await checkIsAdmin(currentUser.uid);
+          setIsAdmin(privileged);
         }
       } else {
         setIsAdmin(false);
@@ -68,15 +93,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const loginWithGoogle = async () => {
-    setLoading(true);
     const provider = new GoogleAuthProvider();
+    provider.setCustomParameters({ prompt: "select_account" });
     try {
+      // onAuthStateChanged takes over loading/admin state once the popup resolves
       await signInWithPopup(auth, provider);
     } catch (e: any) {
+      if (e?.code === "auth/popup-blocked" || e?.code === "auth/operation-not-supported-in-this-environment") {
+        await signInWithRedirect(auth, provider);
+        return;
+      }
+      if (e?.code === "auth/popup-closed-by-user" || e?.code === "auth/cancelled-popup-request") {
+        return;
+      }
       console.error("Google Auth popup failed:", e);
-      throw e;
-    } finally {
-      setLoading(false);
+      toast.error(describeAuthError(e));
     }
   };
 
@@ -84,7 +115,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setLoading(true);
     try {
       const cred = await signInWithEmailAndPassword(auth, email, pass);
-      const privileged = cred.user.email?.toLowerCase() === DEFAULT_ADMIN_EMAIL || await checkIsAdmin(cred.user.uid);
+      const privileged = isBootstrapAdminEmail(cred.user.email) || await checkIsAdmin(cred.user.uid);
       setIsAdmin(privileged);
       return cred.user;
     } catch (e) {

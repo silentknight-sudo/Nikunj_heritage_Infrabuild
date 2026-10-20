@@ -129,18 +129,44 @@ export const Navbar: React.FC = () => {
     { name: "Home", path: "/" },
     { name: "Properties", path: "/properties" },
     { name: "Compare", path: "/compare-properties" },
-    { name: "ROI Calculator", path: "/roi-calculator" },
-    { name: "Events", path: "/events" },
+    { name: "Calculator", path: "/roi-calculator" },
+    { name: "Developers", path: "/developers" },
     { name: "Blogs", path: "/blogs" },
-    { name: "News", path: "/news" },
-    { name: "Developers", path: "/developers", activeColor: true }
+    { name: "About", path: "/about-us" },
+    { name: "Contact", path: "/contact-us" }
   ];
 
   return (
     <>
-      {/* 1. Main Premium Fixed Header bar matching the mockup */}
+      {/* 0. Utility strip */}
+      <div className="hidden bg-[color:var(--brand-night)] text-white/80 md:block" id="nh-utility-strip">
+        <div className="mx-auto flex h-9 max-w-7xl items-center justify-between px-4 text-xs sm:px-6 lg:px-8">
+          <div className="flex items-center gap-5">
+            <a href="tel:+919719920888" className="flex items-center gap-1.5 hover:text-white">
+              <Phone className="h-3.5 w-3.5" /> +91 97199 20888
+            </a>
+            <span className="flex items-center gap-1.5">
+              <MapPin className="h-3.5 w-3.5" /> Rukmani Vihar, Vrindavan
+            </span>
+          </div>
+          <div className="flex items-center gap-5">
+            <span className="flex items-center gap-1.5">
+              <Calendar className="h-3.5 w-3.5" /> Free site visits, 7 days a week
+            </span>
+            <button
+              onClick={toggleLanguage}
+              className="font-semibold hover:text-white"
+              title="बदले भाषा / Switch Language"
+            >
+              {language === "EN" ? "हिन्दी" : "English"}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* 1. Main sticky header */}
       <nav 
-        className="sticky top-0 z-[80] bg-white/95 backdrop-blur-md border-b border-slate-100 shadow-sm transition-all duration-300 h-16 sm:h-20 flex items-center select-none" 
+        className="sticky top-0 z-[80] bg-white/95 backdrop-blur-md border-b border-slate-200 transition-all duration-300 h-16 sm:h-[72px] flex items-center select-none" 
         id="nh-sticky-header"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex justify-between items-center">
@@ -150,8 +176,8 @@ export const Navbar: React.FC = () => {
             <div className="bg-[#0F172A] p-1 rounded-full border border-[#FACC15]/45 flex items-center justify-center shadow-md transition-transform duration-300 group-hover:scale-105 sm:p-1.5">
               <BrandLogoSVG className="h-9 w-9 sm:h-11 sm:w-11" />
             </div>
-            <div className="min-w-0 text-left font-serif">
-                <span className="block max-w-[9.5rem] truncate text-sm sm:max-w-none sm:text-[19px] font-black tracking-wide text-[#0F172A] leading-none uppercase">
+            <div className="min-w-0 text-left font-sans">
+                <span className="block max-w-[9.5rem] truncate text-sm sm:max-w-none sm:text-lg font-extrabold tracking-tight text-[#0F172A] leading-none uppercase">
                 Nikunj Heritage
               </span>
               <span className="block text-[8px] sm:text-[9px] uppercase tracking-[0.22em] sm:tracking-[0.25em] text-[#FB923C] font-extrabold mt-1">
@@ -161,19 +187,17 @@ export const Navbar: React.FC = () => {
           </Link>
 
           {/* Large Screen horizontal navbar anchors */}
-          <div className="hidden lg:flex items-center space-x-1 xl:space-x-4">
+          <div className="hidden lg:flex items-center gap-0.5 xl:gap-1">
             {topNavLinks.map((link) => {
               const active = location.pathname === link.path;
               return (
                 <Link
                   key={link.path}
                   to={link.path}
-                  className={`px-2.5 py-1.5 rounded-md text-[13px] font-bold tracking-wide transition-all uppercase duration-200 font-sans ${
+                  className={`whitespace-nowrap rounded-lg px-2.5 xl:px-3 py-2 text-sm font-semibold transition-colors duration-200 font-sans ${
                     active
-                      ? "text-[#0F172A] border-b-2 border-[#FB923C] rounded-none"
-                      : link.activeColor 
-                        ? "text-[#0F172A] hover:opacity-80" 
-                        : "text-slate-700 hover:text-[#0F172A]"
+                      ? "bg-[color:var(--brand-saffron)]/10 text-[color:var(--brand-saffron)]"
+                      : "text-slate-600 hover:bg-slate-50 hover:text-[#0F172A]"
                   }`}
                 >
                   {link.name}
@@ -181,14 +205,6 @@ export const Navbar: React.FC = () => {
               );
             })}
 
-            {/* Language Selection */}
-            <button
-              onClick={toggleLanguage}
-              className="flex items-center space-x-1.5 px-3 py-1.5 rounded-full border border-slate-200 text-xs text-slate-700 font-bold hover:bg-slate-50 transition-colors ml-2"
-              title="बदले भाषा / Switch Language"
-            >
-              <span>{language === "EN" ? "हिन्दी 🇮🇳" : "English 🇬🇧"}</span>
-            </button>
           </div>
 
           {/* Quick Actions & Icons matching the mockup */}
@@ -200,7 +216,7 @@ export const Navbar: React.FC = () => {
               className="p-2 sm:p-2.5 text-slate-700 hover:text-rose-600 transition-colors duration-200 relative focus:outline-none"
               aria-label="Wishlist drawer trigger"
             >
-              <Heart className={`h-5 w-5 ${wishlistIds.length > 0 ? "fill-rose-500 text-rose-500 animate-pulse" : ""}`} />
+              <Heart className={`h-5 w-5 ${wishlistIds.length > 0 ? "fill-rose-500 text-rose-500" : ""}`} />
               {wishlistIds.length > 0 && (
                 <span className="absolute -top-0.5 -right-0.5 h-4.5 w-4.5 bg-rose-500 text-white font-mono text-[9px] font-extrabold rounded-full flex items-center justify-center border border-white">
                   {wishlistIds.length}
@@ -232,7 +248,7 @@ export const Navbar: React.FC = () => {
             ) : (
               <button
                 onClick={loginWithGoogle}
-                className="hidden md:flex items-center space-x-1.5 px-3 py-2 bg-slate-50 border border-slate-100 text-slate-700 rounded-lg text-xs font-bold hover:bg-slate-100 transition-colors"
+                className="hidden md:flex items-center whitespace-nowrap space-x-1.5 px-3 py-2 bg-slate-50 border border-slate-100 text-slate-700 rounded-lg text-xs font-bold hover:bg-slate-100 transition-colors"
               >
                 <User className="h-4 w-4 text-[#C9A84C]" />
                 <span>Sign In</span>
@@ -244,9 +260,9 @@ export const Navbar: React.FC = () => {
               href={giftToWhatsApp("Pranam Nikunj Heritage! I saw your catalog and would like to Book a spiritual site visit to Vrindavan.")}
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden bg-[#FB923C] hover:bg-[#EA580C] text-white px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg text-xs sm:text-[13px] font-serif font-black uppercase tracking-wider sm:flex items-center space-x-1.5 shadow transition-all duration-300 transform hover:-translate-y-0.5"
+              className="hidden bg-[color:var(--brand-saffron)] hover:bg-[#d4661d] text-white px-4 py-2.5 rounded-lg text-sm font-bold whitespace-nowrap sm:flex items-center gap-1.5 shadow-sm transition-colors duration-200"
             >
-              <Phone className="h-3.5 w-3.5 shrink-0 animate-bounce" />
+              <Phone className="h-3.5 w-3.5 shrink-0" />
               <span>Book Visit</span>
             </a>
 

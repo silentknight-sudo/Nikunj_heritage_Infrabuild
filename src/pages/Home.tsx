@@ -3,27 +3,37 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
-  Sparkles,
   Search,
   ChevronRight,
-  TrendingUp,
+  ChevronLeft,
+  ChevronDown,
   MapPin,
-  Compass,
+  Building2,
+  Home as HomeIcon,
+  Store,
+  Trees,
+  Landmark,
+  ShieldCheck,
   FileCheck,
   Award,
   Users,
-  ShieldCheck,
-  Calendar,
-  Layers,
-  CheckCircle,
-  HelpCircle,
-  FileText,
-  PlayCircle,
+  Compass,
+  Headphones,
+  Calculator,
+  Scale,
+  Wallet,
+  Star,
+  Quote,
+  PhoneCall,
+  MessageSquare,
   X,
-  MessageSquare
+  CheckCircle2,
+  TrendingUp,
+  FileText,
+  CalendarCheck
 } from "lucide-react";
 import {
   getProperties,
@@ -31,20 +41,127 @@ import {
   getLocations,
   getBlogs,
   getTestimonials,
-  getSiteConfig,
   createLead
 } from "../lib/firestore";
-import { Property, Category, Location, Blog, Testimonial, SiteConfig } from "../types";
+import { Property, Category, Location, Blog, Testimonial } from "../types";
 import { formatPrice } from "../lib/utils";
-import { ROICalculator } from "../components/home/ROICalculator";
 import { PropertyCard } from "../components/property/PropertyCard";
 import { toast } from "react-hot-toast";
-import { HeroSlider } from "../components/home/HeroSlider";
-import { ThreeDCard, ScrollFade, ParticleGlow, SacredPropertyBackdrop } from "../components/common/MotionWrapper";
-import { homeMediaShowcase } from "../content/projectMedia";
 import { SeoHead } from "../components/seo/SeoHead";
 import { DEFAULT_OG_IMAGE, SITE_URL } from "../lib/seo";
-import { motion } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
+
+const PHONE = "+919719920888";
+const WHATSAPP_URL =
+  "https://wa.me/919719920888?text=Pranam%21+I+would+like+to+inquire+about+properties+at+Nikunj+Heritage+Infrabuild.";
+
+const searchTabs = [
+  { label: "All", category: "all" },
+  { label: "Residential", category: "residential-apartments" },
+  { label: "Villas", category: "luxury-villas" },
+  { label: "Commercial", category: "commercial-spaces" },
+  { label: "Plots", category: "plots-and-land" },
+  { label: "Retreats", category: "spiritual-retreats" }
+];
+
+const budgetOptions = [
+  { label: "Any budget", value: "" },
+  { label: "Under ₹30 Lac", value: "3000000" },
+  { label: "Under ₹50 Lac", value: "5000000" },
+  { label: "Under ₹1 Cr", value: "10000000" },
+  { label: "Under ₹2 Cr", value: "20000000" }
+];
+
+const popularSearches = [
+  { label: "Flats near Prem Mandir", href: "/properties?search=Prem Mandir" },
+  { label: "Plots in Govardhan", href: "/properties?category=plots-and-land" },
+  { label: "Shops on NH-2", href: "/properties?category=commercial-spaces" },
+  { label: "Villas in Vrindavan", href: "/properties?category=luxury-villas" },
+  { label: "Ready to move", href: "/properties?search=Ready" }
+];
+
+const categoryIcons: Record<string, React.ElementType> = {
+  "residential-apartments": Building2,
+  "luxury-villas": HomeIcon,
+  "commercial-spaces": Store,
+  "plots-and-land": Trees,
+  "spiritual-retreats": Landmark
+};
+
+const whyChooseUs = [
+  { title: "100% Verified Listings", text: "Every project is checked for title, approvals and UP RERA status before it reaches you.", icon: ShieldCheck },
+  { title: "Direct Builder Pricing", text: "No hidden broker markups. Transparent price sheets and payment plans upfront.", icon: Wallet },
+  { title: "Legal & Registry Support", text: "End-to-end help with documentation, loans, registry and possession handover.", icon: FileCheck },
+  { title: "Temple-Proximity Insights", text: "Real walking distances to Prem Mandir, Banke Bihari, ISKCON and Yamuna ghats.", icon: Compass },
+  { title: "Free Guided Site Visits", text: "Local advisors show you shortlisted properties in a single, planned visit.", icon: CalendarCheck },
+  { title: "After-Sale Assistance", text: "Rental, resale and property management guidance long after you buy.", icon: Headphones }
+];
+
+const howItWorks = [
+  { title: "Tell us what you need", text: "Share your budget, preferred location and property type." },
+  { title: "Get a verified shortlist", text: "Receive matching projects with prices, plans and documents." },
+  { title: "Visit with an advisor", text: "Free guided site visit across Mathura–Vrindavan." },
+  { title: "Book & register safely", text: "We handle paperwork, loans and registry with you." }
+];
+
+const faqItems = [
+  {
+    question: "Is Nikunj Heritage a builder or a property advisor?",
+    answer: "Nikunj Heritage Infrabuild is a local Mathura–Vrindavan real estate advisory and infrabuild company. We help buyers shortlist verified residential, commercial and plotted projects and support them till registry."
+  },
+  {
+    question: "Can I compare Vrindavan properties before visiting?",
+    answer: "Yes. Use the listings and Compare tool to evaluate budget, area, location, temple proximity, amenities and documentation before booking a site visit."
+  },
+  {
+    question: "Which locations are best for investment?",
+    answer: "Popular zones include Rukmini Vihar, the Prem Mandir belt, Banke Bihari access zones, Mathura–Vrindavan Road, the Govardhan corridor and selected commercial pockets in Mathura."
+  },
+  {
+    question: "Do you help with home loans?",
+    answer: "Yes. We work with leading banks and NBFCs and can help you check eligibility, compare interest rates and complete the loan process."
+  },
+  {
+    question: "How do I book a site visit?",
+    answer: "Fill the enquiry form, call us or message on WhatsApp. Site visits are free and can be scheduled on any day of the week."
+  }
+];
+
+const seoKeywords = [
+  "Property in Vrindavan",
+  "Mathura Real Estate",
+  "Rukmini Vihar Flats",
+  "Plots in Govardhan",
+  "Commercial Property Mathura",
+  "Villas near Prem Mandir",
+  "Banke Bihari Access Zone",
+  "ISKCON Vrindavan Homes",
+  "Braj Investment Property"
+];
+
+const SectionHeader: React.FC<{
+  eyebrow: string;
+  title: string;
+  subtitle?: string;
+  action?: { label: string; href: string };
+}> = ({ eyebrow, title, subtitle, action }) => (
+  <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+    <div className="max-w-2xl">
+      <span className="text-xs font-bold uppercase tracking-[0.18em] text-[color:var(--brand-saffron)]">{eyebrow}</span>
+      <h2 className="mt-1.5 font-sans text-2xl font-extrabold tracking-tight text-[color:var(--brand-night)] sm:text-3xl">{title}</h2>
+      {subtitle && <p className="mt-2 text-sm leading-6 text-slate-500">{subtitle}</p>}
+    </div>
+    {action && (
+      <Link
+        to={action.href}
+        className="inline-flex w-fit shrink-0 items-center gap-1 text-sm font-bold text-[color:var(--brand-saffron)] hover:underline"
+      >
+        {action.label}
+        <ChevronRight className="h-4 w-4" />
+      </Link>
+    )}
+  </div>
+);
 
 export const Home: React.FC = () => {
   const navigate = useNavigate();
@@ -53,55 +170,76 @@ export const Home: React.FC = () => {
   const [locations, setLocations] = useState<Location[]>([]);
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
-  const [config, setConfig] = useState<SiteConfig | null>(null);
+  const [loaded, setLoaded] = useState(false);
 
-  // States for search and newsletter
+  // Hero search
+  const [activeTab, setActiveTab] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
-  const [newsletterEmail, setNewsletterEmail] = useState("");
+  const [searchLocation, setSearchLocation] = useState("all");
+  const [searchBudget, setSearchBudget] = useState("");
+
+  // Lead capture
   const [consultationName, setConsultationName] = useState("");
   const [consultationPhone, setConsultationPhone] = useState("");
   const [enquiryType, setEnquiryType] = useState("Property Enquiry");
-  const [consultationEmail, setConsultationEmail] = useState("");
   const [isConsulting, setIsConsulting] = useState(false);
-  const [showEnquiryWidget, setShowEnquiryWidget] = useState(true);
+  const [showEnquiryModal, setShowEnquiryModal] = useState(false);
+
+  const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const featuredRailRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     async function loadData() {
       try {
-        const c = await getSiteConfig();
-        setConfig(c);
-
-        const cats = await getCategories();
+        const [cats, locs, props, blgs, tst] = await Promise.all([
+          getCategories(),
+          getLocations(),
+          getProperties(),
+          getBlogs(),
+          getTestimonials()
+        ]);
         setCategories(cats);
-
-        const locs = await getLocations();
         setLocations(locs);
-
-        const props = await getProperties();
         setProperties(props);
-
-        const blgs = await getBlogs();
-        setBlogs(blgs.slice(0, 3)); // show top 3
-
-        const tst = await getTestimonials();
-        setTestimonials(tst.filter(t => t.approved));
+        setBlogs(blgs.slice(0, 3));
+        setTestimonials(tst.filter((t) => t.approved));
       } catch (err) {
         console.error("Home page data loading error:", err);
+      } finally {
+        setLoaded(true);
       }
     }
     loadData();
   }, []);
 
+  // Open the enquiry popup once per session, a few seconds after landing
+  useEffect(() => {
+    let seen = false;
+    try {
+      seen = sessionStorage.getItem("nh_enquiry_seen") === "1";
+    } catch {
+      seen = false;
+    }
+    if (seen) return;
+    const timer = window.setTimeout(() => {
+      setShowEnquiryModal(true);
+      try {
+        sessionStorage.setItem("nh_enquiry_seen", "1");
+      } catch {
+        // storage unavailable; popup will simply show again next visit
+      }
+    }, 8000);
+    return () => window.clearTimeout(timer);
+  }, []);
+
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    navigate(`/properties?search=${searchQuery}`);
-  };
-
-  const handleNewsletterSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newsletterEmail) return;
-    toast.success("Pranam! Thank you for subscribing to our Brijbhoomi newsletter.");
-    setNewsletterEmail("");
+    const params = new URLSearchParams();
+    if (searchQuery.trim()) params.set("search", searchQuery.trim());
+    if (activeTab !== "all") params.set("category", activeTab);
+    if (searchLocation !== "all") params.set("location", searchLocation);
+    if (searchBudget) params.set("maxPrice", searchBudget);
+    navigate(`/properties${params.toString() ? `?${params.toString()}` : ""}`);
   };
 
   const handleConsultationSubmit = async (e: React.FormEvent) => {
@@ -115,164 +253,103 @@ export const Home: React.FC = () => {
       await createLead({
         name: consultationName,
         phone: consultationPhone,
-        email: consultationEmail || "guest-callback@nikunj.com",
+        email: "guest-callback@nikunj.com",
         locationInterest: "Vrindavan / Mathura Core Belt",
         propertyType: enquiryType,
-        message: `Unified Enquiry Submission: ${enquiryType}. Safe routing active.`,
+        message: `Homepage enquiry: ${enquiryType}.`,
         preferredCallback: "As soon as possible",
         sourceUrl: window.location.href
       });
-      toast.success(`Callback request submitted for ${enquiryType}! Our advisor will contact you shortly.`);
+      toast.success("Thank you! Our advisor will call you shortly.");
       setConsultationName("");
       setConsultationPhone("");
-      setConsultationEmail("");
       setEnquiryType("Property Enquiry");
+      setShowEnquiryModal(false);
     } catch (err) {
-      toast.error("Consultation submit failed. Please try WhatsApp.");
+      toast.error("Could not submit right now. Please try WhatsApp.");
     } finally {
       setIsConsulting(false);
     }
   };
 
-  const featuredProperties = properties.filter(p => p.featured || p.newLaunch).slice(0, 3);
+  const featuredProperties = useMemo(() => {
+    const picks = properties.filter((p) => p.featured || p.newLaunch);
+    return (picks.length ? picks : properties).slice(0, 8);
+  }, [properties]);
 
-  const marketHighlights = [
-    { label: "Verified Braj Listings", value: `${properties.length || 24}+`, icon: Layers, tone: "from-[#0F6E56] to-[#0F172A]" },
-    { label: "Active Buyer Enquiries", value: "1,200+", icon: Users, tone: "from-[#FB923C] to-[#C45C1A]" },
-    { label: "Temple Proximity Audits", value: "100%", icon: ShieldCheck, tone: "from-[#6B1A2A] to-[#1A1A2E]" },
-    { label: "Site Visit Support", value: "24/7", icon: Calendar, tone: "from-[#C9A84C] to-[#C45C1A]" }
+  const spotlight = useMemo(
+    () => properties.find((p) => p.newLaunch && p.imageUrls?.length) || properties.find((p) => p.imageUrls?.length),
+    [properties]
+  );
+
+  const countByCategory = (id: string) => properties.filter((p) => p.categoryId === id).length;
+  const countByLocation = (id: string) => properties.filter((p) => p.locationId === id).length;
+  const startingPrice = properties.length ? Math.min(...properties.map((p) => p.price)) : 0;
+
+  const heroStats = [
+    { value: `${properties.length || 24}+`, label: "Verified projects" },
+    { value: `${locations.length || 7}+`, label: "Prime localities" },
+    { value: "1,200+", label: "Happy buyers" },
+    { value: "100%", label: "RERA focused" }
   ];
 
-  const advisoryJourney = [
-    "Search by temple, budget, location and property type",
-    "Compare verified listings, floor plans, documents and RERA details",
-    "Book guided Mathura-Vrindavan site visit with advisor support",
-    "Complete registry, possession and post-sale support"
-  ];
+  const scrollRail = (dir: 1 | -1) => {
+    const rail = featuredRailRef.current;
+    if (!rail) return;
+    rail.scrollBy({ left: dir * rail.clientWidth * 0.85, behavior: "smooth" });
+  };
 
-  const quickActionPanels = [
-    {
-      title: "Continue Property Search",
-      text: "Resume browsing flats, plots, villas and commercial spaces across Mathura-Vrindavan.",
-      cta: "Explore Listings",
-      href: "/properties",
-      icon: Search
-    },
-    {
-      title: "Saved Shortlist",
-      text: "Keep your favourite opportunities ready before speaking to our advisory team.",
-      cta: "View Wishlist",
-      href: "/properties",
-      icon: CheckCircle
-    },
-    {
-      title: "Compare Options",
-      text: "Compare budget, area, temple proximity, RERA status and possession readiness.",
-      cta: "Compare Now",
-      href: "/compare-properties",
-      icon: Layers
-    }
-  ];
+  const renderLeadForm = (compact = false) => (
+    <form onSubmit={handleConsultationSubmit} className="space-y-3">
+      <select
+        value={enquiryType}
+        onChange={(e) => setEnquiryType(e.target.value)}
+        aria-label="Enquiry type"
+        className="w-full rounded-lg border border-slate-200 bg-white px-3 py-3 text-sm text-slate-800 outline-none focus:border-[color:var(--brand-saffron)] focus:ring-2 focus:ring-[color:var(--brand-saffron)]/15"
+      >
+        <option>Property Enquiry</option>
+        <option>Site Visit</option>
+        <option>Commercial Space</option>
+        <option>Plots & Land</option>
+        <option>Home Loan Help</option>
+        <option>Channel Partner Enquiry</option>
+      </select>
+      <input
+        type="text"
+        required
+        value={consultationName}
+        onChange={(e) => setConsultationName(e.target.value)}
+        placeholder="Your name"
+        aria-label="Your name"
+        className="w-full rounded-lg border border-slate-200 px-3 py-3 text-sm text-slate-800 outline-none focus:border-[color:var(--brand-saffron)] focus:ring-2 focus:ring-[color:var(--brand-saffron)]/15"
+      />
+      <div className="flex overflow-hidden rounded-lg border border-slate-200 focus-within:border-[color:var(--brand-saffron)] focus-within:ring-2 focus-within:ring-[color:var(--brand-saffron)]/15">
+        <span className="flex items-center border-r border-slate-200 bg-slate-50 px-3 text-sm text-slate-500">+91</span>
+        <input
+          type="tel"
+          required
+          value={consultationPhone}
+          onChange={(e) => setConsultationPhone(e.target.value)}
+          placeholder="Mobile number"
+          aria-label="Mobile number"
+          className="w-full px-3 py-3 text-sm text-slate-800 outline-none"
+        />
+      </div>
+      <button
+        type="submit"
+        disabled={isConsulting}
+        className="w-full rounded-lg bg-[color:var(--brand-saffron)] px-4 py-3 text-sm font-bold text-white shadow-sm transition-colors hover:bg-[#d4661d] disabled:opacity-70"
+      >
+        {isConsulting ? "Submitting..." : "Get a Free Callback"}
+      </button>
+      {!compact && (
+        <p className="text-center text-[11px] text-slate-400">By submitting, you agree to be contacted by our advisors.</p>
+      )}
+    </form>
+  );
 
-  const propertyIntentCards = [
-    {
-      title: "Residential",
-      subtitle: "Flats, villas and family homes near devotional neighbourhoods.",
-      href: "/properties?category=residential-apartments",
-      image: "/projects/images/ai-buyer-residential.jpg"
-    },
-    {
-      title: "Commercial",
-      subtitle: "Shops, office frontage and investor-grade business pockets.",
-      href: "/properties?category=commercial-spaces",
-      image: "/projects/images/ai-buyer-commercial.jpg"
-    },
-    {
-      title: "Plots & Land",
-      subtitle: "Registry-ready plotted opportunities around growth corridors.",
-      href: "/properties?category=plots-and-land",
-      image: "/projects/images/ai-buyer-plots-land.jpg"
-    },
-    {
-      title: "Spiritual Retreats",
-      subtitle: "Second-home and ashram-style living near temples and ghats.",
-      href: "/properties?category=spiritual-retreats",
-      image: "/projects/images/ai-buyer-spiritual-retreat.jpg"
-    }
-  ];
-
-  const marketRows = [
-    "Rukmini Vihar residential demand near Prem Mandir and ISKCON",
-    "Mathura-Vrindavan Road commercial visibility and highway access",
-    "Govardhan and Barsana spiritual second-home demand",
-    "Verified registry, RERA and possession support for outstation buyers"
-  ];
-
-  const faqItems = [
-    {
-      question: "Is Nikunj Heritage a property portal or advisory company?",
-      answer: "Nikunj Heritage Infrabuild is positioned as a local Mathura-Vrindavan real estate advisory and infrabuild brand, helping buyers shortlist verified residential, commercial and plotted opportunities."
-    },
-    {
-      question: "Can I compare Vrindavan properties before visiting?",
-      answer: "Yes. You can use the property listing and compare flow to evaluate budget, area, location, temple proximity, amenities and documentation before booking a guided site visit."
-    },
-    {
-      question: "Which locations are important for investment?",
-      answer: "Important buyer zones include Rukmini Vihar, Prem Mandir belt, Banke Bihari access zones, Mathura-Vrindavan Road, Govardhan corridor and selected commercial pockets in Mathura."
-    },
-    {
-      question: "How do I book a site visit?",
-      answer: "Use the enquiry form, call button or WhatsApp CTA. The team can coordinate a personal consultation and guided local visit across shortlisted properties."
-    }
-  ];
-
-  // Hardcoded Static Why Choose Us values as fallback/compliment to match guidelines
-  const whyChooseUsCards = [
-    {
-      title: "Sacred Authenticity",
-      text: "Every asset is scrutinized to verify proximity metrics directly with traditional Braj hills, temples, and rivers.",
-      icon: Compass
-    },
-    {
-      title: "100% RERA Clearance",
-      text: "We only promote assets satisfying complete regulatory compliances under active UP RERA licenses.",
-      icon: FileCheck
-    },
-    {
-      title: "Direct Builder Terms",
-      text: "Zero backdoor broker markups. Rest easy with pristine transparent pricing and clean title deeds.",
-      icon: Award
-    },
-    {
-      title: "Divine Temple Proximity",
-      text: "Villas and apartments positioned elegant steps away from Prem Mandir, Banke Bihari, and ISKCON Vrindavan.",
-      icon: MapPin
-    },
-    {
-      title: "Seamless Registration",
-      text: "We guide you from initial title searches directly through complete local registry execution handovers.",
-      icon: ShieldCheck
-    },
-    {
-      title: "24/7 Brijbhoomi Desk",
-      text: "Our dedicated guides belong here in Mathura & Vrindavan, guaranteeing round-the-clock ground assistance.",
-      icon: Users
-    }
-  ];
-
-  const timelineSteps = [
-    { title: "Sacred Intention", desc: "Share your specific budget and desired vicinity near sacred temple roots with our guides." },
-    { title: "Curated Matching", desc: "Receive customized haveli villa proposals or flats fitting your specific parikrama aspirations." },
-    { title: "Shrines Proximity Assessment", desc: "We evaluate real walking distances directly to major shrines, Yamuna ghats, and access gates." },
-    { title: "UPRERA Audits", desc: "Rest assured that all legal paperwork, master deeds, and registries satisfy complete security validations." },
-    { title: "Guided Brijvas Visits", desc: "Experience vip-style, completely free personal site visits guided by local Mathura/Vrindavan natives." },
-    { title: "Hassle-Free Registry Handovers", desc: "We manage complete land registry (Dastawez) filings with Zero administrative friction." },
-    { title: "Griha Pravesh Bliss", desc: "Celebrate stepping into your divine retreat with traditional sacred sweets and priest arrangements." }
-  ];
-
-    return (
-    <div className="relative min-h-screen overflow-hidden bg-[color:var(--brand-sandstone)] text-[color:var(--brand-night)]" id="homepage-container">
+  return (
+    <div className="relative min-h-screen bg-white text-[color:var(--brand-night)]" id="homepage-container">
       <SeoHead
         title="Nikunj Heritage Infrabuild | Property in Vrindavan, Mathura & Braj Investment Opportunities"
         description="Explore verified residential apartments, luxury villas, commercial spaces, and plotted developments in Vrindavan and Mathura with Nikunj Heritage Infrabuild."
@@ -318,7 +395,7 @@ export const Home: React.FC = () => {
             "@id": `${SITE_URL}/#real-estate`,
             name: "Nikunj Heritage Infrabuild",
             url: SITE_URL,
-          logo: `${SITE_URL}/logo-512.png`,
+            logo: `${SITE_URL}/logo-512.png`,
             image: DEFAULT_OG_IMAGE,
             telephone: "+91-9719920888",
             email: "info@nikunjheritageinfrabuild.com",
@@ -332,909 +409,675 @@ export const Home: React.FC = () => {
             },
             areaServed: ["Vrindavan", "Mathura", "Govardhan", "Barsana"],
           },
+          {
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: faqItems.map((item) => ({
+              "@type": "Question",
+              name: item.question,
+              acceptedAnswer: { "@type": "Answer", text: item.answer },
+            })),
+          },
         ]}
       />
-      <SacredPropertyBackdrop />
-      <div className="relative z-10">
-      {showEnquiryWidget ? (
-          <div className="fixed left-3 right-3 top-[4.75rem] z-50 sm:left-auto sm:right-4 sm:top-20 sm:w-[calc(100vw-2rem)] sm:max-w-sm">
-          <div className="overflow-hidden rounded-2xl border border-[color:var(--brand-border)] bg-white/95 shadow-2xl backdrop-blur-md">
-            <div className="flex items-start justify-between gap-3 bg-[color:var(--brand-night)] px-4 py-3 text-white sm:px-5 sm:py-4">
-              <div>
-                <span className="block text-[10px] font-bold uppercase tracking-[0.28em] text-[color:var(--brand-gold)]">Instant Enquiry</span>
-                <h2 className="mt-1 font-serif text-lg font-bold text-[color:var(--brand-saffron)]">
-                  Book Callback On Opening
-                </h2>
-                <p className="text-xs text-white/80 mt-1">Website khulte hi enquiry visible rahegi aur page scroll bhi normal chalega.</p>
-              </div>
-              <button
-                type="button"
-                onClick={() => setShowEnquiryWidget(false)}
-                className="rounded-full bg-white/10 p-2 text-white hover:bg-white/20 transition-colors"
-                aria-label="Close enquiry widget"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            </div>
 
-            <form onSubmit={handleConsultationSubmit} className="max-h-[calc(100svh-14rem)] space-y-3 overflow-y-auto p-4 sm:max-h-none sm:p-5">
-              <div>
-                <label className="block text-[10px] uppercase font-bold text-slate-400 mb-1 font-mono">Enquiry Type</label>
-                <select
-                  value={enquiryType}
-                  onChange={(e) => setEnquiryType(e.target.value)}
-                  className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-xs text-slate-800 outline-none focus:border-[color:var(--brand-saffron)]"
-                >
-                  <option>Property Enquiry</option>
-                  <option>Site Visit</option>
-                  <option>Commercial Space</option>
-                  <option>Plots & Land</option>
-                  <option>Investment Consultation</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-[10px] uppercase font-bold text-slate-400 mb-1 font-mono">Full Name</label>
-                <input
-                  type="text"
-                  value={consultationName}
-                  onChange={(e) => setConsultationName(e.target.value)}
-                  placeholder="Your name"
-                  className="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs text-slate-800 outline-none focus:border-[color:var(--brand-saffron)]"
-                />
-              </div>
-              <div>
-                <label className="block text-[10px] uppercase font-bold text-slate-400 mb-1 font-mono">Phone Number</label>
-                <input
-                  type="tel"
-                  value={consultationPhone}
-                  onChange={(e) => setConsultationPhone(e.target.value)}
-                  placeholder="+91..."
-                  className="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs text-slate-800 outline-none focus:border-[color:var(--brand-saffron)]"
-                />
-              </div>
-              <div>
-                <label className="block text-[10px] uppercase font-bold text-slate-400 mb-1 font-mono">Email</label>
-                <input
-                  type="email"
-                  value={consultationEmail}
-                  onChange={(e) => setConsultationEmail(e.target.value)}
-                  placeholder="Optional"
-                  className="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs text-slate-800 outline-none focus:border-[color:var(--brand-saffron)]"
-                />
-              </div>
-              <button
-                type="submit"
-                disabled={isConsulting}
-                className="w-full rounded-lg bg-[color:var(--brand-saffron)] px-4 py-3 text-xs font-bold uppercase tracking-wider text-white transition-colors hover:opacity-95"
-              >
-                {isConsulting ? "Submitting..." : "Request Callback"}
-              </button>
-            </form>
-          </div>
-        </div>
-      ) : (
-        <button
-          type="button"
-          onClick={() => setShowEnquiryWidget(true)}
-          className="fixed right-4 bottom-24 z-50 inline-flex items-center gap-2 rounded-full bg-[#FB923C] px-4 py-3 text-xs font-bold uppercase tracking-wider text-white shadow-xl hover:bg-[#EA580C] transition-colors sm:bottom-6"
-        >
-          <MessageSquare className="h-4 w-4" />
-          <span>Open Enquiry</span>
-        </button>
-      )}
+      {/* 1. HERO WITH PORTAL SEARCH */}
+      <section className="relative isolate overflow-hidden" id="hero-search">
+        <img
+          src="/projects/images/mathura-vrindavan-hero-enquiry.jpg"
+          alt="Aerial view of Vrindavan"
+          className="absolute inset-0 -z-10 h-full w-full object-cover"
+          onError={(event) => { event.currentTarget.src = "/projects/images/mathura-vrindavan-aerial-livability.jpg"; }}
+        />
+        <div className="absolute inset-0 -z-10 bg-gradient-to-r from-[#0b1030]/90 via-[#0b1030]/70 to-[#0b1030]/40" />
 
-      
-      {/* 1. HERO SLIDER IMMERSIVE EXPERIENCE */}
-      <div className="relative pb-24 sm:pb-0" id="immersive-hero-slider-container">
-        <HeroSlider />
-        
-        {/* Floating Overlapping Search Bar with 3D Depth */}
-        <div className="absolute -bottom-20 left-1/2 -translate-x-1/2 z-30 w-full max-w-2xl px-4 pointer-events-auto sm:-bottom-7 sm:w-[95%]">
-          <form onSubmit={handleSearchSubmit} className="flex flex-col gap-2.5 rounded-xl border border-[color:var(--brand-border)] bg-white p-2.5 shadow-2xl transition-all duration-300 hover:shadow-[0_20px_45px_rgba(11,16,48,0.12)] sm:flex-row">
-            <div className="flex-grow flex items-center px-3 gap-2 border-b sm:border-b-0 sm:border-r border-slate-200 pb-2 sm:pb-0">
-              <Search className="h-5 w-5 shrink-0 text-[color:var(--brand-saffron)]" />
-              <input
-                type="text"
-                placeholder="Search flats near Prem Mandir, plots in Govardhan..."
-                value={searchQuery}
-                aria-label="Property Search Field"
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-transparent border-none outline-none text-slate-800 placeholder-slate-400 text-sm py-1 font-sans focus:ring-0"
-              />
-            </div>
-            <button
-              type="submit"
-              className="flex shrink-0 items-center justify-center space-x-1.5 rounded-lg bg-[color:var(--brand-saffron)] px-6 py-3 font-serif text-xs font-bold text-white transition-all hover:opacity-95 sm:text-sm"
+        <div className="mx-auto grid max-w-7xl grid-cols-1 gap-10 px-4 pb-16 pt-12 sm:px-6 sm:pt-16 lg:grid-cols-12 lg:px-8 lg:pb-24 lg:pt-20">
+          <div className="lg:col-span-8">
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+              <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-semibold text-white backdrop-blur">
+                <ShieldCheck className="h-3.5 w-3.5 text-[color:var(--brand-gold)]" />
+                Mathura–Vrindavan's trusted property advisor
+              </span>
+              <h1 className="mt-4 font-sans text-3xl font-extrabold leading-tight tracking-tight text-white sm:text-5xl" style={{ color: "#FFFFFF" }}>
+                Find your perfect property in <span className="text-[color:var(--brand-gold)]">Braj Bhoomi</span>
+              </h1>
+              <p className="mt-3 max-w-2xl text-sm text-white/80 sm:text-base">
+                Verified flats, villas, plots and commercial spaces near Prem Mandir, Banke Bihari and the Yamuna — with free site visits and registry support.
+              </p>
+            </motion.div>
+
+            {/* Search card */}
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="mt-7 overflow-hidden rounded-2xl bg-white shadow-2xl"
             >
-              <span>Explore Assets</span>
-              <ChevronRight className="h-4 w-4" />
-            </button>
-          </form>
-        </div>
-      </div>
-
-      {/* Wealth-style trust cockpit: search, proof and advisory journey */}
-      <section className="relative z-10 px-4 pb-6 pt-2 sm:pt-8" id="wealth-style-trust-cockpit">
-        <div className="mx-auto grid max-w-7xl grid-cols-1 gap-5 lg:grid-cols-12">
-          <motion.div
-            initial={{ opacity: 0, y: 28 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.55, ease: [0.21, 0.85, 0.45, 1.01] }}
-            className="lg:col-span-8 rounded-[28px] border border-[#EAD9C0] bg-white/90 p-5 shadow-2xl shadow-[#6B1A2A]/5 backdrop-blur-xl sm:p-7"
-          >
-            <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
-              <div>
-                <span className="text-[11px] font-black uppercase tracking-[0.28em]" style={{ color: "var(--brand-gold)" }}>Braj Property Command Center</span>
-                <h2 className="mt-2 font-serif text-2xl font-black leading-tight sm:text-3xl" style={{ color: "var(--brand-night)" }}>
-                  Find, compare and visit verified Mathura-Vrindavan opportunities faster.
-                </h2>
-                <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-600">
-                  Built for serious buyers of Mathura and Vrindavan property with temple-proximity filters, registry clarity, and local advisory support.
-                </p>
+              <div className="flex gap-1 overflow-x-auto border-b border-slate-100 px-2 pt-2 [scrollbar-width:none]" role="tablist" aria-label="Property type">
+                {searchTabs.map((tab) => {
+                  const active = activeTab === tab.category;
+                  return (
+                    <button
+                      key={tab.category}
+                      type="button"
+                      role="tab"
+                      aria-selected={active}
+                      onClick={() => setActiveTab(tab.category)}
+                      className={`relative shrink-0 px-4 py-3 text-sm font-bold transition-colors ${
+                        active ? "text-[color:var(--brand-saffron)]" : "text-slate-500 hover:text-slate-800"
+                      }`}
+                    >
+                      {tab.label}
+                      {active && <span className="absolute inset-x-3 bottom-0 h-0.5 rounded-full bg-[color:var(--brand-saffron)]" />}
+                    </button>
+                  );
+                })}
               </div>
-              <Link
-                to="/compare-properties"
-                className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-[color:var(--brand-night)] px-5 py-3 text-xs font-black uppercase tracking-wider text-white transition-all hover:-translate-y-0.5 hover:opacity-95"
-              >
-                Compare Now
-                <ChevronRight className="h-4 w-4" />
-              </Link>
-            </div>
-
-            <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-              {marketHighlights.map((item, index) => {
-                const Icon = item.icon;
-                return (
-                  <motion.div
-                    key={item.label}
-                    initial={{ opacity: 0, y: 22 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.45, delay: index * 0.08 }}
-                    className="group overflow-hidden rounded-2xl border border-slate-100 bg-white p-4 shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl"
+              <form onSubmit={handleSearchSubmit} className="grid grid-cols-1 gap-2 p-3 sm:grid-cols-12 sm:gap-0 sm:p-2">
+                <label className="flex items-center gap-2 rounded-lg border border-slate-200 px-3 sm:col-span-4 sm:rounded-none sm:border-0 sm:border-r">
+                  <Search className="h-5 w-5 shrink-0 text-slate-400" />
+                  <input
+                    type="text"
+                    placeholder="Search project, locality or landmark"
+                    value={searchQuery}
+                    aria-label="Search properties"
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full bg-transparent py-3 text-sm text-slate-800 outline-none placeholder:text-slate-400"
+                  />
+                </label>
+                <label className="flex items-center gap-2 rounded-lg border border-slate-200 px-3 sm:col-span-3 sm:rounded-none sm:border-0 sm:border-r">
+                  <MapPin className="h-4 w-4 shrink-0 text-slate-400" />
+                  <select
+                    value={searchLocation}
+                    onChange={(e) => setSearchLocation(e.target.value)}
+                    aria-label="Location"
+                    className="w-full bg-transparent py-3 text-sm text-slate-800 outline-none"
                   >
-                    <div className={`mb-4 flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br ${item.tone} text-white shadow-lg`}>
-                      <Icon className="h-5 w-5" />
-                    </div>
-                    <div className="font-serif text-2xl font-black text-[#0F172A]">{item.value}</div>
-                    <div className="mt-1 text-[11px] font-bold uppercase tracking-wider text-slate-500">{item.label}</div>
-                  </motion.div>
-                );
-              })}
-            </div>
-          </motion.div>
+                    <option value="all">All localities</option>
+                    {locations.map((loc) => (
+                      <option key={loc.id} value={loc.id}>{loc.name}</option>
+                    ))}
+                  </select>
+                </label>
+                <label className="flex items-center gap-2 rounded-lg border border-slate-200 px-3 sm:col-span-3 sm:rounded-none sm:border-0">
+                  <Wallet className="h-4 w-4 shrink-0 text-slate-400" />
+                  <select
+                    value={searchBudget}
+                    onChange={(e) => setSearchBudget(e.target.value)}
+                    aria-label="Budget"
+                    className="w-full bg-transparent py-3 text-sm text-slate-800 outline-none"
+                  >
+                    {budgetOptions.map((b) => (
+                      <option key={b.label} value={b.value}>{b.label}</option>
+                    ))}
+                  </select>
+                </label>
+                <button
+                  type="submit"
+                  className="flex items-center justify-center gap-2 rounded-lg bg-[color:var(--brand-saffron)] px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-[#d4661d] sm:col-span-2"
+                >
+                  <Search className="h-4 w-4" />
+                  Search
+                </button>
+              </form>
+            </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, x: 32 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.6, ease: [0.21, 0.85, 0.45, 1.01] }}
-            className="lg:col-span-4 rounded-[28px] bg-[color:var(--brand-night)] p-5 text-white shadow-2xl shadow-[#0F172A]/20 sm:p-7"
-          >
-            <span className="text-[11px] font-black uppercase tracking-[0.28em] text-[#FACC15]">Buyer Flow</span>
-            <h3 className="mt-2 font-serif text-2xl font-black">From online search to site visit</h3>
-            <div className="mt-6 space-y-4">
-              {advisoryJourney.map((step, index) => (
-                <div key={step} className="flex gap-3">
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#FACC15]/40 bg-white/10 text-xs font-black text-[#FACC15]">
-                    {index + 1}
-                  </div>
-                  <p className="text-sm leading-6 text-white/80">{step}</p>
-                </div>
+            <div className="mt-4 flex flex-wrap items-center gap-2">
+              <span className="text-xs font-semibold text-white/70">Popular:</span>
+              {popularSearches.map((item) => (
+                <Link
+                  key={item.label}
+                  to={item.href}
+                  className="rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs text-white backdrop-blur transition-colors hover:bg-white/20"
+                >
+                  {item.label}
+                </Link>
               ))}
             </div>
-            <Link
-              to="/contact-us"
-              className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#FB923C] px-5 py-3 text-xs font-black uppercase tracking-wider text-white transition-all hover:bg-[#EA580C]"
-            >
-              Book Free Advisory
-              <ChevronRight className="h-4 w-4" />
-            </Link>
-          </motion.div>
+          </div>
+
+          {/* Hero lead form (desktop) */}
+          <motion.aside
+            initial={{ opacity: 0, x: 24 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, delay: 0.15 }}
+            className="hidden self-end rounded-2xl bg-white p-6 shadow-2xl lg:col-span-4 lg:block"
+          >
+            <h2 className="font-sans text-lg font-extrabold text-[color:var(--brand-night)]">Book a free site visit</h2>
+            <p className="mb-4 mt-1 text-sm text-slate-500">Get a call back from a local advisor within 30 minutes.</p>
+            {renderLeadForm()}
+          </motion.aside>
+        </div>
+
+        {/* Stats strip */}
+        <div className="border-t border-white/10 bg-[#0b1030]/70 backdrop-blur">
+          <div className="mx-auto grid max-w-7xl grid-cols-2 divide-white/10 px-4 sm:px-6 md:grid-cols-4 md:divide-x lg:px-8">
+            {heroStats.map((stat) => (
+              <div key={stat.label} className="px-2 py-4 text-center md:py-5">
+                <div className="text-xl font-extrabold text-white sm:text-2xl">{stat.value}</div>
+                <div className="text-xs text-white/60">{stat.label}</div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
-      <section className="relative z-10 px-4 py-8" id="wealth-style-quick-actions">
-        <div className="mx-auto grid max-w-7xl grid-cols-1 gap-4 md:grid-cols-3">
-          {quickActionPanels.map((panel, index) => {
-            const Icon = panel.icon;
+      {/* 2. BROWSE BY PROPERTY TYPE */}
+      <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8" id="categories-grid-section">
+        <SectionHeader
+          eyebrow="Explore"
+          title="Browse by property type"
+          subtitle="Homes, investments and retreats across Mathura, Vrindavan, Govardhan and Barsana."
+          action={{ label: "View all properties", href: "/properties" }}
+        />
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5 sm:gap-4">
+          {(categories.length ? categories : searchTabs.slice(1).map((t) => ({ id: t.category, slug: t.category, name: t.label, imageUrl: "" } as Category))).map((cat) => {
+            const Icon = categoryIcons[cat.slug] || Building2;
+            const count = countByCategory(cat.id);
             return (
-              <motion.div
-                key={panel.title}
-                initial={{ opacity: 0, y: 22 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-80px" }}
-                transition={{ duration: 0.45, delay: index * 0.08 }}
-                className="group rounded-3xl border border-[color:var(--brand-border)] bg-white p-5 shadow-sm transition-all hover:-translate-y-1 hover:shadow-2xl hover:shadow-[rgba(11,16,48,0.1)]"
+              <Link
+                key={cat.id}
+                to={`/properties?category=${cat.id}`}
+                className="group flex flex-col items-start gap-3 rounded-2xl border border-slate-200 bg-white p-4 transition-all hover:-translate-y-0.5 hover:border-[color:var(--brand-saffron)]/50 hover:shadow-lg sm:p-5"
               >
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[color:var(--brand-saffron)]/10 text-[color:var(--brand-saffron)]">
-                    <Icon className="h-5 w-5" />
-                  </div>
-                  <Link to={panel.href} className="text-xs font-black uppercase tracking-wider" style={{ color: "var(--brand-saffron)" }}>
-                    {panel.cta}
-                  </Link>
+                <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-[color:var(--brand-saffron)]/10 text-[color:var(--brand-saffron)] transition-colors group-hover:bg-[color:var(--brand-saffron)] group-hover:text-white">
+                  <Icon className="h-5 w-5" />
+                </span>
+                <div>
+                  <h3 className="font-sans text-sm font-bold text-[color:var(--brand-night)] sm:text-base">{cat.name}</h3>
+                  <p className="mt-0.5 text-xs text-slate-500">
+                    {loaded ? `${count} ${count === 1 ? "property" : "properties"}` : "Loading…"}
+                  </p>
                 </div>
-                <h3 className="mt-5 font-serif text-xl font-black text-[color:var(--brand-night)]">{panel.title}</h3>
-                <p className="mt-2 text-sm leading-6 text-slate-500">{panel.text}</p>
-              </motion.div>
+              </Link>
             );
           })}
         </div>
       </section>
 
-      <section className="relative z-10 px-4 py-8" id="wealth-style-property-intent">
-        <div className="mx-auto max-w-7xl">
-          <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <span className="text-[11px] font-black uppercase tracking-[0.28em]" style={{ color: "var(--brand-saffron)" }}>Choose Property Type</span>
-              <h2 className="mt-2 font-serif text-3xl font-black text-[color:var(--brand-night)] sm:text-4xl">Explore by buyer intent</h2>
+      {/* 3. FEATURED PROJECTS RAIL */}
+      <section className="bg-slate-50 py-14" id="featured-assets-sliders">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="flex items-end justify-between gap-4">
+            <div className="flex-1">
+              <SectionHeader
+                eyebrow="Handpicked"
+                title="Featured projects"
+                subtitle={startingPrice ? `Verified listings starting at ${formatPrice(startingPrice)}` : "Verified listings across Braj"}
+              />
             </div>
-            <Link to="/properties" className="inline-flex w-fit items-center gap-2 rounded-full bg-[color:var(--brand-night)] px-5 py-3 text-xs font-black uppercase tracking-wider text-white">
-              View All Properties
+            <div className="mb-8 hidden gap-2 sm:flex">
+              <button type="button" onClick={() => scrollRail(-1)} aria-label="Previous projects" className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-sm hover:bg-slate-100">
+                <ChevronLeft className="h-5 w-5" />
+              </button>
+              <button type="button" onClick={() => scrollRail(1)} aria-label="Next projects" className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-sm hover:bg-slate-100">
+                <ChevronRight className="h-5 w-5" />
+              </button>
+            </div>
+          </div>
+
+          {!loaded ? (
+            <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <div key={i} className="h-96 animate-pulse rounded-2xl bg-slate-200" />
+              ))}
+            </div>
+          ) : featuredProperties.length === 0 ? (
+            <p className="rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center text-sm text-slate-500">
+              New projects are being added. <Link to="/contact-us" className="font-bold text-[color:var(--brand-saffron)]">Talk to an advisor</Link> for current inventory.
+            </p>
+          ) : (
+            <div
+              ref={featuredRailRef}
+              className="-mx-4 flex snap-x snap-mandatory gap-5 overflow-x-auto px-4 pb-4 [scrollbar-width:none] sm:mx-0 sm:px-0"
+            >
+              {featuredProperties.map((prop) => (
+                <div key={prop.id} className="w-[85%] shrink-0 snap-start sm:w-[calc(50%-10px)] lg:w-[calc(33.333%-14px)]">
+                  <PropertyCard property={prop} />
+                </div>
+              ))}
+            </div>
+          )}
+
+          <div className="mt-6 text-center">
+            <Link to="/properties" className="inline-flex items-center gap-2 rounded-full border border-[color:var(--brand-night)] px-6 py-2.5 text-sm font-bold text-[color:var(--brand-night)] transition-colors hover:bg-[color:var(--brand-night)] hover:text-white">
+              Explore all projects
               <ChevronRight className="h-4 w-4" />
             </Link>
           </div>
+        </div>
+      </section>
 
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {propertyIntentCards.map((card, index) => (
-              <motion.div
-                key={card.title}
-                initial={{ opacity: 0, y: 26 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-80px" }}
-                transition={{ duration: 0.5, delay: index * 0.07 }}
-              >
-                  <Link to={card.href} className="group block overflow-hidden rounded-[28px] bg-[color:var(--brand-night)] shadow-xl shadow-[#0F172A]/10">
-                  <div className="relative h-56 overflow-hidden">
-                    <img src={card.image} alt={card.title} className="h-full w-full object-cover opacity-75 transition-transform duration-700 group-hover:scale-110" onError={(event) => { event.currentTarget.src = "/projects/images/ai-buyer-residential.jpg"; }} />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[color:var(--brand-night)] via-[color:var(--brand-night)]/40 to-transparent" />
-                    <div className="absolute bottom-0 left-0 right-0 p-5 text-white">
-                      <h3 className="font-serif text-2xl font-black">{card.title}</h3>
-                      <p className="mt-2 text-sm leading-6 text-white/80">{card.subtitle}</p>
+      {/* 4. SPOTLIGHT / NEW LAUNCH */}
+      {spotlight && (
+        <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8" id="project-spotlight">
+          <div className="grid overflow-hidden rounded-3xl bg-[color:var(--brand-night)] text-white shadow-xl lg:grid-cols-2">
+            <div className="relative min-h-[16rem] lg:min-h-[24rem]">
+              <img
+                src={spotlight.imageUrls[0]}
+                alt={spotlight.title}
+                className="absolute inset-0 h-full w-full object-cover"
+                onError={(event) => { event.currentTarget.src = "/projects/images/ai-buyer-residential.jpg"; }}
+              />
+              <span className="absolute left-4 top-4 rounded-full bg-[color:var(--brand-saffron)] px-3 py-1 text-xs font-bold uppercase tracking-wide text-white">
+                {spotlight.newLaunch ? "New Launch" : "Spotlight"}
+              </span>
+            </div>
+            <div className="flex flex-col justify-center p-6 sm:p-10">
+              <span className="text-xs font-bold uppercase tracking-[0.18em] text-[color:var(--brand-gold)]">Project spotlight</span>
+              <h2 className="mt-2 font-sans text-2xl font-extrabold sm:text-3xl" style={{ color: "#FFFFFF" }}>{spotlight.title}</h2>
+              <p className="mt-3 line-clamp-3 text-sm leading-6 text-white/75">{spotlight.description}</p>
+              <dl className="mt-6 grid grid-cols-3 gap-3 border-y border-white/10 py-5">
+                <div>
+                  <dt className="text-xs text-white/50">Starting at</dt>
+                  <dd className="mt-1 text-lg font-extrabold text-[color:var(--brand-gold)]">{formatPrice(spotlight.price)}</dd>
+                </div>
+                <div>
+                  <dt className="text-xs text-white/50">Size</dt>
+                  <dd className="mt-1 text-lg font-extrabold">{spotlight.area} sq ft</dd>
+                </div>
+                <div>
+                  <dt className="text-xs text-white/50">Possession</dt>
+                  <dd className="mt-1 text-lg font-extrabold">{spotlight.possessionDate || spotlight.status}</dd>
+                </div>
+              </dl>
+              <div className="mt-6 flex flex-wrap gap-3">
+                <Link to={`/properties/${spotlight.slug}`} className="inline-flex items-center gap-2 rounded-lg bg-[color:var(--brand-saffron)] px-5 py-3 text-sm font-bold text-white hover:bg-[#d4661d]">
+                  View project
+                  <ChevronRight className="h-4 w-4" />
+                </Link>
+                {spotlight.brochureUrl && (
+                  <a href={spotlight.brochureUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-lg border border-white/25 px-5 py-3 text-sm font-bold text-white hover:bg-white/10">
+                    <FileText className="h-4 w-4" />
+                    Brochure
+                  </a>
+                )}
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* 5. POPULAR LOCALITIES */}
+      <section className="mx-auto max-w-7xl px-4 pb-14 sm:px-6 lg:px-8" id="locations-grid">
+        <SectionHeader
+          eyebrow="Localities"
+          title="Popular localities in Braj"
+          subtitle="Choose a home near Banke Bihari, Prem Mandir, the Govardhan Parikrama or Barsana hills."
+        />
+        {!loaded ? (
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="h-56 animate-pulse rounded-2xl bg-slate-200" />
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {locations.slice(0, 8).map((loc) => {
+              const count = countByLocation(loc.id);
+              return (
+                <Link
+                  key={loc.id}
+                  to={`/properties?location=${loc.id}`}
+                  className="group overflow-hidden rounded-2xl border border-slate-200 bg-white transition-all hover:-translate-y-0.5 hover:shadow-lg"
+                >
+                  <div className="relative h-36 overflow-hidden bg-slate-100">
+                    <img
+                      src={loc.imageUrl}
+                      alt={loc.name}
+                      loading="lazy"
+                      referrerPolicy="no-referrer"
+                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      onError={(event) => { event.currentTarget.src = "/projects/images/ai-buyer-plots-land.jpg"; }}
+                    />
+                    <span className="absolute left-3 top-3 rounded-full bg-white/95 px-2.5 py-1 text-[11px] font-bold text-[color:var(--brand-night)]">
+                      {loc.city}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between gap-3 p-4">
+                    <div className="min-w-0">
+                      <h3 className="truncate font-sans text-sm font-bold text-[color:var(--brand-night)]">{loc.name}</h3>
+                      <p className="mt-0.5 text-xs text-slate-500">{count} {count === 1 ? "property" : "properties"}</p>
                     </div>
+                    <ChevronRight className="h-4 w-4 shrink-0 text-slate-400 transition-transform group-hover:translate-x-0.5 group-hover:text-[color:var(--brand-saffron)]" />
                   </div>
                 </Link>
-              </motion.div>
-            ))}
+              );
+            })}
           </div>
-        </div>
-      </section>
-
-      {/* 2. DYNAMIC CATEGORIES GRID */}
-      <section className="py-10 sm:py-16 px-4 max-w-7xl mx-auto scroll-mt-20" id="categories-grid-section">
-        <div className="text-center max-w-3xl mx-auto mb-12">
-              <span className="text-[11px] uppercase tracking-widest font-bold font-mono" style={{ color: "var(--brand-saffron)" }}>Select Your Vibe</span>
-          <h2 className="font-serif text-2xl sm:text-4xl font-bold mt-1 shadow-sm" style={{ color: "var(--brand-night)" }}>
-            Property categories for Mathura and Vrindavan buyers
-          </h2>
-          <p className="text-xs sm:text-sm text-slate-500 mt-2 max-w-xl mx-auto leading-relaxed">
-            Browse residential, commercial, and spiritual retreat opportunities with the context buyers actually ask for.
-          </p>
-        </div>
-
-        {categories.length === 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <div key={i} className="h-32 bg-slate-300 animate-pulse rounded-lg" />
-            ))}
-          </div>
-        ) : (
-          <ScrollFade direction="up">
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5">
-              {categories.map((cat) => (
-                <ThreeDCard key={cat.id} className="h-40">
-                  <Link
-                    to={`/properties?category=${cat.slug}`}
-                    className="group relative h-full w-full rounded-xl overflow-hidden flex flex-col justify-end p-4 block"
-                  >
-                    <div className="absolute inset-0 bg-[#1A1A2E] z-0">
-                      <img
-                        src={cat.imageUrl}
-                        alt={cat.name}
-                        loading="lazy"
-                        referrerPolicy="no-referrer"
-                        className="w-full h-full object-cover opacity-65 group-hover:scale-110 transition-transform duration-500"
-                        onError={(event) => { event.currentTarget.src = "/projects/images/ai-buyer-residential.jpg"; }}
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A2E] via-[#1A1A2E]/40 to-transparent"></div>
-                    </div>
-                    <div className="relative z-10 text-left">
-                      <span className="text-[10px] text-[color:var(--brand-gold)] font-mono font-semibold uppercase">{cat.slug.replace("-", " ")}</span>
-                      <h3 className="font-serif font-bold text-sm sm:text-base tracking-wide leading-tight text-white">
-                        {cat.name}
-                      </h3>
-                    </div>
-                  </Link>
-                </ThreeDCard>
-              ))}
-            </div>
-          </ScrollFade>
         )}
       </section>
 
-      {/* 3. BROCHURE + VIDEO STORYTELLING */}
-      <section className="py-12 sm:py-16 px-4" id="brochure-media-section">
-        <div className="mx-auto max-w-7xl">
-          <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+      {/* 6. BROWSE BY BUDGET */}
+      <section className="mx-auto max-w-7xl px-4 pb-14 sm:px-6 lg:px-8" id="browse-by-budget">
+        <div className="rounded-3xl bg-gradient-to-br from-[#fff4ea] to-[#fdf8ef] p-6 sm:p-8">
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
             <div>
-              <span className="text-[11px] font-black uppercase tracking-[0.28em]" style={{ color: "var(--brand-saffron)" }}>Why Vrindavan</span>
-              <h2 className="mt-2 font-serif text-3xl font-black text-[#0F172A] sm:text-4xl">
-                A destination-focused view of Vrindavan’s spiritual and investment momentum
-              </h2>
+              <h2 className="font-sans text-xl font-extrabold text-[color:var(--brand-night)] sm:text-2xl">Shop by budget</h2>
+              <p className="mt-1 text-sm text-slate-600">Jump straight to properties that fit your plan.</p>
             </div>
-            <p className="max-w-2xl text-sm leading-7 text-slate-600">
-              Shortlist guidance for buyers comparing Mathura and Vrindavan properties, with temple access, trust signals, and a direct path to enquiry.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
-            <div className="lg:col-span-7 overflow-hidden rounded-[28px] border border-[#C9A84C]/20 bg-white shadow-sm">
-              <div className="grid lg:grid-cols-[1.05fr_0.95fr]">
-                <div className="relative min-h-[26rem] overflow-hidden bg-[#6B1A2A] text-white">
-                  <img
-                    src={homeMediaShowcase.overview.gallery[0].image}
-                    alt={homeMediaShowcase.overview.gallery[0].title}
-                    className="absolute inset-0 h-full w-full object-cover opacity-40"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A]/95 via-[#6B1A2A]/55 to-[#6B1A2A]/15" />
-                  <div className="relative flex h-full flex-col justify-end p-6 sm:p-8">
-                    <span className="text-[11px] uppercase tracking-[0.28em] text-[color:var(--brand-gold)] font-bold">Market Lens</span>
-                    <h3 className="mt-3 max-w-xl font-serif text-3xl font-black leading-tight text-white">
-                      {homeMediaShowcase.overview.title}
-                    </h3>
-                    <p className="mt-4 max-w-xl text-sm leading-7 text-white/85">
-                      {homeMediaShowcase.overview.summary}
-                    </p>
-                    <div className="mt-6 grid gap-3 sm:grid-cols-2">
-                      {homeMediaShowcase.overview.highlights.map((item) => (
-                        <div key={item} className="flex items-start gap-2 rounded-2xl border border-white/10 bg-white/10 p-3 text-sm text-white/90 backdrop-blur-sm">
-                          <CheckCircle className="mt-0.5 h-4 w-4 shrink-0 text-[#F6D7A8]" />
-                          <span>{item}</span>
-                        </div>
-                      ))}
-                    </div>
-                    <div className="mt-6 flex flex-wrap gap-3">
-                      <a href={homeMediaShowcase.overview.brochureUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-xs font-black uppercase tracking-wider text-[color:var(--brand-night)]">
-                        <FileText className="h-4 w-4" />
-                        <span>Open Docket</span>
-                      </a>
-                      <a href="/contact-us" className="inline-flex items-center gap-2 rounded-full border border-white/20 px-4 py-2 text-xs font-black uppercase tracking-wider text-white">
-                        <Layers className="h-4 w-4" />
-                        <span>Request Consultation</span>
-                      </a>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="grid gap-4 bg-[#F8FAFC] p-5 sm:p-6">
-                  <div className="rounded-[24px] border border-[#C9A84C]/20 bg-white p-5 shadow-sm">
-                    <span className="text-[11px] font-black uppercase tracking-[0.28em] text-[#C45C1A]">Nikunj Promise</span>
-                    <h3 className="mt-3 font-serif text-2xl font-black leading-tight text-[#0F172A]">
-                      Company-first, buyer-first, and rooted in Braj context.
-                    </h3>
-                    <p className="mt-3 text-sm leading-7 text-slate-600">
-                      The homepage should speak about Nikunj Heritage, local market clarity, and serious buyer guidance before it speaks about any single asset.
-                    </p>
-                    <div className="mt-4 flex items-center gap-2 rounded-2xl bg-[#0F6E56]/10 px-4 py-3 text-sm font-semibold text-[#0F6E56]">
-                      <Sparkles className="h-4 w-4 shrink-0" />
-                      <span>Temple access, registry clarity, and investor confidence in one view.</span>
-                    </div>
-                    <a href="/about-us" className="mt-5 inline-flex w-fit items-center gap-2 rounded-full bg-[color:var(--brand-saffron)] px-4 py-2 text-xs font-black uppercase tracking-wider text-white">
-                      <PlayCircle className="h-4 w-4" />
-                      <span>About Nikunj Heritage</span>
-                    </a>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    {homeMediaShowcase.overview.gallery.slice(1).map((plan) => (
-                      <div key={plan.title} className="overflow-hidden rounded-[24px] border border-[#C9A84C]/15 bg-white shadow-sm">
-                        <div className="aspect-[4/3] overflow-hidden bg-[#F6F0E7]">
-                          <img src={plan.image} alt={plan.title} className="h-full w-full object-cover" />
-                        </div>
-                        <div className="p-4">
-                          <h4 className="font-serif text-base font-bold text-[#6B1A2A]">{plan.title}</h4>
-                          <p className="mt-1 text-sm text-slate-500">{plan.subtitle}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="lg:col-span-5 grid gap-4">
-              {homeMediaShowcase.overview.gallery.map((item, index) => (
-                <div key={item.title} className="overflow-hidden rounded-[24px] border border-[#C9A84C]/15 bg-white shadow-sm">
-                  <div className="grid grid-cols-[1.05fr_0.95fr]">
-                    <div className="p-5 sm:p-6">
-                      <div className="mb-3 flex items-center gap-2 text-[11px] font-black uppercase tracking-[0.28em] text-[#0E7B6C]">
-                        <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-[#0E7B6C]/10 text-[11px]">{index + 1}</span>
-                        <span>{index === 0 ? "Cover Story" : "Supporting Sheet"}</span>
-                      </div>
-                      <h3 className="font-serif text-2xl font-black leading-tight text-[color:var(--brand-night)]">{item.title}</h3>
-                      <p className="mt-2 text-sm leading-7 text-slate-600">{item.subtitle}</p>
-                    </div>
-                    <div className="min-h-[11rem] bg-[#F6F0E7]">
-                      <img src={item.image} alt={item.title} className="h-full w-full object-cover" />
-                    </div>
-                  </div>
-                </div>
+            <div className="flex flex-wrap gap-2">
+              {budgetOptions.slice(1).map((b) => (
+                <Link
+                  key={b.value}
+                  to={`/properties?maxPrice=${b.value}`}
+                  className="rounded-full border border-[color:var(--brand-saffron)]/30 bg-white px-4 py-2 text-sm font-semibold text-[color:var(--brand-night)] transition-colors hover:border-[color:var(--brand-saffron)] hover:bg-[color:var(--brand-saffron)] hover:text-white"
+                >
+                  {b.label}
+                </Link>
               ))}
             </div>
           </div>
         </div>
       </section>
 
-      <section className="relative overflow-hidden bg-white px-4 py-14" id="wealth-style-right-property-guide">
-        <div className="absolute inset-y-0 right-0 hidden w-1/2 bg-[#F8FAFC] lg:block" />
-        <div className="relative mx-auto grid max-w-7xl grid-cols-1 gap-8 lg:grid-cols-12 lg:items-center">
-          <motion.div
-            initial={{ opacity: 0, x: -34 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.6 }}
-            className="lg:col-span-5"
-          >
-            <span className="text-[11px] font-black uppercase tracking-[0.28em]" style={{ color: "var(--brand-saffron)" }}>Find The Right Property</span>
-            <h2 className="mt-3 font-serif text-3xl font-black leading-tight text-[color:var(--brand-night)] sm:text-5xl">
-              Advisory-first buying for Mathura and Vrindavan.
-            </h2>
-            <p className="mt-5 text-sm leading-7 text-slate-600">
-              The experience helps buyers move from search to shortlist to comparison. Every step is shaped around temple access, registry clarity, and local Braj market realities.
-            </p>
-            <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-              <Link to="/properties" className="inline-flex items-center justify-center gap-2 rounded-full bg-[color:var(--brand-saffron)] px-6 py-3 text-xs font-black uppercase tracking-wider text-white">
-                Search Properties
+      {/* 7. WHY CHOOSE US */}
+      <section className="border-y border-slate-100 bg-slate-50 py-14" id="why-choose-us-section">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionHeader
+            eyebrow="Why Nikunj Heritage"
+            title="Buy with confidence, not guesswork"
+            subtitle="A local team that knows every lane of Mathura and Vrindavan."
+          />
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {whyChooseUs.map((card) => {
+              const Icon = card.icon;
+              return (
+                <div key={card.title} className="flex gap-4 rounded-2xl border border-slate-200 bg-white p-5">
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[color:var(--brand-verified)]/10 text-[color:var(--brand-verified)]">
+                    <Icon className="h-5 w-5" />
+                  </span>
+                  <div>
+                    <h3 className="font-sans text-base font-bold text-[color:var(--brand-night)]">{card.title}</h3>
+                    <p className="mt-1 text-sm leading-6 text-slate-500">{card.text}</p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* 8. HOW IT WORKS */}
+      <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8" id="how-we-work-timeline">
+        <SectionHeader eyebrow="Simple process" title="How it works" />
+        <ol className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {howItWorks.map((step, idx) => (
+            <li key={step.title} className="relative rounded-2xl border border-slate-200 bg-white p-5">
+              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[color:var(--brand-night)] text-sm font-extrabold text-white">
+                {idx + 1}
+              </span>
+              <h3 className="mt-4 font-sans text-base font-bold text-[color:var(--brand-night)]">{step.title}</h3>
+              <p className="mt-1 text-sm leading-6 text-slate-500">{step.text}</p>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      {/* 9. BUYER TOOLS */}
+      <section className="mx-auto max-w-7xl px-4 pb-14 sm:px-6 lg:px-8" id="buyer-tools">
+        <SectionHeader eyebrow="Tools" title="Plan your purchase" subtitle="Free tools to help you decide faster." />
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+          {[
+            { title: "ROI & EMI Calculator", text: "Estimate returns, rental yield and monthly EMI.", href: "/roi-calculator", icon: Calculator },
+            { title: "Compare Properties", text: "Put up to 3 projects side by side on price, size and location.", href: "/compare-properties", icon: Scale },
+            { title: "Home Loan Partners", text: "See current rates from banks and NBFCs.", href: "/finance", icon: TrendingUp }
+          ].map((tool) => {
+            const Icon = tool.icon;
+            return (
+              <Link
+                key={tool.title}
+                to={tool.href}
+                className="group flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-5 transition-all hover:border-[color:var(--brand-saffron)]/50 hover:shadow-lg"
+              >
+                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[color:var(--brand-night)] text-white">
+                  <Icon className="h-5 w-5" />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <h3 className="font-sans text-base font-bold text-[color:var(--brand-night)]">{tool.title}</h3>
+                  <p className="mt-0.5 text-sm text-slate-500">{tool.text}</p>
+                </div>
+                <ChevronRight className="h-5 w-5 shrink-0 text-slate-300 transition-transform group-hover:translate-x-0.5 group-hover:text-[color:var(--brand-saffron)]" />
+              </Link>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* 10. TESTIMONIALS */}
+      {testimonials.length > 0 && (
+        <section className="bg-[color:var(--brand-night)] py-14 text-white" id="testimonials-section">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <span className="text-xs font-bold uppercase tracking-[0.18em] text-[color:var(--brand-gold)]">Testimonials</span>
+                <h2 className="mt-1.5 font-sans text-2xl font-extrabold tracking-tight sm:text-3xl" style={{ color: "#FFFFFF" }}>What our buyers say</h2>
+              </div>
+              <Link to="/testimonials" className="inline-flex w-fit items-center gap-1 text-sm font-bold text-[color:var(--brand-gold)] hover:underline">
+                Read all reviews
                 <ChevronRight className="h-4 w-4" />
               </Link>
-              <Link to="/contact-us" className="inline-flex items-center justify-center gap-2 rounded-full border border-[color:var(--brand-border)] bg-white px-6 py-3 text-xs font-black uppercase tracking-wider text-[color:var(--brand-night)]">
-                Talk To Advisor
-              </Link>
             </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, x: 34 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.6 }}
-            className="lg:col-span-7"
-          >
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              {marketRows.map((item, index) => (
-                <div key={item} className="rounded-3xl border border-slate-100 bg-white p-5 shadow-sm">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#0F6E56]/10 text-[#0F6E56]">
-                    {index + 1}
-                  </div>
-                  <p className="mt-4 text-sm font-semibold leading-7 text-slate-700">{item}</p>
-                </div>
-              ))}
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* 4. DYNAMIC FEATURED ASSETS (CAROUSEL GRID) */}
-      <section className="py-10 sm:py-16 bg-[#FAF6F0]/60 border-y border-[#C9A84C]/10 scroll-mt-20" id="featured-assets-sliders">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-10">
-            <div>
-              <span className="text-[11px] uppercase tracking-widest text-[#C45C1A] font-bold font-mono">Premium Hand-Pick</span>
-              <h2 className="font-serif text-2xl sm:text-3xl text-[#6B1A2A] font-bold mt-1">
-                Featured Heritage Listings
-              </h2>
-            </div>
-            <Link
-              to="/properties?featured=true"
-              className="mt-3 sm:mt-0 text-xs sm:text-sm font-semibold text-[#C45C1A] hover:text-[#6B1A2E] flex items-center space-x-1 underline underline-offset-4"
-            >
-              <span>View All Premium Properties</span>
-              <ChevronRight className="h-4 w-4" />
-            </Link>
-          </div>
-
-          {featuredProperties.length === 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {Array.from({ length: 3 }).map((_, i) => (
-                <div key={i} className="h-72 bg-slate-300 animate-pulse rounded-lg" />
-              ))}
-            </div>
-          ) : (
-            <ScrollFade direction="up">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {featuredProperties.map((prop) => (
-                  <PropertyCard key={prop.id} property={prop} />
-                ))}
-              </div>
-            </ScrollFade>
-          )}
-        </div>
-      </section>
-
-      {/* 5. DYNAMIC LOCATIONS (AREAS GRID) */}
-      <section className="py-10 sm:py-16 px-4 max-w-7xl mx-auto scroll-mt-20" id="locations-grid">
-        <div className="text-center max-w-3xl mx-auto mb-12">
-          <span className="text-[11px] uppercase tracking-widest text-[#0E7B6C] font-bold font-mono">Pilgrim Corridors</span>
-          <h2 className="font-serif text-2xl sm:text-4xl text-[#6B1A2A] font-bold mt-1">
-            Properties by Divine Location
-          </h2>
-          <p className="text-xs sm:text-sm text-slate-500 mt-2 max-w-xl mx-auto">
-            Choose your residence near historical landmarks including Banke Bihari Temple, Prem Mandir, Govardhan Parikrama or barsana hills.
-          </p>
-        </div>
-
-        {locations.length === 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            {Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="h-40 bg-slate-200 animate-pulse rounded-lg" />
-            ))}
-          </div>
-        ) : (
-          <ScrollFade direction="up">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {locations.map((loc) => (
-                <ThreeDCard key={loc.id} className="h-48">
-                  <Link
-                    to={`/properties?location=${loc.slug}`}
-                    className="group relative h-full w-full rounded-xl overflow-hidden pb-4 px-4 flex flex-col justify-end block"
-                  >
-                    <div className="absolute inset-0 bg-[#1A1A2E] z-0">
-                      <img
-                        src={loc.imageUrl}
-                        alt={loc.name}
-                        loading="lazy"
-                        referrerPolicy="no-referrer"
-                        className="w-full h-full object-cover opacity-60 group-hover:scale-110 transition-transform duration-500"
-                        onError={(event) => { event.currentTarget.src = "/projects/images/ai-buyer-plots-land.jpg"; }}
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/35 to-transparent"></div>
-                    </div>
-                    <div className="relative z-10 text-white text-left">
-                      <span className="text-[9px] uppercase tracking-widest font-bold font-mono text-[#FDE68A]">
-                        Region: {loc.city}
-                      </span>
-                      <h3
-                        className="font-serif font-bold text-base sm:text-lg tracking-wide shadow-sm mt-0.5 line-clamp-1 text-white"
-                        style={{ color: "#FFFFFF" }}
-                      >
-                        {loc.name}
-                      </h3>
-                      <p className="text-[11px] text-[#FEF3C7] line-clamp-2 mt-1 leading-snug">
-                        {loc.description}
-                      </p>
-                    </div>
-                  </Link>
-                </ThreeDCard>
-              ))}
-            </div>
-          </ScrollFade>
-        )}
-      </section>
-
-      {/* 5. WHY CHOOSE US - CARDS SECTION */}
-      <section className="py-12 sm:py-20 bg-[#1A1A2E] text-[#FAF6F0] border-t-2 border-[#C9A84C]/40 scroll-mt-20" id="why-choose-us-section">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-16">
-            <span className="text-[11px] uppercase tracking-widest text-[#C9A84C] font-bold font-mono">Brijvas Heritage Pledge</span>
-            <h2 className="font-serif text-2xl sm:text-4xl text-white font-bold mt-1" style={{ color: "#FFFFFF" }}>
-              Why Nikunj Heritage Infrabuild?
-            </h2>
-            <div className="h-0.5 w-16 bg-[#C45C1A] mx-auto mt-4"></div>
-          </div>
-
-          <ScrollFade direction="up">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-              {whyChooseUsCards.map((card, idx) => {
-                const Icon = card.icon;
-                return (
-                  <ThreeDCard key={idx} className="relative overflow-hidden h-full rounded-2xl">
-                    <div className="relative bg-white/5 border border-[#FAF6F0]/10 p-6 rounded-2xl h-full flex items-start space-x-4">
-                      {/* Aura Ambient particle glow that looks like glowing spiritual aura */}
-                      <ParticleGlow color="#C9A84C" />
-                      
-                      <div className="p-3 bg-[#C45C1A]/20 border border-[#C9A84C]/45 rounded-xl text-[#C9A84C] shrink-0 relative z-10">
-                        <Icon className="h-6 w-6" />
-                      </div>
-                      <div className="relative z-10 text-left">
-                        <h3 className="font-serif font-bold text-lg text-white mb-2">{card.title}</h3>
-                        <p className="text-xs sm:text-sm text-[#FAF6F0]/75 leading-relaxed font-sans">{card.text}</p>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+              {testimonials.slice(0, 3).map((t) => (
+                <figure key={t.id} className="flex flex-col rounded-2xl border border-white/10 bg-white/5 p-6">
+                  <Quote className="h-6 w-6 text-[color:var(--brand-gold)]" />
+                  <blockquote className="mt-3 flex-1 text-sm leading-6 text-white/80 line-clamp-5">{t.text}</blockquote>
+                  <figcaption className="mt-5 flex items-center gap-3 border-t border-white/10 pt-4">
+                    <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[color:var(--brand-saffron)] text-sm font-bold text-white">
+                      {t.name.charAt(0)}
+                    </span>
+                    <div className="min-w-0">
+                      <div className="truncate text-sm font-bold text-white">{t.name}</div>
+                      <div className="flex items-center gap-0.5">
+                        {Array.from({ length: 5 }).map((_, i) => (
+                          <Star key={i} className={`h-3.5 w-3.5 ${i < t.stars ? "fill-[color:var(--brand-gold)] text-[color:var(--brand-gold)]" : "text-white/20"}`} />
+                        ))}
                       </div>
                     </div>
-                  </ThreeDCard>
-                );
-              })}
-            </div>
-          </ScrollFade>
-        </div>
-      </section>
-
-      {/* 6. HOW WE WORK (TIMELINE) */}
-      <section className="py-12 sm:py-20 bg-[#FAF6F0] scroll-mt-20" id="how-we-work-timeline">
-        <div className="max-w-4xl mx-auto px-4">
-          <div className="text-center mb-10 sm:mb-16">
-            <span className="text-[11px] uppercase tracking-widest text-[#C45C1A] font-bold font-mono">The Sacred Journey</span>
-            <h2 className="font-serif text-2xl sm:text-3xl text-[#6B1A2A] font-bold mt-1">
-              How We Guide You Home
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-500 mt-2 max-w-xl mx-auto">
-              Our refined 7-step timeline ensures absolute clarity, security and celebration as you transition step-by-step into Brijbhoomi.
-            </p>
-          </div>
-
-          {/* Timeline Node Chain with scroll triggers */}
-          <ScrollFade direction="up">
-            <div className="relative border-l border-[#C9A84C]/40 pl-6 sm:pl-8 ml-3 sm:ml-4 space-y-12">
-              {timelineSteps.map((step, idx) => (
-                <div key={idx} className="relative group">
-                  {/* Timeline ball marker featuring miniature lotus icon */}
-                  <div className="absolute -left-[35px] sm:-left-[43px] top-1 h-8 w-8 sm:h-9 sm:w-9 rounded-full bg-[#1A1A2E] border-2 border-[#C9A84C] flex items-center justify-center text-[10px] text-[#C9A84C] font-bold shadow-md">
-                    {idx + 1}
-                  </div>
-                  <div>
-                    <h3 className="font-serif text-lg font-bold text-[#1A1A2E] group-hover:text-[#C45C1A] transition-colors mb-1 text-left">
-                      {step.title}
-                    </h3>
-                    <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-2xl font-sans text-left">
-                      {step.desc}
-                    </p>
-                  </div>
-                </div>
+                  </figcaption>
+                </figure>
               ))}
             </div>
-          </ScrollFade>
-        </div>
-      </section>
-
-      {/* 7. ROI CALCULATOR INTEGRATOR */}
-      <section className="py-10 sm:py-16 bg-slate-50 border-t border-b border-[#C9A84C]/15 px-4" id="roi-calculator-section">
-        <div className="text-center max-w-2xl mx-auto mb-4">
-          <span className="text-[11px] uppercase tracking-widest font-bold font-mono" style={{ color: "var(--brand-saffron)" }}>Return Projections</span>
-          <h2 className="font-serif text-2xl sm:text-3xl font-bold mt-1 text-[color:var(--brand-night)]">
-            Maximize Your Brijbhoomi Return
-          </h2>
-        </div>
-        <ROICalculator />
-      </section>
-
-      {/* 8. BOOKING CALL DIRECT DIALOGS / QUICK CALLBACK */}
-      <section className="py-12 sm:py-16 px-4 bg-gradient-to-br from-[color:var(--brand-night)] to-[#11193c] text-white border-y border-[color:var(--brand-gold)]/30 relative overflow-hidden" id="homepage-callback">
-        {/* Subtle decorative mandalas */}
-        <div className="absolute -right-16 -bottom-16 h-48 w-48 opacity-10 border-4 border-[#C9A84C] rounded-full"></div>
-        
-        <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-10 items-center relative z-10">
-          <div className="md:col-span-7 space-y-4">
-            <span className="text-xs uppercase text-[color:var(--brand-gold)] tracking-widest font-semibold font-mono block">Zero Cost Consultation</span>
-            <h2
-              className="font-serif text-2xl sm:text-4xl font-bold tracking-wide text-white"
-              style={{ color: "#FFFFFF" }}
-            >
-              Book a Free Personal Site Visit & Consultation
-            </h2>
-            <p className="text-xs sm:text-sm text-[#FAF6F0]/80 leading-relaxed max-w-xl font-sans">
-              Pranam! Experience Mathura-Vrindavan like a native. Our team can help you shortlist the right property, arrange a guided visit, and answer the questions buyers usually ask before they enquire.
-            </p>
           </div>
+        </section>
+      )}
 
-          {/* Quick Callback Submit Form */}
-          <div className="md:col-span-5 bg-white text-[#1A1A2E] p-6 rounded-2xl border border-[#C9A84C]/35 shadow-2xl">
-            <h3 className="font-serif font-bold text-lg text-[#6B1A2A] mb-4">
-              Request Advisory Callback
-            </h3>
-            <form onSubmit={handleConsultationSubmit} className="space-y-4">
-              <div>
-                <label className="block text-[10px] uppercase font-bold text-slate-500 mb-1">Enquiry Type</label>
-                <select
-                  value={enquiryType}
-                  onChange={(e) => setEnquiryType(e.target.value)}
-                  className="w-full text-sm px-3 py-2 rounded-lg border border-slate-200 outline-none focus:border-[#C45C1A] text-slate-800 bg-slate-50"
-                >
-                  <option value="Property Enquiry">Property Enquiry (Vrindavan, Mathura, Omaxe, Serviced Suites)</option>
-                  <option value="Job Enquiry">Job Enquiry (Careers inside Nikunj Heritage)</option>
-                  <option value="Channel Partner Enquiry">Channel Partner Enquiry (Real Estate Network integration)</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-[10px] uppercase font-bold text-slate-500 mb-1">Your Full Name</label>
-                <input
-                  type="text"
-                  required
-                  placeholder="e.g., Rajesh Chaturvedi"
-                  value={consultationName}
-                  onChange={(e) => setConsultationName(e.target.value)}
-                  className="w-full text-sm px-3.5 py-2 rounded-lg border border-slate-200 outline-none focus:border-[#C45C1A] text-slate-800"
-                />
-              </div>
-              <div>
-                <label className="block text-[10px] uppercase font-bold text-slate-500 mb-1">WhatsApp/Phone Number</label>
-                <input
-                  type="tel"
-                  required
-                  placeholder="e.g., +91 9719920888"
-                  value={consultationPhone}
-                  onChange={(e) => setConsultationPhone(e.target.value)}
-                  className="w-full text-sm px-3.5 py-2 rounded-lg border border-slate-200 outline-none focus:border-[#C45C1A] text-slate-800"
-                />
-              </div>
-              <div>
-                <label className="block text-[10px] uppercase font-bold text-slate-500 mb-1">Email Address (Optional)</label>
-                <input
-                  type="email"
-                  placeholder="e.g., name@example.com"
-                  value={consultationEmail}
-                  onChange={(e) => setConsultationEmail(e.target.value)}
-                  className="w-full text-sm px-3.5 py-2 rounded-lg border border-slate-200 outline-none focus:border-[#C45C1A] text-slate-800"
-                />
-              </div>
-              <button
-                type="submit"
-                disabled={isConsulting}
-                className="w-full rounded-lg bg-[color:var(--brand-saffron)] py-3 text-sm font-bold uppercase tracking-wider text-white shadow transition-colors hover:opacity-95 flex items-center justify-center font-serif"
-              >
-                {isConsulting ? "Submitting..." : "Submit Enquiry"}
-              </button>
-            </form>
-          </div>
-        </div>
-      </section>
-
-      {/* 9. LATEST BLOGS CARDS */}
-      <section className="py-16 max-w-7xl mx-auto px-4 scroll-mt-20" id="blogs-section">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-10">
-          <div>
-          <span className="text-[11px] uppercase tracking-widest font-bold font-mono" style={{ color: "var(--brand-saffron)" }}>Brijbhoomi Journal</span>
-            <h2 className="font-serif text-2xl sm:text-3xl font-bold mt-1" style={{ color: "var(--brand-night)" }}>
-              Latest Insights & Guides
-            </h2>
-          </div>
-          <Link
-            to="/blogs"
-            className="mt-2 sm:mt-0 text-xs sm:text-sm font-semibold text-[#C45C1A] hover:text-[#6B1A2A] flex items-center space-x-1 underline underline-offset-4"
-          >
-            <span>Read All Literature</span>
-            <ChevronRight className="h-4 w-4" />
-          </Link>
-        </div>
-
-        {blogs.length === 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="h-56 bg-slate-200 animate-pulse rounded-lg" />
-            ))}
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      {/* 11. BLOGS */}
+      {blogs.length > 0 && (
+        <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8" id="blogs-section">
+          <SectionHeader
+            eyebrow="Insights"
+            title="Latest news & guides"
+            action={{ label: "View all articles", href: "/blogs" }}
+          />
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
             {blogs.map((blog) => (
-              <article key={blog.id} className="bg-white rounded-xl overflow-hidden border border-[#C9A84C]/15 shadow-sm hover:shadow-lg transition-all flex flex-col justify-between">
-                <div>
+              <Link
+                key={blog.id}
+                to={`/blogs/${blog.slug}`}
+                className="group overflow-hidden rounded-2xl border border-slate-200 bg-white transition-all hover:shadow-lg"
+              >
+                <div className="h-44 overflow-hidden bg-slate-100">
                   <img
                     src={blog.coverUrl}
                     alt={blog.title}
-                    className="w-full h-44 object-cover"
+                    loading="lazy"
+                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                     onError={(event) => { event.currentTarget.src = "/projects/images/ai-buyer-spiritual-retreat.jpg"; }}
                   />
-                  <div className="p-4">
-                    <span className="text-[10px] uppercase tracking-widest font-bold font-mono" style={{ color: "var(--brand-saffron)" }}>
-                      Category • {blog.category}
-                    </span>
-                    <Link to={`/blogs/${blog.slug}`} className="block block-title mt-1.5 mb-2.5">
-                      <h3 className="font-serif font-bold text-[#1A1A2E] text-base leading-snug hover:text-[#C45C1A] line-clamp-2">
-                        {blog.title}
-                      </h3>
-                    </Link>
-                    <p className="text-xs text-slate-500 line-clamp-3 leading-relaxed">
-                      {blog.content.replace(/[#*`_]/g, "").slice(0, 150)}...
-                    </p>
-                  </div>
                 </div>
-                <div className="p-4 pt-0">
-                  <Link
-                    to={`/blogs/${blog.slug}`}
-                    className="inline-flex items-center text-xs font-semibold text-[#6B1A2A] hover:text-[#C45C1A] font-mono"
-                  >
-                    <span>Read Article</span>
-                    <ChevronRight className="h-3.5 w-3.5 ml-0.5" />
-                  </Link>
+                <div className="p-5">
+                  <span className="text-xs font-bold text-[color:var(--brand-saffron)]">{blog.category}</span>
+                  <h3 className="mt-1.5 line-clamp-2 font-sans text-base font-bold leading-snug text-[color:var(--brand-night)] group-hover:text-[color:var(--brand-saffron)]">
+                    {blog.title}
+                  </h3>
+                  <p className="mt-2 line-clamp-2 text-sm text-slate-500">
+                    {blog.content.replace(/[#*`_]/g, "").slice(0, 140)}…
+                  </p>
                 </div>
-              </article>
+              </Link>
             ))}
           </div>
-        )}
-      </section>
+        </section>
+      )}
 
-      <section className="bg-white px-4 py-14" id="wealth-style-faq-section">
-        <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 lg:grid-cols-12">
+      {/* 12. FAQ */}
+      <section className="border-t border-slate-100 bg-slate-50 py-14" id="faq-section">
+        <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 px-4 sm:px-6 lg:grid-cols-12 lg:px-8">
           <div className="lg:col-span-4">
-              <span className="text-[11px] font-black uppercase tracking-[0.28em]" style={{ color: "var(--brand-saffron)" }}>Buyer Questions</span>
-            <h2 className="mt-3 font-serif text-3xl font-black leading-tight text-[color:var(--brand-night)] sm:text-4xl">
-              Frequently asked before buying in Braj.
+            <span className="text-xs font-bold uppercase tracking-[0.18em] text-[color:var(--brand-saffron)]">FAQs</span>
+            <h2 className="mt-1.5 font-sans text-2xl font-extrabold tracking-tight text-[color:var(--brand-night)] sm:text-3xl">
+              Questions buyers ask us
             </h2>
-            <p className="mt-4 text-sm leading-7 text-slate-600">
-              Quick clarity for families, investors, NRIs and devotional second-home buyers comparing Mathura-Vrindavan property options.
+            <p className="mt-2 text-sm leading-6 text-slate-500">
+              Can't find your answer? <Link to="/contact-us" className="font-bold text-[color:var(--brand-saffron)]">Contact our team</Link>.
             </p>
           </div>
-          <div className="space-y-4 lg:col-span-8">
-            {faqItems.map((item, index) => (
-              <motion.div
-                key={item.question}
-                initial={{ opacity: 0, y: 18 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-60px" }}
-                transition={{ duration: 0.45, delay: index * 0.05 }}
-                className="rounded-3xl border border-slate-100 bg-[#FAF8F4] p-5"
-              >
-                <div className="flex gap-4">
-                  <HelpCircle className="mt-1 h-5 w-5 shrink-0 text-[#FB923C]" />
-                  <div>
-                    <h3 className="font-serif text-lg font-black text-[#0F172A]">{item.question}</h3>
-                    <p className="mt-2 text-sm leading-7 text-slate-600">{item.answer}</p>
-                  </div>
+          <div className="space-y-3 lg:col-span-8">
+            {faqItems.map((item, index) => {
+              const open = openFaq === index;
+              return (
+                <div key={item.question} className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+                  <button
+                    type="button"
+                    onClick={() => setOpenFaq(open ? null : index)}
+                    aria-expanded={open}
+                    className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left"
+                  >
+                    <span className="font-sans text-sm font-bold text-[color:var(--brand-night)] sm:text-base">{item.question}</span>
+                    <ChevronDown className={`h-5 w-5 shrink-0 text-slate-400 transition-transform ${open ? "rotate-180" : ""}`} />
+                  </button>
+                  <AnimatePresence initial={false}>
+                    {open && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        <p className="px-5 pb-5 text-sm leading-6 text-slate-600">{item.answer}</p>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
-              </motion.div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
 
-      <section className="border-y border-[color:var(--brand-gold)]/20 bg-[color:var(--brand-night)] px-4 py-12 text-white" id="wealth-style-seo-service-areas">
-        <div className="mx-auto max-w-7xl">
-          <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
-            <div className="lg:col-span-5">
-              <span className="text-[11px] font-black uppercase tracking-[0.28em] text-[color:var(--brand-gold)]">Mathura Vrindavan Real Estate</span>
-              <h2 className="mt-3 font-serif text-3xl font-black">Premium property advisory across sacred growth corridors.</h2>
-            </div>
-            <div className="grid grid-cols-2 gap-3 text-sm sm:grid-cols-3 lg:col-span-7">
-              {[
-                "Property in Vrindavan",
-                "Mathura Real Estate",
-                "Rukmini Vihar Flats",
-                "Plots in Govardhan",
-                "Commercial Property Mathura",
-                "Villas near Prem Mandir",
-                "Banke Bihari Access Zone",
-                "ISKCON Vrindavan Homes",
-                "Braj Investment Property"
-              ].map((keyword) => (
-                <Link
-                  key={keyword}
-                  to="/properties"
-                  className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white/75 transition-colors hover:bg-white/10 hover:text-white"
-                >
-                  {keyword}
-                </Link>
+      {/* 13. CTA BAND */}
+      <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8" id="homepage-callback">
+        <div className="grid items-center gap-8 overflow-hidden rounded-3xl bg-gradient-to-br from-[color:var(--brand-saffron)] to-[#c4511a] p-6 text-white sm:p-10 lg:grid-cols-12">
+          <div className="lg:col-span-7">
+            <h2 className="font-sans text-2xl font-extrabold sm:text-3xl" style={{ color: "#FFFFFF" }}>
+              Looking for the right property in Vrindavan?
+            </h2>
+            <p className="mt-2 max-w-xl text-sm text-white/85 sm:text-base">
+              Share your requirement and get a verified shortlist with a free guided site visit.
+            </p>
+            <ul className="mt-5 grid gap-2 text-sm text-white/90 sm:grid-cols-2">
+              {["Verified, RERA-focused projects", "No hidden charges", "Home loan assistance", "Registry & possession support"].map((point) => (
+                <li key={point} className="flex items-center gap-2">
+                  <CheckCircle2 className="h-4 w-4 shrink-0" />
+                  {point}
+                </li>
               ))}
+            </ul>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <a href={`tel:${PHONE}`} className="inline-flex items-center gap-2 rounded-lg bg-white px-5 py-3 text-sm font-bold text-[color:var(--brand-night)] hover:bg-white/90">
+                <PhoneCall className="h-4 w-4" />
+                +91 97199 20888
+              </a>
+              <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-lg border border-white/40 px-5 py-3 text-sm font-bold text-white hover:bg-white/10">
+                <MessageSquare className="h-4 w-4" />
+                WhatsApp us
+              </a>
             </div>
+          </div>
+          <div className="rounded-2xl bg-white p-5 text-[color:var(--brand-night)] shadow-xl lg:col-span-5">
+            <h3 className="mb-3 font-sans text-base font-extrabold">Request a callback</h3>
+            {renderLeadForm(true)}
           </div>
         </div>
       </section>
 
-      {/* 10. NEWSLETTER SIGNUP BOX */}
-      <section className="py-16 bg-[#FAF6F0] px-4 max-w-4xl mx-auto text-center border-t border-[#C9A84C]/25" id="newsletter-signup-tray">
-        <h3 className="font-serif text-[#6B1A2A] text-xl sm:text-2xl font-bold tracking-wide">
-          Subscribe to Divine Dwelling Updates
-        </h3>
-        <p className="text-xs sm:text-sm text-slate-500 max-w-lg mx-auto mt-2 leading-relaxed font-sans">
-          Be the absolute first to receive alerts on new land launches, haveli launches, and price appreciation indices in Mathura-Vrindavan.
-        </p>
-        <form onSubmit={handleNewsletterSubmit} className="mt-6 flex flex-col sm:flex-row gap-2 max-w-md mx-auto">
-          <input
-            type="email"
-            required
-            placeholder="Enter your email address"
-            value={newsletterEmail}
-            onChange={(e) => setNewsletterEmail(e.target.value)}
-            className="flex-grow px-4 py-2.5 rounded-lg border border-slate-300 text-slate-800 text-sm outline-none focus:border-[#C45C1A] bg-white shadow-inner"
-          />
-          <button
-            type="submit"
-            className="bg-[#1A1A2E] hover:bg-[#1A1A2E]/90 text-[#C9A84C] font-bold text-xs sm:text-sm px-6 py-2.5 rounded-lg transition-colors shadow font-serif uppercase tracking-widest"
-          >
-            Join Registry
-          </button>
-        </form>
+      {/* 14. SEO SERVICE AREAS */}
+      <section className="border-t border-slate-100 py-10" id="seo-service-areas">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <h2 className="font-sans text-sm font-bold uppercase tracking-wider text-slate-500">Popular searches</h2>
+          <div className="mt-4 flex flex-wrap gap-2">
+            {seoKeywords.map((keyword) => (
+              <Link
+                key={keyword}
+                to={`/properties?search=${encodeURIComponent(keyword.split(" ").slice(-1)[0])}`}
+                className="rounded-full border border-slate-200 px-3 py-1.5 text-xs text-slate-600 transition-colors hover:border-[color:var(--brand-saffron)] hover:text-[color:var(--brand-saffron)]"
+              >
+                {keyword}
+              </Link>
+            ))}
+            <Link to="/vrindavan-real-estate" className="rounded-full border border-slate-200 px-3 py-1.5 text-xs text-slate-600 hover:border-[color:var(--brand-saffron)] hover:text-[color:var(--brand-saffron)]">Vrindavan real estate guide</Link>
+            <Link to="/mathura-real-estate" className="rounded-full border border-slate-200 px-3 py-1.5 text-xs text-slate-600 hover:border-[color:var(--brand-saffron)] hover:text-[color:var(--brand-saffron)]">Mathura real estate guide</Link>
+          </div>
+        </div>
       </section>
-      </div>
+
+      {/* Floating enquiry trigger */}
+      {!showEnquiryModal && (
+        <button
+          type="button"
+          onClick={() => setShowEnquiryModal(true)}
+          className="fixed bottom-24 right-4 z-40 hidden items-center gap-2 rounded-full bg-[color:var(--brand-night)] px-4 py-3 text-xs font-bold text-white shadow-xl transition-colors hover:bg-[color:var(--brand-night-soft)] sm:bottom-24 sm:inline-flex"
+        >
+          <Users className="h-4 w-4" />
+          Enquire now
+        </button>
+      )}
+
+      {/* Enquiry modal */}
+      <AnimatePresence>
+        {showEnquiryModal && (
+          <div className="fixed inset-0 z-[120] flex items-end justify-center p-0 sm:items-center sm:p-4" role="dialog" aria-modal="true" aria-label="Enquiry form">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowEnquiryModal(false)}
+              className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            />
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 40 }}
+              transition={{ duration: 0.25 }}
+              className="relative w-full max-w-md overflow-hidden rounded-t-2xl bg-white shadow-2xl sm:rounded-2xl"
+            >
+              <div className="flex items-start justify-between gap-3 bg-[color:var(--brand-night)] px-5 py-4 text-white">
+                <div>
+                  <h2 className="font-sans text-lg font-extrabold" style={{ color: "#FFFFFF" }}>Get the best deals in Vrindavan</h2>
+                  <p className="mt-0.5 text-xs text-white/70">Free site visit · Verified projects · Loan help</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowEnquiryModal(false)}
+                  className="rounded-full bg-white/10 p-1.5 text-white hover:bg-white/20"
+                  aria-label="Close enquiry form"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+              <div className="p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))]">
+                {renderLeadForm()}
+                <div className="mt-4 flex items-center justify-center gap-4 text-xs text-slate-500">
+                  <span className="flex items-center gap-1"><Award className="h-3.5 w-3.5 text-[color:var(--brand-gold)]" /> Trusted advisor</span>
+                  <span className="flex items-center gap-1"><ShieldCheck className="h-3.5 w-3.5 text-[color:var(--brand-verified)]" /> 100% secure</span>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
